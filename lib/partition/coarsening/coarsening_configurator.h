@@ -35,45 +35,46 @@
 #include "stop_rules/stop_rules.h"
 
 class coarsening_configurator {
-        public:
-                coarsening_configurator( ) {};
-                virtual ~coarsening_configurator() {};
+public:
+    coarsening_configurator() {};
 
-                static void configure_coarsening(const PartitionConfig & partition_config,
-                                          matching** edge_matcher,
-                                          unsigned level);
+    virtual ~coarsening_configurator() {};
+
+    static void configure_coarsening(const PartitionConfig &partition_config,
+                                     matching **edge_matcher,
+                                     unsigned level);
 };
 
-inline void coarsening_configurator::configure_coarsening( const PartitionConfig & partition_config,
-                                                           matching** edge_matcher,
-                                                           unsigned level) {
+inline void coarsening_configurator::configure_coarsening(const PartitionConfig &partition_config,
+                                                          matching **edge_matcher,
+                                                          unsigned level) {
 
-        switch(partition_config.matching_type) {
-                case MATCHING_RANDOM:
-                        *edge_matcher = new random_matching();
-                        break;
-                case MATCHING_GPA:
-                        *edge_matcher = new gpa_matching();
-                        break;
-                case MATCHING_RANDOM_GPA:
-                        *edge_matcher = new gpa_matching();
-                        break;
-		case LP_CLUSTERING:
-		       *edge_matcher = new size_constraint_label_propagation();
-                        break;
-                case SIMPLE_CLUSTERING:
-                        *edge_matcher = new simple_clustering();
-                        break;
-                case LOW_DIAMETER:
-                        *edge_matcher = new low_diameter_clustering();
-                        break;
-        }
+    switch (partition_config.matching_type) {
+        case MATCHING_RANDOM:
+            *edge_matcher = new random_matching();
+            break;
+        case MATCHING_GPA:
+            *edge_matcher = new gpa_matching();
+            break;
+        case MATCHING_RANDOM_GPA:
+            *edge_matcher = new gpa_matching();
+            break;
+        case LP_CLUSTERING:
+            *edge_matcher = new size_constraint_label_propagation();
+            break;
+        case SIMPLE_CLUSTERING:
+            *edge_matcher = new simple_clustering();
+            break;
+        case LOW_DIAMETER:
+            *edge_matcher = new low_diameter_clustering();
+            break;
+    }
 
-        if( partition_config.matching_type == MATCHING_RANDOM_GPA && level < partition_config.aggressive_random_levels) {
-                delete *edge_matcher;
-                PRINT(std::cout <<  "random matching"  << std::endl;)
-                *edge_matcher = new random_matching();
-        }
+    if (partition_config.matching_type == MATCHING_RANDOM_GPA && level < partition_config.aggressive_random_levels) {
+        delete *edge_matcher;
+        PRINT(std::cout << "random matching" << std::endl;)
+        *edge_matcher = new random_matching();
+    }
 }
 
 #endif /* end of include guard: COARSENING_CONFIGURATOR_8UJ78WYS */

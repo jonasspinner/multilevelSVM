@@ -26,151 +26,150 @@
 #include "definitions.h"
 
 // Configuration for the partitioning.
-struct PartitionConfig
-{
-        PartitionConfig() = default;
+struct PartitionConfig {
+    PartitionConfig() = default;
 
 
-        //============================================================
-        //=======================MATCHING=============================
-        //============================================================
-        bool edge_rating_tiebreaking = false;
+    //============================================================
+    //=======================MATCHING=============================
+    //============================================================
+    bool edge_rating_tiebreaking = false;
 
-        EdgeRating edge_rating = WEIGHT;
+    EdgeRating edge_rating = WEIGHT;
 
-        PermutationQuality permutation_quality = PERMUTATION_QUALITY_FAST;
+    PermutationQuality permutation_quality = PERMUTATION_QUALITY_FAST;
 
-        MatchingType matching_type = LP_CLUSTERING;
+    MatchingType matching_type = LP_CLUSTERING;
 
-        bool first_level_random_matching = false;
+    bool first_level_random_matching = false;
 
-        bool rate_first_level_inner_outer = false;
+    bool rate_first_level_inner_outer = false;
 
-        NodeWeight max_vertex_weight{};
+    NodeWeight max_vertex_weight{};
 
-        unsigned aggressive_random_levels = 3;
+    unsigned aggressive_random_levels = 3;
 
-        //=======================================
-        //=============STOP RULES================
-        //=======================================
+    //=======================================
+    //=============STOP RULES================
+    //=======================================
 
-        StopRule stop_rule = STOP_RULE_SIMPLE_FIXED;
+    StopRule stop_rule = STOP_RULE_SIMPLE_FIXED;
 
-        int num_vert_stop_factor = 20;
+    int num_vert_stop_factor = 20;
 
-        int fix_num_vert_stop = 500;
+    int fix_num_vert_stop = 500;
 
-        NodeWeight upper_bound_partition = std::numeric_limits<NodeWeight>::max()/2;
+    NodeWeight upper_bound_partition = std::numeric_limits<NodeWeight>::max() / 2;
 
-        //=======================================
-        //============PAR_PSEUDOMH / MH =========
-        //=======================================
+    //=======================================
+    //============PAR_PSEUDOMH / MH =========
+    //=======================================
 
-        bool combine = false; // in this case the second index is filled and edges between both partitions are not contracted
-        //=======================================
-        //===============MISC====================
-        //=======================================
+    bool combine = false; // in this case the second index is filled and edges between both partitions are not contracted
+    //=======================================
+    //===============MISC====================
+    //=======================================
 
-        int num_experiments = 1;
+    int num_experiments = 1;
 
-        int kfold_iterations = 5;
+    int kfold_iterations = 5;
 
-        std::string input_partition;
+    std::string input_partition;
 
-        // number of blocks the graph should be partitioned in
-        PartitionID k = 1;
+    // number of blocks the graph should be partitioned in
+    PartitionID k = 1;
 
-        long seed = 0;
+    long seed = 0;
 
-        std::string filename;
+    std::string filename;
 
-        std::string filename_output;
+    std::string filename_output;
 
-        double time_limit{};
+    double time_limit{};
 
-        int timeout = 0;
+    int timeout = 0;
 
-	bool export_graph = false;
+    bool export_graph = false;
 
-	std::string export_model_path = "./svm";
+    std::string export_model_path = "./svm";
 
-	int n_cores = 0;
+    int n_cores = 0;
 
-        //=======================================
-        //===========SNW PARTITIONING============
-        //=======================================
+    //=======================================
+    //===========SNW PARTITIONING============
+    //=======================================
 
-        NodeOrderingType node_ordering = DEGREE_NODEORDERING;
+    NodeOrderingType node_ordering = DEGREE_NODEORDERING;
 
-        int cluster_coarsening_factor = 1;
+    int cluster_coarsening_factor = 1;
 
-        bool ensemble_clusterings = false;
+    bool ensemble_clusterings = false;
 
-        int label_iterations = 10;
+    int label_iterations = 10;
 
-        int number_of_clusterings = 1;
+    int number_of_clusterings = 1;
 
-        double balance_factor = 0;
+    double balance_factor = 0;
 
-        int repetitions = 1;
+    int repetitions = 1;
 
-        //=======================================
-        //==========LABEL PROPAGATION============
-        //=======================================
+    //=======================================
+    //==========LABEL PROPAGATION============
+    //=======================================
 
-        NodeWeight cluster_upperbound = std::numeric_limits<NodeWeight>::max()/2;
+    NodeWeight cluster_upperbound = std::numeric_limits<NodeWeight>::max() / 2;
 
-        //=======================================
-        //============LOW DIAMETER===============
-        //=======================================
+    //=======================================
+    //============LOW DIAMETER===============
+    //=======================================
 
-        double diameter_upperbound = 20;
+    double diameter_upperbound = 20;
 
-        //=======================================
-        //=======================================
-        //=======================================
+    //=======================================
+    //=======================================
+    //=======================================
 
-        bool balance_edges{};
+    bool balance_edges{};
 
-        bool gpa_grow_paths_between_blocks = true;
+    bool gpa_grow_paths_between_blocks = true;
 
-        bool bidirectional = false;
+    bool bidirectional = false;
 
-        //=======================================
-        //===============KASVM===================
-        //=======================================
+    //=======================================
+    //===============KASVM===================
+    //=======================================
 
-	float sample_percent = 1.0f;
+    float sample_percent = 1.0f;
 
-	ValidationType validation_type = KFOLD;
+    ValidationType validation_type = KFOLD;
 
-        float validation_percent = 0.1f;
+    float validation_percent = 0.1f;
 
-	bool validation_seperate = false;
+    bool validation_seperate = false;
 
-        int num_nn = 10;
+    int num_nn = 10;
 
-	//KASVM REFINEMENT
+    //KASVM REFINEMENT
 
-	RefinementType refinement_type = UD;
+    RefinementType refinement_type = UD;
 
-	float fix_C = 0;
+    float fix_C = 0;
 
-	float fix_gamma = 1;
+    float fix_gamma = 1;
 
-	float beta = 0.4;
+    float beta = 0.4;
 
-	int bayes_init = 10;
+    int bayes_init = 10;
 
-        int num_skip_ms = 10000;
+    int num_skip_ms = 10000;
 
-        bool inherit_ud = true;
+    bool inherit_ud = true;
 
-	int bayes_max_steps = 10;
+    int bayes_max_steps = 10;
 
-	void print() const;
+    void print() const;
 
-	void apply() const;
+    void apply() const;
 };
 
 #endif /* end of include guard: PARTITION_CONFIG_DI1ES4T0 */

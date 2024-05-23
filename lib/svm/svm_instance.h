@@ -8,32 +8,37 @@
 #include "data_structure/graph_access.h"
 #include "svm_definitions.h"
 
-class svm_instance
-{
+class svm_instance {
 public:
-        svm_instance() = default;
+    svm_instance() = default;
 
-        void read_problem(const svm_data & min_data, const svm_data & maj_data);
-        void read_problem(const graph_access & G_min, const graph_access & G_maj);
+    void read_problem(const svm_data &min_data, const svm_data &maj_data);
 
-        int size();
-        double* label_data();
-        svm_node** node_data();
-	DataSet::node2d node_data_thunder();
+    void read_problem(const graph_access &G_min, const graph_access &G_maj);
 
-        NodeID num_min{};
-        NodeID num_maj{};
-        NodeID features{};
+    int size();
 
-        std::shared_ptr<std::vector<double>> labels;
+    double *label_data();
+
+    svm_node **node_data();
+
+    DataSet::node2d node_data_thunder();
+
+    NodeID num_min{};
+    NodeID num_maj{};
+    NodeID features{};
+
+    std::shared_ptr<std::vector<double>> labels;
 
 private:
-        void allocate_prob(NodeID total_size);
-        void add_to_problem(const svm_data & data, int label);
-        void add_to_problem(const graph_access & G, int label);
+    void allocate_prob(NodeID total_size);
 
-        std::shared_ptr<svm_data> nodes;
-        std::shared_ptr<std::vector<svm_node*>> nodes_meta;
+    void add_to_problem(const svm_data &data, int label);
+
+    void add_to_problem(const graph_access &G, int label);
+
+    std::shared_ptr<svm_data> nodes;
+    std::shared_ptr<std::vector<svm_node *>> nodes_meta;
 };
 
 

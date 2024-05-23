@@ -7,7 +7,7 @@
 
 class jarnik_prim {
 public:
-        static std::pair<graph_access*,NodeID> spanning_tree(const graph_access & graph);
+    static std::pair<graph_access *, NodeID> spanning_tree(const graph_access &graph);
 };
 
 #endif /* JARNIK_PRIM_H */

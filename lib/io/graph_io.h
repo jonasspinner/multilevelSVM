@@ -35,22 +35,23 @@
 #include "data_structure/graph_access.h"
 
 class graph_io {
-        public:
-                graph_io() = default;
-                virtual ~graph_io () = default;
+public:
+    graph_io() = default;
 
-		static
-		int writeGraphGDF(const graph_access & G_min, const graph_access & G_maj, const std::string& filename);
+    virtual ~graph_io() = default;
 
-                static
-                int readFeatures(graph_access & G, const std::vector<FeatureVec> & data);
+    static
+    int writeGraphGDF(const graph_access &G_min, const graph_access &G_maj, const std::string &filename);
 
-                static int readGraphFromVec(graph_access & G,
-                                        const std::vector<std::vector<Edge>> & data,
-                                        EdgeID num_edges);
+    static
+    int readFeatures(graph_access &G, const std::vector<FeatureVec> &data);
 
-                static
-                EdgeID makeEdgesBidirectional(std::vector<std::vector<Edge>> & data);
+    static int readGraphFromVec(graph_access &G,
+                                const std::vector<std::vector<Edge>> &data,
+                                EdgeID num_edges);
+
+    static
+    EdgeID makeEdgesBidirectional(std::vector<std::vector<Edge>> &data);
 };
 
 #endif /*GRAPHIO_H_*/

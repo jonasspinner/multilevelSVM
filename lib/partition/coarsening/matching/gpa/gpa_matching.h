@@ -27,45 +27,47 @@
 #include "path.h"
 #include "path_set.h"
 
-class gpa_matching : public matching{
-        public:
-                gpa_matching( ) = default;
-                ~gpa_matching() override = default;
+class gpa_matching : public matching {
+public:
+    gpa_matching() = default;
 
-                void match(const PartitionConfig & config, 
-                                graph_access & G, 
-                                Matching & _matching, 
-                                CoarseMapping & coarse_mapping, 
-                                NodeID & no_of_coarse_vertices,
-                                NodePermutationMap & permutation) override;
-        private:
-                void init(graph_access & G, 
-                          const PartitionConfig & partition_config, 
-                          NodePermutationMap & permutation, 
-                          Matching & edge_matching,
-                          std::vector<EdgeID>  & edge_permutation,
-                          std::vector<NodeID> & sources); 
+    ~gpa_matching() override = default;
 
-                void extract_paths_apply_matching( graph_access & G, 
-                                                   std::vector<NodeID> & sources,
-                                                   Matching & edge_matching, 
-                                                   path_set & pathset); 
+    void match(const PartitionConfig &config,
+               graph_access &G,
+               Matching &_matching,
+               CoarseMapping &coarse_mapping,
+               NodeID &no_of_coarse_vertices,
+               NodePermutationMap &permutation) override;
 
-                template <typename VectorOrDeque> 
-                        void unpack_path(const path & the_path, 
-                                         const path_set & pathset,  
-                                         VectorOrDeque & a_path);
+private:
+    void init(graph_access &G,
+              const PartitionConfig &partition_config,
+              NodePermutationMap &permutation,
+              Matching &edge_matching,
+              std::vector<EdgeID> &edge_permutation,
+              std::vector<NodeID> &sources);
 
-                template <typename VectorOrDeque> 
-                        void maximum_weight_matching( graph_access & G,
-                                                      VectorOrDeque & unpacked_path, 
-                                                      std::vector<EdgeID> & matched_edges,
-                                                      EdgeRatingType & final_rating);
+    void extract_paths_apply_matching(graph_access &G,
+                                      std::vector<NodeID> &sources,
+                                      Matching &edge_matching,
+                                      path_set &pathset);
 
-                void apply_matching( graph_access & G,
-                                     std::vector<EdgeID> & matched_edges,
-                                     std::vector<NodeID> & sources,
-                                     Matching & edge_matching);
+    template<typename VectorOrDeque>
+    void unpack_path(const path &the_path,
+                     const path_set &pathset,
+                     VectorOrDeque &a_path);
+
+    template<typename VectorOrDeque>
+    void maximum_weight_matching(graph_access &G,
+                                 VectorOrDeque &unpacked_path,
+                                 std::vector<EdgeID> &matched_edges,
+                                 EdgeRatingType &final_rating);
+
+    void apply_matching(graph_access &G,
+                        std::vector<EdgeID> &matched_edges,
+                        std::vector<NodeID> &sources,
+                        Matching &edge_matching);
 };
 
 

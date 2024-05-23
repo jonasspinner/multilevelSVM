@@ -27,16 +27,17 @@
 #include "partition/partition_config.h"
 
 class matching {
-        public:
-                matching() = default;
-                virtual ~matching() = default;
+public:
+    matching() = default;
 
-                virtual void match(const PartitionConfig & partition_config, 
-                                   graph_access & G, 
-                                   Matching & _matching, 
-                                   CoarseMapping & mapping, 
-                                   NodeID & no_of_coarse_vertices,
-                                   NodePermutationMap & permutation) = 0;
+    virtual ~matching() = default;
+
+    virtual void match(const PartitionConfig &partition_config,
+                       graph_access &G,
+                       Matching &_matching,
+                       CoarseMapping &mapping,
+                       NodeID &no_of_coarse_vertices,
+                       NodePermutationMap &permutation) = 0;
 };
 
 #endif /* end of include guard: MATCHING_QL4RUO3D */

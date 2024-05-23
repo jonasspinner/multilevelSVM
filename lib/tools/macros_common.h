@@ -20,7 +20,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-#ifndef MACROS_COMMON_H 
+#ifndef MACROS_COMMON_H
 #define MACROS_COMMON_H
 
 // If DEBUG has not been defined yet then define it as false.

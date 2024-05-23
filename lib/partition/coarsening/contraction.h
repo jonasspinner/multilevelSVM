@@ -29,65 +29,65 @@
 #include "partition/partition_config.h"
 
 class contraction {
-        public:
-                void contract(const PartitionConfig & partition_config,
-                              graph_access & finer,
-                              graph_access & coarser,
-                              const Matching & edge_matching,
-                              const CoarseMapping & coarse_mapping,
-                              const NodeID & no_of_coarse_vertices,
-                              const NodePermutationMap & permutation) const;
+public:
+    void contract(const PartitionConfig &partition_config,
+                  graph_access &finer,
+                  graph_access &coarser,
+                  const Matching &edge_matching,
+                  const CoarseMapping &coarse_mapping,
+                  const NodeID &no_of_coarse_vertices,
+                  const NodePermutationMap &permutation) const;
 
-                void contract_clustering(const PartitionConfig & partition_config,
-                                         graph_access & finer,
-                                         graph_access & coarser,
-                                         const Matching & edge_matching,
-                                         const CoarseMapping & coarse_mapping,
-                                         const NodeID & no_of_coarse_vertices,
-                                         const NodePermutationMap & permutation) const;
+    void contract_clustering(const PartitionConfig &partition_config,
+                             graph_access &finer,
+                             graph_access &coarser,
+                             const Matching &edge_matching,
+                             const CoarseMapping &coarse_mapping,
+                             const NodeID &no_of_coarse_vertices,
+                             const NodePermutationMap &permutation) const;
 
-        private:
-                // visits an edge in G (and auxillary graph) and updates/creates and edge in coarser graph
-                static void visit_edge(graph_access & G,
-                                graph_access & coarser,
-                                std::vector<NodeID> & edge_positions,
-                                NodeID coarseNode,
-                                EdgeID e,
-                                const std::vector<NodeID> & new_edge_targets) ;
+private:
+    // visits an edge in G (and auxillary graph) and updates/creates and edge in coarser graph
+    static void visit_edge(graph_access &G,
+                           graph_access &coarser,
+                           std::vector<NodeID> &edge_positions,
+                           NodeID coarseNode,
+                           EdgeID e,
+                           const std::vector<NodeID> &new_edge_targets);
 
 
-                [[nodiscard]] static FeatureVec combineFeatureVec(const FeatureVec & vec1, NodeWeight weight1,
-                                             const FeatureVec & vec2, NodeWeight weight2) ;
+    [[nodiscard]] static FeatureVec combineFeatureVec(const FeatureVec &vec1, NodeWeight weight1,
+                                                      const FeatureVec &vec2, NodeWeight weight2);
 
-                static void divideVec(FeatureVec & vec, NodeWeight weights) ;
+    static void divideVec(FeatureVec &vec, NodeWeight weights);
 
-                void addWeightedToVec(FeatureVec & vec, const FeatureVec & vecToAdd, NodeWeight weight) const;
+    void addWeightedToVec(FeatureVec &vec, const FeatureVec &vecToAdd, NodeWeight weight) const;
 
-		[[nodiscard]] EdgeWeight calcFeatureDist(const FeatureVec & vec1,  const FeatureVec & vec2) const;
+    [[nodiscard]] EdgeWeight calcFeatureDist(const FeatureVec &vec1, const FeatureVec &vec2) const;
 };
 
-inline void contraction::visit_edge(graph_access & G,
-                graph_access & coarser,
-                std::vector<NodeID> & edge_positions,
-                const NodeID coarseNode,
-                const EdgeID e,
-                const std::vector<NodeID> & new_edge_targets) {
+inline void contraction::visit_edge(graph_access &G,
+                                    graph_access &coarser,
+                                    std::vector<NodeID> &edge_positions,
+                                    const NodeID coarseNode,
+                                    const EdgeID e,
+                                    const std::vector<NodeID> &new_edge_targets) {
 
-        EdgeID new_coarse_edge_target = new_edge_targets[e];
-        if(new_coarse_edge_target == coarseNode) return; //this is the matched edge ... return
+    EdgeID new_coarse_edge_target = new_edge_targets[e];
+    if (new_coarse_edge_target == coarseNode) return; //this is the matched edge ... return
 
-        EdgeID edge_pos = edge_positions[new_coarse_edge_target];
-        if( edge_pos == UNDEFINED_EDGE ) {
-                //we havent seen this target node before so we need to create an edge
-                EdgeID coarse_edge = coarser.new_edge(coarseNode, new_coarse_edge_target);
-                coarser.setEdgeWeight(coarse_edge, G.getEdgeWeight(e));
-                edge_positions[new_coarse_edge_target] = coarse_edge;
-        } else {
-                //we have seen this target node before and we know its postition in our
-                //edge array of the graph. So we update the weight of the edge!
-                EdgeWeight new_edge_weight = coarser.getEdgeWeight(edge_pos) + G.getEdgeWeight(e);
-                coarser.setEdgeWeight(edge_pos, new_edge_weight);
-        }
+    EdgeID edge_pos = edge_positions[new_coarse_edge_target];
+    if (edge_pos == UNDEFINED_EDGE) {
+        //we havent seen this target node before so we need to create an edge
+        EdgeID coarse_edge = coarser.new_edge(coarseNode, new_coarse_edge_target);
+        coarser.setEdgeWeight(coarse_edge, G.getEdgeWeight(e));
+        edge_positions[new_coarse_edge_target] = coarse_edge;
+    } else {
+        //we have seen this target node before and we know its postition in our
+        //edge array of the graph. So we update the weight of the edge!
+        EdgeWeight new_edge_weight = coarser.getEdgeWeight(edge_pos) + G.getEdgeWeight(e);
+        coarser.setEdgeWeight(edge_pos, new_edge_weight);
+    }
 }
 
 

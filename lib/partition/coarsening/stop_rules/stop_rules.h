@@ -29,29 +29,32 @@
 #include <iostream>
 
 class stop_rule {
-        public:
-                stop_rule() = default;
-                virtual ~stop_rule() = default;
-                virtual bool stop( NodeID number_of_finer_vertices, NodeID number_of_coarser_vertices ) = 0;
+public:
+    stop_rule() = default;
+
+    virtual ~stop_rule() = default;
+
+    virtual bool stop(NodeID number_of_finer_vertices, NodeID number_of_coarser_vertices) = 0;
 };
 
 
 class simple_fixed_stop_rule : public stop_rule {
 public:
-        simple_fixed_stop_rule(PartitionConfig & config, NodeID _number_of_nodes) {
-                num_stop = config.fix_num_vert_stop;
-        };
+    simple_fixed_stop_rule(PartitionConfig &config, NodeID _number_of_nodes) {
+        num_stop = config.fix_num_vert_stop;
+    };
 
-        ~simple_fixed_stop_rule() override = default;
-        bool stop( NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices ) override;
+    ~simple_fixed_stop_rule() override = default;
+
+    bool stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices) override;
 
 private:
-        NodeID num_stop;
+    NodeID num_stop;
 };
 
-inline bool simple_fixed_stop_rule::stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices ) {
-        double contraction_rate = no_of_finer_vertices / (double)no_of_coarser_vertices;
-        return contraction_rate >= 1.05 && no_of_coarser_vertices >= num_stop;
+inline bool simple_fixed_stop_rule::stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices) {
+    double contraction_rate = no_of_finer_vertices / (double) no_of_coarser_vertices;
+    return contraction_rate >= 1.05 && no_of_coarser_vertices >= num_stop;
 }
 
 #endif /* end of include guard: STOP_RULES_SZ45JQS6 */

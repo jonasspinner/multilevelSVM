@@ -33,43 +33,43 @@
 
 // allows us to disable most of the output during partitioning
 #ifdef KAFFPAOUTPUT
-        #define PRINT(x) x
+#define PRINT(x) x
 #else
-        #define PRINT(x) do {} while (false);
+#define PRINT(x) do {} while (false);
 #endif
 
 /**********************************************
  * Constants
  * ********************************************/
 //Types needed for the graph ds
-typedef unsigned int  NodeID;
-typedef double    EdgeRatingType;
-typedef unsigned int  EdgeID;
-typedef unsigned int  PathID;
-typedef unsigned int  PartitionID;
-typedef unsigned int  NodeWeight;
-typedef double     EdgeWeight;
+typedef unsigned int NodeID;
+typedef double EdgeRatingType;
+typedef unsigned int EdgeID;
+typedef unsigned int PathID;
+typedef unsigned int PartitionID;
+typedef unsigned int NodeWeight;
+typedef double EdgeWeight;
 typedef double FeatureData;
 typedef std::vector<FeatureData> FeatureVec;
 typedef std::vector<NodeID> boundary_starting_nodes;
 
-const EdgeID UNDEFINED_EDGE            = std::numeric_limits<EdgeID>::max();
-const NodeID UNDEFINED_NODE            = std::numeric_limits<NodeID>::max();
+const EdgeID UNDEFINED_EDGE = std::numeric_limits<EdgeID>::max();
+const NodeID UNDEFINED_NODE = std::numeric_limits<NodeID>::max();
 
 // for graph_access
 struct Node {
-        EdgeID firstEdge;
-        NodeWeight weight;
+    EdgeID firstEdge;
+    NodeWeight weight;
 };
 
 struct Edge {
-        NodeID target;
-        EdgeWeight weight;
+    NodeID target;
+    EdgeWeight weight;
 };
 
 struct source_target_pair {
-        NodeID source;
-        NodeID target;
+    NodeID source;
+    NodeID target;
 };
 
 //matching array has size (no_of_nodes), so for entry in this table we get the matched neighbor
@@ -81,61 +81,61 @@ typedef double ImbalanceType;
 
 //Coarsening
 typedef enum {
-        EXPANSIONSTAR,
-        EXPANSIONSTAR2,
-        WEIGHT,
-        REALWEIGHT,
-        PSEUDOGEOM,
-        EXPANSIONSTAR2ALGDIST,
-        SEPARATOR_MULTX,
-        SEPARATOR_ADDX,
-        SEPARATOR_MAX,
-        SEPARATOR_LOG,
-        SEPARATOR_R1,
-        SEPARATOR_R2,
-        SEPARATOR_R3,
-        SEPARATOR_R4,
-        SEPARATOR_R5,
-        SEPARATOR_R6,
-        SEPARATOR_R7,
-        SEPARATOR_R8
+    EXPANSIONSTAR,
+    EXPANSIONSTAR2,
+    WEIGHT,
+    REALWEIGHT,
+    PSEUDOGEOM,
+    EXPANSIONSTAR2ALGDIST,
+    SEPARATOR_MULTX,
+    SEPARATOR_ADDX,
+    SEPARATOR_MAX,
+    SEPARATOR_LOG,
+    SEPARATOR_R1,
+    SEPARATOR_R2,
+    SEPARATOR_R3,
+    SEPARATOR_R4,
+    SEPARATOR_R5,
+    SEPARATOR_R6,
+    SEPARATOR_R7,
+    SEPARATOR_R8
 } EdgeRating;
 
 typedef enum {
-        PERMUTATION_QUALITY_NONE,
-        PERMUTATION_QUALITY_FAST,
-        PERMUTATION_QUALITY_GOOD
+    PERMUTATION_QUALITY_NONE,
+    PERMUTATION_QUALITY_FAST,
+    PERMUTATION_QUALITY_GOOD
 } PermutationQuality;
 
 typedef enum {
-        MATCHING_RANDOM,
-        MATCHING_GPA,
-        MATCHING_RANDOM_GPA,
-        LP_CLUSTERING,
-        SIMPLE_CLUSTERING,
-        LOW_DIAMETER
+    MATCHING_RANDOM,
+    MATCHING_GPA,
+    MATCHING_RANDOM_GPA,
+    LP_CLUSTERING,
+    SIMPLE_CLUSTERING,
+    LOW_DIAMETER
 } MatchingType;
 
 typedef enum {
-        STOP_RULE_SIMPLE_FIXED
+    STOP_RULE_SIMPLE_FIXED
 } StopRule;
 
 typedef enum {
-        RANDOM_NODEORDERING,
-        DEGREE_NODEORDERING
+    RANDOM_NODEORDERING,
+    DEGREE_NODEORDERING
 } NodeOrderingType;
 
 typedef enum {
-	KFOLD,
-	KFOLD_IMPORT,
-	TRAIN_TEST_SPLIT,
-	ONCE
+    KFOLD,
+    KFOLD_IMPORT,
+    TRAIN_TEST_SPLIT,
+    ONCE
 } ValidationType;
 
 typedef enum {
-	UD,
-	BAYES,
-	FIX
+    UD,
+    BAYES,
+    FIX
 } RefinementType;
 
 #endif

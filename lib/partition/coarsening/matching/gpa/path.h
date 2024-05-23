@@ -26,84 +26,90 @@
 #include "definitions.h"
 
 class path {
-        public:
-                path( );
-                explicit path( const NodeID & v );
-                ~path() = default;
+public:
+    path();
 
-                void init(const NodeID & v);
+    explicit path(const NodeID &v);
 
-                [[nodiscard]] NodeID get_tail() const;
-                void set_tail(const NodeID & v);
+    ~path() = default;
 
-                [[nodiscard]] NodeID get_head() const;
-                void set_head(const NodeID & v);
+    void init(const NodeID &v);
 
-                void set_length(const EdgeID & length);
-                [[nodiscard]] EdgeID get_length() const;
-                
-                //returns wether the path is a cycle or not.  
-                [[nodiscard]] bool is_cycle() const;
+    [[nodiscard]] NodeID get_tail() const;
 
-                [[nodiscard]] bool is_active() const;
-                void set_active(bool active);
+    void set_tail(const NodeID &v);
 
-        private:
-                //Last vertex of the path. Cycles have head == tail
-                NodeID head;
+    [[nodiscard]] NodeID get_head() const;
 
-                //First vertex of the path. Cycles have head == tail
-                NodeID tail;
+    void set_head(const NodeID &v);
 
-                //Number of edges in the graph
-                EdgeID length; 
-               
-                // True iff the parth is still in use. False iff it has been removed.  
-                bool active;
+    void set_length(const EdgeID &length);
+
+    [[nodiscard]] EdgeID get_length() const;
+
+    //returns wether the path is a cycle or not.
+    [[nodiscard]] bool is_cycle() const;
+
+    [[nodiscard]] bool is_active() const;
+
+    void set_active(bool active);
+
+private:
+    //Last vertex of the path. Cycles have head == tail
+    NodeID head;
+
+    //First vertex of the path. Cycles have head == tail
+    NodeID tail;
+
+    //Number of edges in the graph
+    EdgeID length;
+
+    // True iff the parth is still in use. False iff it has been removed.
+    bool active;
 
 };
 
-inline void path::init(const NodeID & v) {
-        head   = v;
-        tail   = v;
-        length = 0;
-        active = true;
+inline void path::init(const NodeID &v) {
+    head = v;
+    tail = v;
+    length = 0;
+    active = true;
 }
 
 inline NodeID path::get_tail() const {
-        return tail;        
+    return tail;
 }
 
-inline void path::set_tail(const NodeID & v) {
-        tail = v;        
+inline void path::set_tail(const NodeID &v) {
+    tail = v;
 }
 
-inline NodeID path::get_head( ) const {
-        return head;
+inline NodeID path::get_head() const {
+    return head;
 }
 
-inline void path::set_head(const NodeID & v) {
-        head = v;        
+inline void path::set_head(const NodeID &v) {
+    head = v;
 }
 
-inline EdgeID path::get_length( ) const {
-        return length;        
+inline EdgeID path::get_length() const {
+    return length;
 }
 
-inline void path::set_length(const EdgeID & len) {
-        length = len;        
+inline void path::set_length(const EdgeID &len) {
+    length = len;
 }
 
 inline bool path::is_cycle() const {
-        return (head == tail) and (length > 0);       
+    return (head == tail) and (length > 0);
 }
 
 inline bool path::is_active() const {
-        return active;
+    return active;
 }
 
 inline void path::set_active(const bool act) {
-        active = act;        
+    active = act;
 }
 
 

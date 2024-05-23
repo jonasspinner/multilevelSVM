@@ -27,55 +27,60 @@
 #include "definitions.h"
 
 struct compare_nodes_contains {
-        bool operator()(const NodeID lhs, const NodeID rhs) const {
-                return (lhs == rhs);
-        }
+    bool operator()(const NodeID lhs, const NodeID rhs) const {
+        return (lhs == rhs);
+    }
 };
 
 
 struct is_boundary {
-       bool contains;
-       is_boundary() {
-                contains = false;
-       }
+    bool contains;
+
+    is_boundary() {
+        contains = false;
+    }
 };
 
 
 struct hash_boundary_nodes {
-       size_t operator()(const NodeID idx) const {
-                return idx;
-       }
+    size_t operator()(const NodeID idx) const {
+        return idx;
+    }
 };
 
 typedef std::unordered_map<const NodeID, is_boundary, hash_boundary_nodes, compare_nodes_contains> is_boundary_node_hashtable;
 
 class PartialBoundary {
-        public:
-                PartialBoundary( ) = default;
-                virtual ~PartialBoundary() = default;
+public:
+    PartialBoundary() = default;
 
-                bool contains(NodeID node);
-                void insert(NodeID node);
-                void clear();
-                NodeID size();
+    virtual ~PartialBoundary() = default;
 
-                is_boundary_node_hashtable internal_boundary;
+    bool contains(NodeID node);
+
+    void insert(NodeID node);
+
+    void clear();
+
+    NodeID size();
+
+    is_boundary_node_hashtable internal_boundary;
 };
 
 inline bool PartialBoundary::contains(NodeID node) {
-        return internal_boundary.find(node) != internal_boundary.end(); 
+    return internal_boundary.find(node) != internal_boundary.end();
 }
 
 inline void PartialBoundary::insert(NodeID node) {
-        internal_boundary[node].contains = true; 
+    internal_boundary[node].contains = true;
 }
 
 inline NodeID PartialBoundary::size() {
-        return internal_boundary.size();
+    return internal_boundary.size();
 }
 
 inline void PartialBoundary::clear() {
-        return internal_boundary.clear();
+    return internal_boundary.clear();
 }
 
 

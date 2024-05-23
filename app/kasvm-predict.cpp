@@ -4,6 +4,7 @@
 #include "parse_parameters.h"
 
 #include <thundersvm/util/log.h>
+
 void print_null(const char *s) {}
 
 #ifndef SVM_SOLVER
@@ -14,25 +15,25 @@ void print_null(const char *s) {}
 #endif
 
 int main(int argn, char *argv[]) {
-	PartitionConfig partition_config;
+    PartitionConfig partition_config;
 
-        if(parse_parameters(argn, argv, partition_config)) {
-                return -1;
-        }
+    if (parse_parameters(argn, argv, partition_config)) {
+        return -1;
+    }
 
-        // disable libsvm output
-        svm_set_print_string_function(&print_null);
-	// disable thundersvm output
-	el::Loggers::reconfigureAllLoggers(el::ConfigurationType::Enabled, "false");
+    // disable libsvm output
+    svm_set_print_string_function(&print_null);
+    // disable thundersvm output
+    el::Loggers::reconfigureAllLoggers(el::ConfigurationType::Enabled, "false");
 
-	partition_config.apply();
-	partition_config.print();
+    partition_config.apply();
+    partition_config.print();
 
-	/*
-	  We dream off a tool that takes a kasvm-model
-	  (maybe only the exported libsvm model)
-	  and evaluates it automaticaly on some data
-	  therefore the tool has to be aware of the transformations
-	  done by the 'prepare' tool and also apply these to the data.
-	*/	
+    /*
+      We dream off a tool that takes a kasvm-model
+      (maybe only the exported libsvm model)
+      and evaluates it automaticaly on some data
+      therefore the tool has to be aware of the transformations
+      done by the 'prepare' tool and also apply these to the data.
+    */
 }

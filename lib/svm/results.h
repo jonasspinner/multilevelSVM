@@ -5,20 +5,23 @@
 #include <string>
 #include <unordered_map>
 
-class results
-{
+class results {
 public:
-        results() : cur_iteration(-1) {};
-        void next();
-        void setFloat(const std::string & tag, float result);
-        void setString(const std::string & tag, const std::string & result);
-        void print();
+    results() : cur_iteration(-1) {};
+
+    void next();
+
+    void setFloat(const std::string &tag, float result);
+
+    void setString(const std::string &tag, const std::string &result);
+
+    void print();
 
 private:
-        int cur_iteration;
-        std::unordered_map<std::string, std::vector<float>> floats;
-        std::unordered_map<std::string, std::vector<std::string>> strings;
-        std::vector<std::string> tag_order;
+    int cur_iteration;
+    std::unordered_map<std::string, std::vector<float>> floats;
+    std::unordered_map<std::string, std::vector<std::string>> strings;
+    std::vector<std::string> tag_order;
 };
 
 

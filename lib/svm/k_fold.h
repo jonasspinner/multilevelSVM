@@ -12,41 +12,46 @@
 #include "svm/svm_definitions.h"
 
 
-class k_fold
-{
+class k_fold {
 public:
-        explicit k_fold(const PartitionConfig& conf);
-        virtual ~k_fold() = default;
+    explicit k_fold(const PartitionConfig &conf);
 
-        bool next(double & io_time);
+    virtual ~k_fold() = default;
 
-        graph_access* getMinGraph();
-        graph_access* getMajGraph();
-        svm_data* getMinValData();
-        svm_data* getMajValData();
-        svm_data* getMinTestData();
-        svm_data* getMajTestData();
+    bool next(double &io_time);
 
-	[[nodiscard]] int getIteration() const;
+    graph_access *getMinGraph();
+
+    graph_access *getMajGraph();
+
+    svm_data *getMinValData();
+
+    svm_data *getMajValData();
+
+    svm_data *getMinTestData();
+
+    svm_data *getMajTestData();
+
+    [[nodiscard]] int getIteration() const;
 
 protected:
-        /// do kfold stuff in here
-        virtual void next_intern(double & io_time) = 0;
+    /// do kfold stuff in here
+    virtual void next_intern(double &io_time) = 0;
 
-        int iterations;
-        int cur_iteration;
-	float validation_percent;
-	bool validation_seperate;
+    int iterations;
+    int cur_iteration;
+    float validation_percent;
+    bool validation_seperate;
 
-        graph_access cur_min_graph;
-        graph_access cur_maj_graph;
+    graph_access cur_min_graph;
+    graph_access cur_maj_graph;
 
-        svm_data cur_min_train;
-        svm_data cur_maj_train;
-        svm_data cur_min_val;
-        svm_data cur_maj_val;
-        svm_data cur_min_test;
-        svm_data cur_maj_test;
+    svm_data cur_min_train;
+    svm_data cur_maj_train;
+    svm_data cur_min_val;
+    svm_data cur_maj_val;
+    svm_data cur_min_test;
+    svm_data cur_maj_test;
 };
 
 #endif /* KFOLD_H */

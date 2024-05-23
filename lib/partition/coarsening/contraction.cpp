@@ -26,129 +26,130 @@
 #include "tools/timer.h"
 
 // for documentation see technical reports of christian schulz
-void contraction::contract(const PartitionConfig & partition_config,
-                           graph_access & G,
-                           graph_access & coarser,
-                           const Matching & edge_matching,
-                           const CoarseMapping & coarse_mapping,
-                           const NodeID & no_of_coarse_vertices,
-                           const NodePermutationMap & permutation) const {
+void contraction::contract(const PartitionConfig &partition_config,
+                           graph_access &G,
+                           graph_access &coarser,
+                           const Matching &edge_matching,
+                           const CoarseMapping &coarse_mapping,
+                           const NodeID &no_of_coarse_vertices,
+                           const NodePermutationMap &permutation) const {
 
-        if(partition_config.matching_type == LP_CLUSTERING
-           || partition_config.matching_type == SIMPLE_CLUSTERING
-           || partition_config.matching_type == LOW_DIAMETER) {
-                return contract_clustering(partition_config, G, coarser, edge_matching, coarse_mapping, no_of_coarse_vertices, permutation);
-        }
+    if (partition_config.matching_type == LP_CLUSTERING
+        || partition_config.matching_type == SIMPLE_CLUSTERING
+        || partition_config.matching_type == LOW_DIAMETER) {
+        return contract_clustering(partition_config, G, coarser, edge_matching, coarse_mapping, no_of_coarse_vertices,
+                                   permutation);
+    }
 
-        if(partition_config.combine) {
-                coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
-        }
+    if (partition_config.combine) {
+        coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
+    }
 
-        std::vector<NodeID> new_edge_targets(G.number_of_edges());
-        forall_edges(G, e) {
+    std::vector<NodeID> new_edge_targets(G.number_of_edges());
+    forall_edges(G, e){
                 new_edge_targets[e] = coarse_mapping[G.getEdgeTarget(e)];
-        } endfor
+            }endfor
 
-        std::vector<EdgeID> edge_positions(no_of_coarse_vertices, UNDEFINED_EDGE);
+    std::vector<EdgeID> edge_positions(no_of_coarse_vertices, UNDEFINED_EDGE);
 
-        //we dont know the number of edges jet, so we use the old number for
-        //construction of the coarser graph and then resize the field according
-        //to the number of edges we really got
-        coarser.start_construction(no_of_coarse_vertices, G.number_of_edges());
+    //we dont know the number of edges jet, so we use the old number for
+    //construction of the coarser graph and then resize the field according
+    //to the number of edges we really got
+    coarser.start_construction(no_of_coarse_vertices, G.number_of_edges());
 
-        NodeID cur_no_vertices = 0;
+    NodeID cur_no_vertices = 0;
 
-        forall_nodes(G, n) {
+    forall_nodes(G, n){
                 NodeID node = permutation[n];
                 //we look only at the coarser nodes
-                if(coarse_mapping[node] != cur_no_vertices)
-                        continue;
+                if (coarse_mapping[node] != cur_no_vertices)
+                    continue;
 
                 NodeID coarseNode = coarser.new_node();
                 coarser.setNodeWeight(coarseNode, G.getNodeWeight(node));
                 coarser.setFeatureVec(coarseNode, G.getFeatureVec(node));
 
-                if(partition_config.combine) {
-                        coarser.setSecondPartitionIndex(coarseNode, G.getSecondPartitionIndex(node));
+                if (partition_config.combine) {
+                    coarser.setSecondPartitionIndex(coarseNode, G.getSecondPartitionIndex(node));
                 }
 
                 // do something with all outgoing edges (in auxillary graph)
-                forall_out_edges(G, e, node) {
-                        visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
-                } endfor
+                forall_out_edges(G, e, node){
+                            visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
+                        }endfor
 
                 //this node was really matched
                 NodeID matched_neighbor = edge_matching[node];
-                if(node != matched_neighbor) {
-                        NodeWeight node_weight = G.getNodeWeight(node);
-                        NodeWeight neighbor_weight = G.getNodeWeight(matched_neighbor);
+                if (node != matched_neighbor) {
+                    NodeWeight node_weight = G.getNodeWeight(node);
+                    NodeWeight neighbor_weight = G.getNodeWeight(matched_neighbor);
 
-                        //update weight of coarser node
-                        NodeWeight new_coarse_weight = node_weight + neighbor_weight;
-                        coarser.setNodeWeight(coarseNode, new_coarse_weight);
+                    //update weight of coarser node
+                    NodeWeight new_coarse_weight = node_weight + neighbor_weight;
+                    coarser.setNodeWeight(coarseNode, new_coarse_weight);
 
-                        //update feature vector weighted
-                        FeatureVec v1 = G.getFeatureVec(node);
-                        FeatureVec v2 = G.getFeatureVec(matched_neighbor);
+                    //update feature vector weighted
+                    FeatureVec v1 = G.getFeatureVec(node);
+                    FeatureVec v2 = G.getFeatureVec(matched_neighbor);
 
-                        FeatureVec new_feature_vec = combineFeatureVec(v1, node_weight, v2, neighbor_weight);
+                    FeatureVec new_feature_vec = combineFeatureVec(v1, node_weight, v2, neighbor_weight);
 
-                        coarser.setFeatureVec(coarseNode, new_feature_vec);
+                    coarser.setFeatureVec(coarseNode, new_feature_vec);
 
-                        forall_out_edges(G, e, matched_neighbor) {
+                    forall_out_edges(G, e, matched_neighbor){
                                 visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
-                        } endfor
+                            }endfor
                 }
-                forall_out_edges(coarser, e, coarseNode) {
-                       edge_positions[coarser.getEdgeTarget(e)] = UNDEFINED_EDGE;
-                } endfor
+                forall_out_edges(coarser, e, coarseNode){
+                            edge_positions[coarser.getEdgeTarget(e)] = UNDEFINED_EDGE;
+                        }endfor
 
                 cur_no_vertices++;
-        } endfor
+            }endfor
 
-        ASSERT_RANGE_EQ(edge_positions, 0, edge_positions.size(), UNDEFINED_EDGE);
-        ASSERT_EQ(no_of_coarse_vertices, cur_no_vertices);
+    ASSERT_RANGE_EQ(edge_positions, 0, edge_positions.size(), UNDEFINED_EDGE);
+    ASSERT_EQ(no_of_coarse_vertices, cur_no_vertices);
 
-        //this also resizes the edge fields ...
-        coarser.finish_construction();
+    //this also resizes the edge fields ...
+    coarser.finish_construction();
 }
 
-void contraction::contract_clustering(const PartitionConfig & partition_config,
-                              graph_access & G,
-                              graph_access & coarser,
-                              const Matching & _edge_matching,
-                              const CoarseMapping & coarse_mapping,
-                              const NodeID & no_of_coarse_vertices,
-                              const NodePermutationMap & _permutation) const {
+void contraction::contract_clustering(const PartitionConfig &partition_config,
+                                      graph_access &G,
+                                      graph_access &coarser,
+                                      const Matching &_edge_matching,
+                                      const CoarseMapping &coarse_mapping,
+                                      const NodeID &no_of_coarse_vertices,
+                                      const NodePermutationMap &_permutation) const {
 
-        if(partition_config.combine) {
-                coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
-        }
+    if (partition_config.combine) {
+        coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
+    }
 
-        //save partition map -- important if the graph is allready partitioned
-        std::vector< int > partition_map(G.number_of_nodes());
-        int k = G.get_partition_count();
-        forall_nodes(G, node) {
+    //save partition map -- important if the graph is allready partitioned
+    std::vector<int> partition_map(G.number_of_nodes());
+    int k = G.get_partition_count();
+    forall_nodes(G, node){
                 partition_map[node] = G.getPartitionIndex(node);
                 G.setPartitionIndex(node, coarse_mapping[node]);
-        } endfor
+            }endfor
 
-        G.set_partition_count(no_of_coarse_vertices);
+    G.set_partition_count(no_of_coarse_vertices);
 
-        complete_boundary bnd(&G);
-        bnd.build();
-        bnd.getUnderlyingQuotientGraph(coarser);
+    complete_boundary bnd(&G);
+    bnd.build();
+    bnd.getUnderlyingQuotientGraph(coarser);
 
-        G.set_partition_count(k);
+    G.set_partition_count(k);
 
-        // variables for calculating the feature vec of the coarse nodes
-        std::vector<NodeWeight> block_size(no_of_coarse_vertices);
-        int num_features = G.getFeatureVec(0).size();
-        std::vector<FeatureVec> combined_feature_vecs(no_of_coarse_vertices, FeatureVec(num_features, 0));
+    // variables for calculating the feature vec of the coarse nodes
+    std::vector<NodeWeight> block_size(no_of_coarse_vertices);
+    int num_features = G.getFeatureVec(0).size();
+    std::vector<FeatureVec> combined_feature_vecs(no_of_coarse_vertices, FeatureVec(num_features, 0));
 
-        forall_nodes(G, node) {
+    forall_nodes(G, node){
                 NodeID coarsed_node = coarse_mapping[node];
-		// line commented out to keep the cluster index of the clustering in the partition index
+                // line commented out to keep the cluster index of the clustering in the partition index
                 // G.setPartitionIndex(node, partition_map[node]);
                 coarser.setPartitionIndex(coarsed_node, G.getPartitionIndex(node));
 
@@ -157,68 +158,69 @@ void contraction::contract_clustering(const PartitionConfig & partition_config,
                                  G.getNodeWeight(node));
                 block_size[coarsed_node] += G.getNodeWeight(node);
 
-                if(partition_config.combine) {
-                        coarser.setSecondPartitionIndex(coarse_mapping[node], G.getSecondPartitionIndex(node));
+                if (partition_config.combine) {
+                    coarser.setSecondPartitionIndex(coarse_mapping[node], G.getSecondPartitionIndex(node));
                 }
 
-        } endfor
+            }endfor
 
-        forall_nodes(coarser, node) {
+    forall_nodes(coarser, node){
                 divideVec(combined_feature_vecs[node], block_size[node]);
                 coarser.setFeatureVec(node, combined_feature_vecs[node]);
-        endfor }
+        endfor}
 
-	timer t;
+    timer t;
 
-	//calculate edge weights based on the distance of the feature vec
-	forall_nodes(coarser, node) {
-		forall_out_edges(coarser, e, node) {
-			NodeID target = coarser.getEdgeTarget(e);
-			EdgeWeight newWeight = 1 / calcFeatureDist(coarser.getFeatureVec(node), coarser.getFeatureVec(target));
-			coarser.setEdgeWeight(e, newWeight);
-		endfor }
-	endfor }
+    //calculate edge weights based on the distance of the feature vec
+    forall_nodes(coarser, node){
+                forall_out_edges(coarser, e, node){
+                            NodeID target = coarser.getEdgeTarget(e);
+                            EdgeWeight newWeight =
+                                    1 / calcFeatureDist(coarser.getFeatureVec(node), coarser.getFeatureVec(target));
+                            coarser.setEdgeWeight(e, newWeight);
+                    endfor}
+        endfor}
 
-	std::cout << "calc new weights took " << t.elapsed() << std::endl;
+    std::cout << "calc new weights took " << t.elapsed() << std::endl;
 }
 
-FeatureVec contraction::combineFeatureVec(const FeatureVec & vec1, NodeWeight weight1,
-                                          const FeatureVec & vec2, NodeWeight weight2) {
-        size_t features = vec1.size();
-        FeatureVec combined_features(features);
+FeatureVec contraction::combineFeatureVec(const FeatureVec &vec1, NodeWeight weight1,
+                                          const FeatureVec &vec2, NodeWeight weight2) {
+    size_t features = vec1.size();
+    FeatureVec combined_features(features);
 
-        for (size_t i = 0; i < features; ++i) {
-                combined_features[i] = (weight1 * vec1[i] + weight2 * vec2[i])
-                        / ((float)(weight1 + weight2));
-        }
+    for (size_t i = 0; i < features; ++i) {
+        combined_features[i] = (weight1 * vec1[i] + weight2 * vec2[i])
+                               / ((float) (weight1 + weight2));
+    }
 
-        return combined_features;
+    return combined_features;
 }
 
-void contraction::divideVec(FeatureVec & vec, NodeWeight weights) {
-        size_t features = vec.size();
+void contraction::divideVec(FeatureVec &vec, NodeWeight weights) {
+    size_t features = vec.size();
 
-        for (size_t i = 0; i < features; ++i) {
-                vec[i] /= (float) weights;
-        }
+    for (size_t i = 0; i < features; ++i) {
+        vec[i] /= (float) weights;
+    }
 }
 
-void contraction::addWeightedToVec(FeatureVec & vec, const FeatureVec & vecToAdd, NodeWeight weight) const {
-        size_t features = vec.size();
+void contraction::addWeightedToVec(FeatureVec &vec, const FeatureVec &vecToAdd, NodeWeight weight) const {
+    size_t features = vec.size();
 
-        for (size_t i = 0; i < features; ++i) {
-                vec[i] += vecToAdd[i] * weight;
-        }
+    for (size_t i = 0; i < features; ++i) {
+        vec[i] += vecToAdd[i] * weight;
+    }
 }
 
-EdgeWeight contraction::calcFeatureDist(const FeatureVec & vec1,  const FeatureVec & vec2) const {
-        size_t features = vec1.size();
-	EdgeWeight dist = 0;
+EdgeWeight contraction::calcFeatureDist(const FeatureVec &vec1, const FeatureVec &vec2) const {
+    size_t features = vec1.size();
+    EdgeWeight dist = 0;
 
-        for (size_t i = 0; i < features; ++i) {
-		EdgeWeight tmp = vec1[i] - vec2[i];
-                dist += tmp * tmp;
-        }
+    for (size_t i = 0; i < features; ++i) {
+        EdgeWeight tmp = vec1[i] - vec2[i];
+        dist += tmp * tmp;
+    }
 
-	return std::sqrt(dist);
+    return std::sqrt(dist);
 }

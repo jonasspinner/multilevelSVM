@@ -7,91 +7,94 @@
 #include "tools/timer.h"
 
 
-k_fold_import::k_fold_import(const PartitionConfig & config, int num_exp, const std::string & basename)
+k_fold_import::k_fold_import(const PartitionConfig &config, int num_exp, const std::string &basename)
         : k_fold(config) {
-        this->num_exp = num_exp;
-        this->basename = basename;
-        this->num_nn = config.num_nn;
-        this->bidirectional = config.bidirectional;
-	this->sample_percent  = config.sample_percent;
+    this->num_exp = num_exp;
+    this->basename = basename;
+    this->num_nn = config.num_nn;
+    this->bidirectional = config.bidirectional;
+    this->sample_percent = config.sample_percent;
 }
 
-void k_fold_import::next_intern(double & io_time) {
-        this->cur_min_train.clear();
-        this->cur_maj_train.clear();
-        this->cur_min_val.clear();
-        this->cur_maj_val.clear();
-        this->cur_min_test.clear();
-        this->cur_maj_test.clear();
+void k_fold_import::next_intern(double &io_time) {
+    this->cur_min_train.clear();
+    this->cur_maj_train.clear();
+    this->cur_min_val.clear();
+    this->cur_maj_val.clear();
+    this->cur_min_test.clear();
+    this->cur_maj_test.clear();
 
-        // TODO don't build the path with hard coded strings, use a path template as argument
-        std::string min_train_name = this->basename + "kfold_p_train_data_exp_" + std::to_string(this->num_exp) + "_fold_" + std::to_string(k_fold::cur_iteration) + "_exp_0.1_data";
-        std::string maj_train_name = this->basename + "kfold_n_train_data_exp_" + std::to_string(this->num_exp) + "_fold_" + std::to_string(k_fold::cur_iteration) + "_exp_0.1_data";
-        std::string test_name = this->basename + "kfold_test_data_exp_" + std::to_string(this->num_exp) + "_fold_" + std::to_string(k_fold::cur_iteration) + "_exp_0.1_data";
+    // TODO don't build the path with hard coded strings, use a path template as argument
+    std::string min_train_name = this->basename + "kfold_p_train_data_exp_" + std::to_string(this->num_exp) + "_fold_" +
+                                 std::to_string(k_fold::cur_iteration) + "_exp_0.1_data";
+    std::string maj_train_name = this->basename + "kfold_n_train_data_exp_" + std::to_string(this->num_exp) + "_fold_" +
+                                 std::to_string(k_fold::cur_iteration) + "_exp_0.1_data";
+    std::string test_name = this->basename + "kfold_test_data_exp_" + std::to_string(this->num_exp) + "_fold_" +
+                            std::to_string(k_fold::cur_iteration) + "_exp_0.1_data";
 
-	io_time += read_class(min_train_name, this->cur_min_graph, this->cur_min_val);
-	io_time += read_class(maj_train_name, this->cur_maj_graph, this->cur_maj_val);
+    io_time += read_class(min_train_name, this->cur_min_graph, this->cur_min_val);
+    io_time += read_class(maj_train_name, this->cur_maj_graph, this->cur_maj_val);
 
-	//read test
-        std::cout << "reading " << test_name << std::endl;
+    //read test
+    std::cout << "reading " << test_name << std::endl;
 
-        timer t;
-        svm_io::readTestSplit(test_name, this->cur_min_test, this->cur_maj_test);
-        io_time += t.elapsed();
+    timer t;
+    svm_io::readTestSplit(test_name, this->cur_min_test, this->cur_maj_test);
+    io_time += t.elapsed();
 }
 
-double k_fold_import::read_class(const std::string & filename,
-				 graph_access & target_graph,
-				 std::vector<std::vector<svm_node>> & target_val) {
-	double time = 0;
-        timer t;
-        std::cout << "reading " << filename << std::endl;
+double k_fold_import::read_class(const std::string &filename,
+                                 graph_access &target_graph,
+                                 std::vector<std::vector<svm_node>> &target_val) {
+    double time = 0;
+    timer t;
+    std::cout << "reading " << filename << std::endl;
 
 
-        std::vector<FeatureVec> features_full;
-        svm_io::readFeaturesLines(filename, features_full);
-        time += t.elapsed();
+    std::vector<FeatureVec> features_full;
+    svm_io::readFeaturesLines(filename, features_full);
+    time += t.elapsed();
 
-        NodeID val_size = floor(features_full.size() * this->validation_percent);
+    NodeID val_size = floor(features_full.size() * this->validation_percent);
 
-        std::vector<FeatureVec> feature_subset(features_full);
+    std::vector<FeatureVec> feature_subset(features_full);
 
-	if (this->validation_seperate) {
-		feature_subset.erase(feature_subset.end() - val_size,
-				     feature_subset.end());
-	}
+    if (this->validation_seperate) {
+        feature_subset.erase(feature_subset.end() - val_size,
+                             feature_subset.end());
+    }
 
-	// apply sampling
-	if (this->sample_percent < 1) {
-		feature_subset = svm_io::take_sample(feature_subset, this->sample_percent);
-	}
+    // apply sampling
+    if (this->sample_percent < 1) {
+        feature_subset = svm_io::take_sample(feature_subset, this->sample_percent);
+    }
 
-	// build graph
-        std::vector<std::vector<Edge>> edges_subset;
-        svm_flann::run_flann(feature_subset, edges_subset, num_nn);
+    // build graph
+    std::vector<std::vector<Edge>> edges_subset;
+    svm_flann::run_flann(feature_subset, edges_subset, num_nn);
 
-        EdgeID edges = feature_subset.size() * num_nn * 2;
-        if (bidirectional) {
-                edges = graph_io::makeEdgesBidirectional(edges_subset);
+    EdgeID edges = feature_subset.size() * num_nn * 2;
+    if (bidirectional) {
+        edges = graph_io::makeEdgesBidirectional(edges_subset);
+    }
+    graph_io::readGraphFromVec(target_graph, edges_subset, edges * 2);
+    graph_io::readFeatures(target_graph, feature_subset);
+
+    // build validation set
+    std::vector<FeatureVec> val_subset = std::vector<FeatureVec>();
+    val_subset.insert(val_subset.end(),
+                      features_full.end() - val_size,
+                      features_full.end());
+
+    target_val.reserve(val_size);
+    for (const FeatureVec &f: val_subset) {
+        // apply sampling
+        if (random_functions::next() > this->sample_percent) {
+            continue;
         }
-        graph_io::readGraphFromVec(target_graph, edges_subset, edges * 2);
-        graph_io::readFeatures(target_graph, feature_subset);
+        target_val.push_back(svm_convert::feature_to_node(f));
+    }
 
-	// build validation set
-        std::vector<FeatureVec> val_subset = std::vector<FeatureVec>();
-        val_subset.insert(val_subset.end(),
-			  features_full.end() - val_size,
-			  features_full.end());
-
-        target_val.reserve(val_size);
-        for (const FeatureVec & f : val_subset) {
-		// apply sampling
-                if (random_functions::next() > this->sample_percent) {
-			continue;
-		}
-                target_val.push_back(svm_convert::feature_to_node(f));
-        }
-
-	return time;
+    return time;
 }
 

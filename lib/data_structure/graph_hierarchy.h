@@ -29,29 +29,34 @@
 
 class graph_hierarchy {
 public:
-        graph_hierarchy() = default;
-        virtual ~graph_hierarchy();
+    graph_hierarchy() = default;
 
-        void push_back(graph_access * G, CoarseMapping * coarse_mapping);
+    virtual ~graph_hierarchy();
 
-        graph_access  * pop_finer_and_project();
-        graph_access  * get_coarsest();
-        CoarseMapping * get_mapping_of_current_finer();
+    void push_back(graph_access *G, CoarseMapping *coarse_mapping);
 
-        bool isEmpty();
-        unsigned int size();
+    graph_access *pop_finer_and_project();
+
+    graph_access *get_coarsest();
+
+    CoarseMapping *get_mapping_of_current_finer();
+
+    bool isEmpty();
+
+    unsigned int size();
+
 private:
-        //private functions
-        graph_access * pop_coarsest();
+    //private functions
+    graph_access *pop_coarsest();
 
-        std::stack<graph_access*>   m_the_graph_hierarchy;
-        std::stack<CoarseMapping*>  m_the_mappings;
-        std::vector<CoarseMapping*> m_to_delete_mappings;
-        std::vector<graph_access*>  m_to_delete_hierachies;
-        graph_access  * m_current_coarser_graph{nullptr};
-        graph_access  * m_coarsest_graph{nullptr};
-        graph_access  * m_finest_graph{nullptr};
-        CoarseMapping * m_current_coarse_mapping{nullptr};
+    std::stack<graph_access *> m_the_graph_hierarchy;
+    std::stack<CoarseMapping *> m_the_mappings;
+    std::vector<CoarseMapping *> m_to_delete_mappings;
+    std::vector<graph_access *> m_to_delete_hierachies;
+    graph_access *m_current_coarser_graph{nullptr};
+    graph_access *m_coarsest_graph{nullptr};
+    graph_access *m_finest_graph{nullptr};
+    CoarseMapping *m_current_coarse_mapping{nullptr};
 };
 
 

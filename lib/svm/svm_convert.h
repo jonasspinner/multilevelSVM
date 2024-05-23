@@ -9,13 +9,13 @@
 
 class svm_convert {
 public:
-        static constexpr FeatureData EPS = 0.000001f;
+    static constexpr FeatureData EPS = 0.000001f;
 
-        static svm_feature feature_to_node(const FeatureVec & vec);
+    static svm_feature feature_to_node(const FeatureVec &vec);
 
-        static svm_data graph_to_nodes(const graph_access & G);
+    static svm_data graph_to_nodes(const graph_access &G);
 
-        static DataSet::node2d svmdata_to_dataset(const svm_data & data);
+    static DataSet::node2d svmdata_to_dataset(const svm_data &data);
 };
 
 #endif /* SVM_CONVERT_H */

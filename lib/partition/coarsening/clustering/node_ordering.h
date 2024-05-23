@@ -33,33 +33,33 @@
 
 class node_ordering {
 public:
-        static void order_nodes(const PartitionConfig & config, graph_access & G, std::vector< NodeID > & ordered_nodes) {
-                forall_nodes(G, node) {
-                        ordered_nodes[node] = node;
-                } endfor
+    static void order_nodes(const PartitionConfig &config, graph_access &G, std::vector<NodeID> &ordered_nodes) {
+        forall_nodes(G, node){
+                    ordered_nodes[node] = node;
+                }endfor
 
-                switch( config.node_ordering ) {
-                        case RANDOM_NODEORDERING:
-                                order_nodes_random(ordered_nodes);
-                             break;
-                        case DEGREE_NODEORDERING:
-                                order_nodes_degree(G, ordered_nodes);
-                             break;
-                 }
+        switch (config.node_ordering) {
+            case RANDOM_NODEORDERING:
+                order_nodes_random(ordered_nodes);
+                break;
+            case DEGREE_NODEORDERING:
+                order_nodes_degree(G, ordered_nodes);
+                break;
         }
+    }
 
-        static void order_nodes_random(std::vector< NodeID > & ordered_nodes) {
-                random_functions::permutate_vector_fast(ordered_nodes, false);
-        }
+    static void order_nodes_random(std::vector<NodeID> &ordered_nodes) {
+        random_functions::permutate_vector_fast(ordered_nodes, false);
+    }
 
-        static void order_nodes_degree(graph_access & G, std::vector< NodeID > & ordered_nodes) {
-                std::sort( ordered_nodes.begin(), ordered_nodes.end(), 
-                           [&]( const NodeID & lhs, const NodeID & rhs) -> bool {
-                                return (G.getNodeDegree(lhs) < G.getNodeDegree(rhs));
-                           });
-        }
+    static void order_nodes_degree(graph_access &G, std::vector<NodeID> &ordered_nodes) {
+        std::sort(ordered_nodes.begin(), ordered_nodes.end(),
+                  [&](const NodeID &lhs, const NodeID &rhs) -> bool {
+                      return (G.getNodeDegree(lhs) < G.getNodeDegree(rhs));
+                  });
+    }
 
- };
+};
 
 
 #endif /* end of include guard: NODE_ORDERING_HM1YMLB1 */

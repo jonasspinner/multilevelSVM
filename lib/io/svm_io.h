@@ -11,29 +11,29 @@
 
 class svm_io {
 public:
-        static void readFeaturesLines(const std::string & filename, std::vector<FeatureVec> & data);
+    static void readFeaturesLines(const std::string &filename, std::vector<FeatureVec> &data);
 
-        static void readTestSplit(const std::string & filename, std::vector<svm_feature> & min_test_data,
-                                  std::vector<svm_feature> & maj_test_data);
+    static void readTestSplit(const std::string &filename, std::vector<svm_feature> &min_test_data,
+                              std::vector<svm_feature> &maj_test_data);
 
-        template<typename T>
-        static std::vector<T> take_sample(const std::vector<T> & data, float percentage);
+    template<typename T>
+    static std::vector<T> take_sample(const std::vector<T> &data, float percentage);
 };
 
 template<typename T>
-std::vector<T> svm_io::take_sample(const std::vector<T> & data, float percentage) {
-        std::vector<T> sample;
-        sample.reserve(data.size() * percentage);
+std::vector<T> svm_io::take_sample(const std::vector<T> &data, float percentage) {
+    std::vector<T> sample;
+    sample.reserve(data.size() * percentage);
 
-        for (const auto& entry : data) {
-                if (random_functions::next() > percentage) {
-                        continue;
-                }
-
-                sample.push_back(entry);
+    for (const auto &entry: data) {
+        if (random_functions::next() > percentage) {
+            continue;
         }
 
-        return sample;
+        sample.push_back(entry);
+    }
+
+    return sample;
 }
 
 #endif /* SVMIO_H_ */

@@ -32,63 +32,66 @@
 #include "edge_rating/edge_ratings.h"
 #include "stop_rules/stop_rules.h"
 
-void coarsening::perform_coarsening(const PartitionConfig & partition_config, graph_access & G, graph_hierarchy & hierarchy) {
+void
+coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_access &G, graph_hierarchy &hierarchy) {
 
-        NodeID no_of_coarser_vertices = G.number_of_nodes();
-        NodeID no_of_finer_vertices   = std::numeric_limits<NodeID>::max();
+    NodeID no_of_coarser_vertices = G.number_of_nodes();
+    NodeID no_of_finer_vertices = std::numeric_limits<NodeID>::max();
 
-        edge_ratings rating(partition_config);
-        CoarseMapping* coarse_mapping = nullptr;
+    edge_ratings rating(partition_config);
+    CoarseMapping *coarse_mapping = nullptr;
 
-        graph_access* finer                      = &G;
-        matching* edge_matcher                   = nullptr;
-        std::unique_ptr<contraction> contracter                  = std::make_unique<contraction>();
-        PartitionConfig copy_of_partition_config = partition_config;
+    graph_access *finer = &G;
+    matching *edge_matcher = nullptr;
+    std::unique_ptr<contraction> contracter = std::make_unique<contraction>();
+    PartitionConfig copy_of_partition_config = partition_config;
 
-        std::unique_ptr<stop_rule> coarsening_stop_rule;
+    std::unique_ptr<stop_rule> coarsening_stop_rule;
 
-        switch (partition_config.stop_rule) {
+    switch (partition_config.stop_rule) {
         case STOP_RULE_SIMPLE_FIXED:
-                coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config, G.number_of_nodes());
-                break;
+            coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config,
+                                                                            G.number_of_nodes());
+            break;
         default:
-                coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config, G.number_of_nodes());
-        }
+            coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config,
+                                                                            G.number_of_nodes());
+    }
 
-        coarsening_configurator coarsening_config;
+    coarsening_configurator coarsening_config;
 
-        unsigned int level    = 0;
+    unsigned int level = 0;
 
-        while (coarsening_stop_rule->stop(no_of_finer_vertices, no_of_coarser_vertices)) {
-                auto* coarser = new graph_access();
-                coarse_mapping        = new CoarseMapping();
-                Matching edge_matching;
-                NodePermutationMap permutation;
-                no_of_finer_vertices = no_of_coarser_vertices;
+    while (coarsening_stop_rule->stop(no_of_finer_vertices, no_of_coarser_vertices)) {
+        auto *coarser = new graph_access();
+        coarse_mapping = new CoarseMapping();
+        Matching edge_matching;
+        NodePermutationMap permutation;
+        no_of_finer_vertices = no_of_coarser_vertices;
 
-                coarsening_config.configure_coarsening(copy_of_partition_config,
-						       &edge_matcher, level);
-                rating.rate(*finer, level);
+        coarsening_config.configure_coarsening(copy_of_partition_config,
+                                               &edge_matcher, level);
+        rating.rate(*finer, level);
 
-                edge_matcher->match(copy_of_partition_config, *finer,
-				    edge_matching, *coarse_mapping,
-				    no_of_coarser_vertices, permutation);
+        edge_matcher->match(copy_of_partition_config, *finer,
+                            edge_matching, *coarse_mapping,
+                            no_of_coarser_vertices, permutation);
 
-                delete edge_matcher;
+        delete edge_matcher;
 
-                contracter->contract(copy_of_partition_config, *finer, *coarser,
-				     edge_matching, *coarse_mapping,
-				     no_of_coarser_vertices, permutation);
+        contracter->contract(copy_of_partition_config, *finer, *coarser,
+                             edge_matching, *coarse_mapping,
+                             no_of_coarser_vertices, permutation);
 
-                hierarchy.push_back(finer, coarse_mapping);
+        hierarchy.push_back(finer, coarse_mapping);
 
-                std::cout <<  "no of coarser vertices " << no_of_coarser_vertices
-                          <<  " and no of edges " <<  coarser->number_of_edges() << std::endl;
+        std::cout << "no of coarser vertices " << no_of_coarser_vertices
+                  << " and no of edges " << coarser->number_of_edges() << std::endl;
 
-                finer = coarser;
+        finer = coarser;
 
-                level++;
-        }
+        level++;
+    }
 
-        hierarchy.push_back(finer, nullptr); // append the last created level
+    hierarchy.push_back(finer, nullptr); // append the last created level
 }

@@ -8,23 +8,24 @@
 #include "svm_instance.h"
 
 template<class T>
-class svm_result
-{
+class svm_result {
 public:
-        explicit svm_result(svm_instance  instance);
-        svm_result(const std::vector<svm_summary<T>> & summaries, svm_instance  instance);
+    explicit svm_result(svm_instance instance);
 
-        svm_summary<T> best();
+    svm_result(const std::vector<svm_summary<T>> &summaries, svm_instance instance);
 
-        void sort_summaries();
+    svm_summary<T> best();
 
-        void add(const std::vector<svm_summary<T>> & to_add);
-        void add(const svm_result<T> & result);
+    void sort_summaries();
 
-        std::vector<svm_summary<T>> summaries;
-        svm_instance instance;
+    void add(const std::vector<svm_summary<T>> &to_add);
 
-        static size_t get_best_index(const std::vector<std::pair<svm_summary<T>,svm_instance>> &vec);
+    void add(const svm_result<T> &result);
+
+    std::vector<svm_summary<T>> summaries;
+    svm_instance instance;
+
+    static size_t get_best_index(const std::vector<std::pair<svm_summary<T>, svm_instance>> &vec);
 };
 
 

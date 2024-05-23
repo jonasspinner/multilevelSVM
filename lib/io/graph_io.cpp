@@ -25,111 +25,111 @@
 #include "graph_io.h"
 
 
-int graph_io::writeGraphGDF(const graph_access & G_min, const graph_access & G_maj, const std::string& filename) {
-        std::ofstream f(filename.c_str());
+int graph_io::writeGraphGDF(const graph_access &G_min, const graph_access &G_maj, const std::string &filename) {
+    std::ofstream f(filename.c_str());
 
-        size_t min_nodes = G_min.number_of_nodes();
+    size_t min_nodes = G_min.number_of_nodes();
 
-	f << "nodedef>name VARCHAR,class VARCHAR,partition VARCHAR, weight DOUBLE";
-	for (size_t i = 0; i < G_min.getFeatureVec(0).size(); ++i) {
-		f << ",feature" << i << " DOUBLE";
-	}
-	f << std::endl;
+    f << "nodedef>name VARCHAR,class VARCHAR,partition VARCHAR, weight DOUBLE";
+    for (size_t i = 0; i < G_min.getFeatureVec(0).size(); ++i) {
+        f << ",feature" << i << " DOUBLE";
+    }
+    f << std::endl;
 
-	// NODES
-	forall_nodes(G_min, node) {
-		f <<  node << ",-1," << G_min.getPartitionIndex(node) << "," << G_min.getNodeWeight(node);
-		for (auto &feature : G_min.getFeatureVec(node)) {
-			f << "," << feature;
-		}
-		f << std::endl;
-	} endfor
+    // NODES
+    forall_nodes(G_min, node){
+                f << node << ",-1," << G_min.getPartitionIndex(node) << "," << G_min.getNodeWeight(node);
+                for (auto &feature: G_min.getFeatureVec(node)) {
+                    f << "," << feature;
+                }
+                f << std::endl;
+            }endfor
 
-	forall_nodes(G_maj, node) {
-		f <<  node + min_nodes << ",1," << G_maj.getPartitionIndex(node) << "," << G_maj.getNodeWeight(node);
-		for (auto &feature : G_maj.getFeatureVec(node)) {
-			f << "," << feature;
-		}
-		f << std::endl;
-	} endfor
+    forall_nodes(G_maj, node){
+                f << node + min_nodes << ",1," << G_maj.getPartitionIndex(node) << "," << G_maj.getNodeWeight(node);
+                for (auto &feature: G_maj.getFeatureVec(node)) {
+                    f << "," << feature;
+                }
+                f << std::endl;
+            }endfor
 
 
-	f << "edgedef>from VARCHAR,to VARCHAR" << std::endl;
+    f << "edgedef>from VARCHAR,to VARCHAR" << std::endl;
 
-	// EDGES
-	forall_nodes(G_min, node) {
-                forall_out_edges(G_min, e, node) {
-                        f << node << "," << G_min.getEdgeTarget(e) << std::endl;
-                } endfor 
-        } endfor
-	forall_nodes(G_maj, node) {
-                forall_out_edges(G_maj, e, node) {
-                        f << node + min_nodes << "," << G_maj.getEdgeTarget(e) + min_nodes << std::endl;
-                } endfor 
-        } endfor
-        f.close();
-        return 0;
+    // EDGES
+    forall_nodes(G_min, node){
+                forall_out_edges(G_min, e, node){
+                            f << node << "," << G_min.getEdgeTarget(e) << std::endl;
+                        }endfor
+            }endfor
+    forall_nodes(G_maj, node){
+                forall_out_edges(G_maj, e, node){
+                            f << node + min_nodes << "," << G_maj.getEdgeTarget(e) + min_nodes << std::endl;
+                        }endfor
+            }endfor
+    f.close();
+    return 0;
 }
 
-int graph_io::readFeatures(graph_access & G, const std::vector<FeatureVec> & data) {
-        forall_nodes(G, node) {
+int graph_io::readFeatures(graph_access &G, const std::vector<FeatureVec> &data) {
+    forall_nodes(G, node){
                 G.setFeatureVec(node, data[node]);
-        } endfor
-        return 0;
+            }endfor
+    return 0;
 }
 
-int graph_io::readGraphFromVec(graph_access & G, const std::vector<std::vector<Edge>> & data, EdgeID num_edges) {
-        G.start_construction(data.size(), num_edges);
+int graph_io::readGraphFromVec(graph_access &G, const std::vector<std::vector<Edge>> &data, EdgeID num_edges) {
+    G.start_construction(data.size(), num_edges);
 
-        for (auto& nodeData : data) {
-                NodeID node = G.new_node();
-                G.setPartitionIndex(node, 0);
-                G.setNodeWeight(node, 1);
+    for (auto &nodeData: data) {
+        NodeID node = G.new_node();
+        G.setPartitionIndex(node, 0);
+        G.setNodeWeight(node, 1);
 
-                for (auto & edge : nodeData) {
-                        EdgeID e = G.new_edge(node, edge.target);
-                        G.setEdgeWeight(e, edge.weight);
-                }
+        for (auto &edge: nodeData) {
+            EdgeID e = G.new_edge(node, edge.target);
+            G.setEdgeWeight(e, edge.weight);
         }
+    }
 
-        G.finish_construction();
-        return 0;
+    G.finish_construction();
+    return 0;
 }
 
-EdgeID graph_io::makeEdgesBidirectional(std::vector<std::vector<Edge>> & data) {
-        size_t pre = 0;
-        size_t post = 0;
+EdgeID graph_io::makeEdgesBidirectional(std::vector<std::vector<Edge>> &data) {
+    size_t pre = 0;
+    size_t post = 0;
 
-        std::vector<std::unordered_set<NodeID>> neighbors(data.size());
+    std::vector<std::unordered_set<NodeID>> neighbors(data.size());
 
-        for (NodeID from = 0; from < data.size(); ++from) {
-                for (EdgeID edge = 0; edge < data[from].size(); ++edge) {
-                        NodeID target = data[from][edge].target;
-                        neighbors[from].insert(target);
-                        pre++;
-                }
+    for (NodeID from = 0; from < data.size(); ++from) {
+        for (EdgeID edge = 0; edge < data[from].size(); ++edge) {
+            NodeID target = data[from][edge].target;
+            neighbors[from].insert(target);
+            pre++;
         }
+    }
 
 
-        for (NodeID from = 0; from < data.size(); ++from) {
-                for (EdgeID edge = 0; edge < data[from].size(); ++edge) {
-                        Edge e = data[from][edge];
-                        if (neighbors[e.target].find(from) == neighbors[e.target].end()) {
-                                Edge back{};
-                                back.target = from;
-                                back.weight = e.weight;
-                                data[e.target].push_back(back);
-                                neighbors[e.target].insert(from);
-                        }
-                }
+    for (NodeID from = 0; from < data.size(); ++from) {
+        for (EdgeID edge = 0; edge < data[from].size(); ++edge) {
+            Edge e = data[from][edge];
+            if (neighbors[e.target].find(from) == neighbors[e.target].end()) {
+                Edge back{};
+                back.target = from;
+                back.weight = e.weight;
+                data[e.target].push_back(back);
+                neighbors[e.target].insert(from);
+            }
         }
+    }
 
-        for (auto& nodeData : data) {
-                for (auto & edge : nodeData) {
-                        post++;
-                }
+    for (auto &nodeData: data) {
+        for (auto &edge: nodeData) {
+            post++;
         }
+    }
 
-        std::cout << "edges pre: " << pre << " post: " << post << std::endl;
-        return post;
+    std::cout << "edges pre: " << pre << " post: " << post << std::endl;
+    return post;
 }

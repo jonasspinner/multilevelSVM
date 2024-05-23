@@ -7,42 +7,42 @@
 #include "partition/partition_config.h"
 
 template<class T>
-class svm_refinement
-{
+class svm_refinement {
 public:
-        svm_refinement(graph_hierarchy & min_hierarchy, graph_hierarchy & maj_hierarchy,
-                       const svm_result<T> & initial_result, const PartitionConfig& conf);
+    svm_refinement(graph_hierarchy &min_hierarchy, graph_hierarchy &maj_hierarchy,
+                   const svm_result<T> &initial_result, const PartitionConfig &conf);
 
-        virtual ~svm_refinement() = default;
+    virtual ~svm_refinement() = default;
 
-        bool is_done();
-        int get_level();
+    bool is_done();
 
-        void uncoarse(const std::vector<NodeID> & sv_min,
-		      const std::vector<NodeID> & svm_maj);
+    int get_level();
 
-	static
-	svm_data uncoarse_SV(graph_access & G,
-			     const CoarseMapping & coarse_mapping,
-			     const std::vector<NodeID> & sv,
-			     std::vector<NodeID> & data_mapping);
+    void uncoarse(const std::vector<NodeID> &sv_min,
+                  const std::vector<NodeID> &svm_maj);
 
-        virtual svm_result<T> step(const svm_data & min_sample, const svm_data & maj_sample) = 0;
+    static
+    svm_data uncoarse_SV(graph_access &G,
+                         const CoarseMapping &coarse_mapping,
+                         const std::vector<NodeID> &sv,
+                         std::vector<NodeID> &data_mapping);
 
-	graph_access * G_min{};
-	graph_access * G_maj{};
-	std::vector<NodeID> data_mapping_min;
-	std::vector<NodeID> data_mapping_maj;
+    virtual svm_result<T> step(const svm_data &min_sample, const svm_data &maj_sample) = 0;
+
+    graph_access *G_min{};
+    graph_access *G_maj{};
+    std::vector<NodeID> data_mapping_min;
+    std::vector<NodeID> data_mapping_maj;
 
 protected:
-        graph_hierarchy * min_hierarchy{};
-        graph_hierarchy * maj_hierarchy{};
-        svm_data uncoarsed_data_min;
-        svm_data uncoarsed_data_maj;
-        svm_result<T> result;
+    graph_hierarchy *min_hierarchy{};
+    graph_hierarchy *maj_hierarchy{};
+    svm_data uncoarsed_data_min;
+    svm_data uncoarsed_data_maj;
+    svm_result<T> result;
 
-        bool training_inherit{};
-        int num_skip_ms{};
+    bool training_inherit{};
+    int num_skip_ms{};
 };
 
 #endif /* REFINEMENT_H */

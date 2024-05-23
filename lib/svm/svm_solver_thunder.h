@@ -6,19 +6,23 @@
 
 #include "svm_solver.h"
 
-class svm_solver_thunder : public svm_solver<SVC>
-{
+class svm_solver_thunder : public svm_solver<SVC> {
 public:
-    	svm_solver_thunder() : svm_solver<SVC>() {};
-        explicit svm_solver_thunder(svm_instance instance) : svm_solver<SVC>(std::move(instance)) {};
+    svm_solver_thunder() : svm_solver<SVC>() {};
 
-        ~svm_solver_thunder() override = default;
+    explicit svm_solver_thunder(svm_instance instance) : svm_solver<SVC>(std::move(instance)) {};
 
-        void train() override;
-        int predict(const std::vector<svm_node> & node) override;
-	std::vector<int> predict_batch(const svm_data & data) override;
-	void export_to_file(const string & path) override;
-	std::pair<std::vector<NodeID>, std::vector<NodeID>> get_SV() override;
+    ~svm_solver_thunder() override = default;
+
+    void train() override;
+
+    int predict(const std::vector<svm_node> &node) override;
+
+    std::vector<int> predict_batch(const svm_data &data) override;
+
+    void export_to_file(const string &path) override;
+
+    std::pair<std::vector<NodeID>, std::vector<NodeID>> get_SV() override;
 };
 
 #endif /* SVM_SOLVER_THUNDER_H */
