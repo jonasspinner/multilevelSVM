@@ -28,7 +28,7 @@ public:
         std::shared_ptr<std::vector<double>> labels;
 
 private:
-        void allocate_prob(NodeID total_size, size_t features);
+        void allocate_prob(NodeID total_size);
         void add_to_problem(const svm_data & data, int label);
         void add_to_problem(const graph_access & G, int label);
 

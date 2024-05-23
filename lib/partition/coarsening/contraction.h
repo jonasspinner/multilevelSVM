@@ -28,8 +28,6 @@
 #include "matching/matching.h"
 #include "partition/partition_config.h"
 
-typedef NodeID Regions;
-
 class contraction {
         public:
                 contraction();

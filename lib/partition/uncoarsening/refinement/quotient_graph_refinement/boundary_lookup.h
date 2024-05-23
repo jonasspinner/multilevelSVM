@@ -46,13 +46,6 @@ struct compare_boundary_pair {
         }
 };
 
-struct compare_boundary_pair_directed {
-        bool operator()(const boundary_pair pair_a, const boundary_pair pair_b) const {
-                bool eq = (pair_a.lhs == pair_b.lhs && pair_a.rhs == pair_b.rhs);
-                return eq;
-        }
-};
-
 struct data_boundary_pair {
         PartialBoundary pb_lhs;
         PartialBoundary pb_rhs;
@@ -68,12 +61,6 @@ struct data_boundary_pair {
                 rhs = std::numeric_limits<PartitionID>::max();
                 initialized = false;
         }
-};
-
-struct hash_boundary_pair_directed{
-       size_t operator()(const boundary_pair pair) const {
-                return pair.lhs*pair.k + pair.rhs;
-       }
 };
 
 struct hash_boundary_pair{

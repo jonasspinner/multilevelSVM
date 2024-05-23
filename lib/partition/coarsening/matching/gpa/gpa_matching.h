@@ -66,12 +66,6 @@ class gpa_matching : public matching{
                                      std::vector<EdgeID> & matched_edges,
                                      std::vector<NodeID> & sources,
                                      Matching & edge_matching);
-
-
-                template <typename VectorOrDeque> 
-                        void dump_unpacked_path( graph_access & G,
-                                                 VectorOrDeque & unpacked_path, 
-                                                 std::vector<NodeID>& sources);
 };
 
 

@@ -377,14 +377,6 @@ void edge_ratings::rate_separator_r7(graph_access & G) {
         } endfor
 }
 
-void edge_ratings::rate_realweight(graph_access & G) {
-        forall_nodes(G,node) {
-                forall_out_edges(G, e, node) {
-                        EdgeRatingType rating =  G.getEdgeWeight(e);
-                        G.setEdgeRating(e, rating);
-                } endfor
-        } endfor
-}
 void edge_ratings::rate_separator_r8(graph_access & G) {
         forall_nodes(G,node) {
                 forall_out_edges(G, e, node) {

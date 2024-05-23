@@ -21,8 +21,6 @@ public:
         void add(const std::vector<svm_summary<T>> & to_add);
         void add(const svm_result<T> & result);
 
-        std::vector<svm_param> all_params();
-
         std::vector<svm_summary<T>> summaries;
         svm_instance instance;
 

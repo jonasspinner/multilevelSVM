@@ -37,9 +37,6 @@ class path_set {
                 //returns the path that v lies on iff v is an endpoint
                 const path& get_path(const NodeID & v) const;
 
-                //returns the number of paths in the set
-                PathID path_count() const;
-
                 // add the edge with given id to the path set if it is applicable
                 // returns true iff the edge was applicable
                 bool add_if_applicable(const NodeID & source, const EdgeID & e); 
@@ -103,10 +100,6 @@ inline const path& path_set::get_path(const NodeID & v) const {
         PathID path_id = m_vertex_to_path[v];
         ASSERT_TRUE(path_id < m_vertex_to_path.size());
         return m_paths[path_id];
-}
-
-inline PathID path_set::path_count() const {
-        return m_no_of_paths;
 }
 
 inline NodeID path_set::next_vertex( const NodeID & v ) const {

@@ -54,9 +54,13 @@ include_directories(extern/flann-1.8.4/include)
 include_directories(lib)
 
 
-add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused
-        -Woverloaded-virtual -Wpedantic -Wsign-conversion -Wmisleading-indentation -Wduplicated-cond
-        -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wuseless-cast -Wdouble-promotion -Wformat=2 -Wno-comment)
+add_compile_options(-Wall -Wextra)
+add_compile_options(-Wunused -Wunused-function)
+add_compile_options(-Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference)
+#add_compile_options(-Wshadow -Wpedantic)
+#add_compile_options(-Wduplicated-cond -Wduplicated-branches -Wlogical-op)
+#add_compile_options( -Wsign-conversion -Wold-style-cast -Wuseless-cast  -Wcast-align)
+#add_compile_options(-Wmisleading-indentation -Wdouble-promotion -Wformat=2 -Wno-comment)
 
 add_compile_definitions(KAFFPAOUTPUT)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native -DNDEBUG -Wno-unused-parameter -funroll-loops")

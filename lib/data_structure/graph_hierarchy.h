@@ -36,7 +36,6 @@ public:
 
         graph_access  * pop_finer_and_project();
         graph_access  * get_coarsest();
-        graph_access  * get_finest();
         CoarseMapping * get_mapping_of_current_finer();
 
         bool isEmpty();

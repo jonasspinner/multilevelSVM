@@ -9,7 +9,7 @@ void svm_instance::read_problem(const svm_data & min_data, const svm_data & maj_
         this->num_maj = maj_data.size();
         this->features = min_data[0].size();
 
-        allocate_prob(min_data.size() + maj_data.size(), min_data[0].size());
+        allocate_prob(min_data.size() + maj_data.size());
 
         add_to_problem(min_data, 1);
         add_to_problem(maj_data, -1);
@@ -20,13 +20,13 @@ void svm_instance::read_problem(const graph_access & G_min, const graph_access &
         this->num_maj = G_maj.number_of_nodes();
         this->features = G_min.getFeatureVec(0).size();
 
-        allocate_prob(G_min.number_of_nodes() + G_maj.number_of_nodes(), G_min.getFeatureVec(0).size());
+        allocate_prob(G_min.number_of_nodes() + G_maj.number_of_nodes());
 
         add_to_problem(G_min, 1);
         add_to_problem(G_maj, -1);
 }
 
-void svm_instance::allocate_prob(NodeID total_size, size_t features) {
+void svm_instance::allocate_prob(NodeID total_size) {
         this->labels = std::make_shared<std::vector<double>>();
         this->nodes = std::make_shared<svm_data>();
         this->nodes_meta = std::make_shared<std::vector<svm_node*>>();

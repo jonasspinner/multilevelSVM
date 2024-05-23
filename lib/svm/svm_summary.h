@@ -56,23 +56,6 @@ struct summary_cmp_better_gmean
 	}
 };
 
-struct summary_cmp_better_gmean_sn
-{
-	template<class T>
-        static bool comp(const svm_summary<T>& a, const svm_summary<T>& b) {
-                float filter_range = 0.02;
-                if( (a.Gmean - b.Gmean) > filter_range )         //a has completely better gmean than b
-                        return true;
-                else{
-                        if( (b.Gmean - a.Gmean) > filter_range )     //b has completely better gmean than a
-                                return false;
-                        else{                                                    //similar gmean
-                                return (a.Sens >  b.Sens );    // a has a better sensitivity
-                        }
-                }
-        }
-};
-
 struct summary_cmp_better_gmean_sv
 {
 	template<class T>

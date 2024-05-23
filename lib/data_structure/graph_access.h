@@ -147,8 +147,6 @@ private:
 #define forall_edges(G,e) { for(EdgeID e = 0, end = G.number_of_edges(); e < end; ++e) {
 #define forall_nodes(G,n) { for(NodeID n = 0, end = G.number_of_nodes(); n < end; ++n) {
 #define forall_out_edges(G,e,n) { for(EdgeID e = G.get_first_edge(n), end = G.get_first_invalid_edge(n); e < end; ++e) {
-#define forall_out_edges_starting_at(G,e,n,e_bar) { for(EdgeID e = e_bar, end = G.get_first_invalid_edge(n); e < end; ++e) {
-#define forall_blocks(G,p) { for (PartitionID p = 0, end = G.get_partition_count(); p < end; p++) {
 #define endfor }}
 
 
@@ -180,9 +178,6 @@ class graph_access {
                 PartitionID get_partition_count() const;
                 void set_partition_count(PartitionID count);
 
-                PartitionID getSeparatorBlock() const;
-                void setSeparatorBlock(PartitionID id);
-
                 PartitionID getPartitionIndex(NodeID node) const;
                 void setPartitionIndex(NodeID node, PartitionID id);
 
@@ -200,7 +195,6 @@ class graph_access {
 
                 EdgeWeight getNodeDegree(NodeID node) const;
                 EdgeWeight getWeightedNodeDegree(NodeID node) const;
-                EdgeWeight getMaxDegree();
 
                 EdgeWeight getEdgeWeight(EdgeID edge) const;
                 void setEdgeWeight(EdgeID edge, EdgeWeight weight);
@@ -209,18 +203,6 @@ class graph_access {
 
                 EdgeRatingType getEdgeRating(EdgeID edge) const;
                 void setEdgeRating(EdgeID edge, EdgeRatingType rating);
-
-                int* UNSAFE_metis_style_xadj_array();
-                int* UNSAFE_metis_style_adjncy_array();
-
-                int* UNSAFE_metis_style_vwgt_array();
-                int* UNSAFE_metis_style_adjwgt_array();
-
-                int build_from_metis(int n, int* xadj, int* adjncy);
-                int build_from_metis_weighted(int n, int* xadj, int* adjncy, int * vwgt, int* adjwgt);
-
-                //void set_node_queue_index(NodeID node, Count queue_index);
-                //Count get_node_queue_index(NodeID node);
 
                 void copy(graph_access & Gcopy);
         private:
@@ -292,15 +274,6 @@ inline void graph_access::setSecondPartitionIndex(NodeID node, PartitionID id) {
 #else
         m_second_partition_index.at(node) = id;
 #endif
-}
-
-
-inline PartitionID graph_access::getSeparatorBlock() const {
-        return m_separator_block_ID;
-}
-
-inline void graph_access::setSeparatorBlock(PartitionID id) {
-        m_separator_block_ID = id;
 }
 
 inline PartitionID graph_access::getPartitionIndex(NodeID node) const {
@@ -404,110 +377,8 @@ inline EdgeWeight graph_access::getWeightedNodeDegree(NodeID node) const {
         return degree;
 }
 
-inline EdgeWeight graph_access::getMaxDegree() {
-        if(!m_max_degree_computed) {
-                //compute it
-                basicGraph& ref = *graphref;
-                forall_nodes(ref, node) {
-                        EdgeWeight cur_degree = 0;
-                        forall_out_edges(ref, e, node) {
-                                cur_degree += getEdgeWeight(e);
-                        } endfor
-                        if(cur_degree > m_max_degree) {
-                                m_max_degree = cur_degree;
-                        }
-                } endfor
-                m_max_degree_computed = true;
-        }
-
-        return m_max_degree;
-}
-
-inline int* graph_access::UNSAFE_metis_style_xadj_array() {
-        int * xadj      = new int[graphref->number_of_nodes()+1];
-        basicGraph& ref = *graphref;
-
-        forall_nodes(ref, n) {
-                xadj[n] = graphref->m_nodes[n].firstEdge;
-        } endfor
-        xadj[graphref->number_of_nodes()] = graphref->m_nodes[graphref->number_of_nodes()].firstEdge;
-        return xadj;
-}
-
-
-inline int* graph_access::UNSAFE_metis_style_adjncy_array() {
-        int * adjncy    = new int[graphref->number_of_edges()];
-        basicGraph& ref = *graphref;
-        forall_edges(ref, e) {
-                adjncy[e] = graphref->m_edges[e].target;
-        } endfor
-
-        return adjncy;
-}
-
-
-inline int* graph_access::UNSAFE_metis_style_vwgt_array() {
-        int * vwgt      = new int[graphref->number_of_nodes()];
-        basicGraph& ref = *graphref;
-
-        forall_nodes(ref, n) {
-                vwgt[n] = (int)graphref->m_nodes[n].weight;
-        } endfor
-        return vwgt;
-}
-
-inline int* graph_access::UNSAFE_metis_style_adjwgt_array() {
-        int * adjwgt    = new int[graphref->number_of_edges()];
-        basicGraph& ref = *graphref;
-
-        forall_edges(ref, e) {
-                adjwgt[e] = (int)graphref->m_edges[e].weight;
-        } endfor
-
-        return adjwgt;
-}
-
 inline void graph_access::set_partition_count(PartitionID count) {
         m_partition_count = count;
-}
-
-inline int graph_access::build_from_metis(int n, int* xadj, int* adjncy) {
-        graphref = new basicGraph();
-        start_construction(n, xadj[n]);
-
-        for( unsigned i = 0; i < (unsigned)n; i++) {
-                NodeID node = new_node();
-                setNodeWeight(node, 1);
-                setPartitionIndex(node, 0);
-
-                for( unsigned e = xadj[i]; e < (unsigned)xadj[i+1]; e++) {
-                        EdgeID e_bar = new_edge(node, adjncy[e]);
-                        setEdgeWeight(e_bar, 1);
-                }
-
-        }
-
-        finish_construction();
-        return 0;
-}
-
-inline int graph_access::build_from_metis_weighted(int n, int* xadj, int* adjncy, int * vwgt, int* adjwgt) {
-        graphref = new basicGraph();
-        start_construction(n, xadj[n]);
-
-        for( unsigned i = 0; i < (unsigned)n; i++) {
-                NodeID node = new_node();
-                setNodeWeight(node, vwgt[i]);
-                setPartitionIndex(node, 0);
-
-                for( unsigned e = xadj[i]; e < (unsigned)xadj[i+1]; e++) {
-                        EdgeID e_bar = new_edge(node, adjncy[e]);
-                        setEdgeWeight(e_bar, adjwgt[e]);
-                }
-        }
-
-        finish_construction();
-        return 0;
 }
 
 inline void graph_access::copy(graph_access & G_bar) {

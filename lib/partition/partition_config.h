@@ -48,10 +48,6 @@ struct PartitionConfig
 
         NodeWeight max_vertex_weight;
 
-        NodeWeight largest_graph_weight;
-
-        NodeWeight work_load;
-
         unsigned aggressive_random_levels = 3;
 
         //=======================================
@@ -63,8 +59,6 @@ struct PartitionConfig
         int num_vert_stop_factor = 20;
 
         int fix_num_vert_stop = 500;
-
-        bool no_change_convergence = false;
 
         NodeWeight upper_bound_partition = std::numeric_limits<NodeWeight>::max()/2;
 

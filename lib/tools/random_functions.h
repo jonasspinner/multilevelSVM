@@ -38,32 +38,6 @@ class random_functions {
                 virtual ~random_functions();
 
                 template<typename sometype>
-                        static void circular_permutation(std::vector<sometype> & vec) {
-                                if(vec.size() < 2) return;
-                                for( unsigned int i = 0; i < vec.size(); i++) {
-                                        vec[i] = i;
-                                }
-
-                                unsigned int size = vec.size();
-                                std::uniform_int_distribution<unsigned int> A(0,size-1);
-                                std::uniform_int_distribution<unsigned int> B(0,size-1);
-
-                                for( unsigned int i = 0; i < size; i++) {
-                                        unsigned int posA = A(m_mt);
-                                        unsigned int posB = B(m_mt);
-
-                                        while(posB == posA) {
-                                                posB = B(m_mt);
-                                        }
-
-                                        if( posA != vec[posB] && posB != vec[posA]) {
-                                                std::swap(vec[posA], vec[posB]);
-                                        }
-                                }
-
-                         }
-
-                template<typename sometype>
                         static void permutate_vector_fast(std::vector<sometype> & vec, bool init) {
                                 if(init) {
                                         for( unsigned int i = 0; i < vec.size(); i++) {
@@ -85,25 +59,6 @@ class random_functions {
                                         std::swap(vec[posA+3], vec[posB+3]);
                                 }
                         }
-
-                static void permutate_vector_good(std::vector<std::pair< NodeID, NodeID >> & vec) {
-
-                        unsigned int size = vec.size();
-                        if(size < 4) return;
-
-                        std::uniform_int_distribution<unsigned int> A(0,size - 4);
-                        std::uniform_int_distribution<unsigned int> B(0,size - 4);
-
-                        for( unsigned int i = 0; i < size; i++) {
-                                unsigned int posA = A(m_mt);
-                                unsigned int posB = B(m_mt);
-                                std::swap(vec[posA], vec[posB]);
-                                std::swap(vec[posA+1], vec[posB+1]);
-                                std::swap(vec[posA+2], vec[posB+2]);
-                                std::swap(vec[posA+3], vec[posB+3]);
-
-                        }
-                }
 
                 template<typename sometype>
                         static void permutate_vector_good(std::vector<sometype> & vec, bool init) {

@@ -19,11 +19,6 @@ public:
         svm_solver(const svm_instance & instance);
 
         virtual void train() = 0;
-        svm_result<T> train_ud(const svm_data & min_sample, const svm_data & maj_sample);
-        svm_result<T> train_grid(const svm_data & min_sample, const svm_data & maj_sample);
-        svm_result<T> train_bayesopt(const svm_data & min_sample, const svm_data & maj_sample);
-        svm_result<T> train_refinement(const svm_data & min_sample, const svm_data & maj_sample,
-				       bool inherit_ud, float param_c, float param_g);
 	svm_result<T> train_range(const std::vector<svm_param> & params,
 				  const svm_data & min_sample,
 				  const svm_data & maj_sample);
@@ -47,8 +42,6 @@ public:
 	const svm_instance & get_instance();
 
 protected:
-        svm_result<T> make_result(const std::vector<svm_summary<T>> & vec);
-
         svm_parameter param;
         svm_instance instance;
 	std::shared_ptr<T> model;

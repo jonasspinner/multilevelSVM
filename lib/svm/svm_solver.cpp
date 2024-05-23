@@ -35,26 +35,6 @@ svm_solver<T>::svm_solver() {
 }
 
 template<class T>
-svm_result<T> svm_solver<T>::train_grid(const svm_data & min_sample, const svm_data & maj_sample) {
-        svm_result<T> result(instance);
-        std::vector<svm_param> params;
-
-        // first search
-        std::cout << "Grid search C:-5:15:2 gamaa:3:-15:-2" << std::endl;
-        params = param_search::grid(-5, 15, 2, 3, -15, -2);
-
-        result = train_range(params, min_sample, maj_sample);
-        svm_summary<T> good = result.best();
-
-        // train this solver to the best found parameters
-        this->param.C = good.C;
-        this->param.gamma = good.gamma;
-        this->model = good.model;
-
-        return result;
-}
-
-template<class T>
 svm_result<T> svm_solver<T>::train_range(const std::vector<svm_param> & params,
 					 const svm_data & min_sample,
 					 const svm_data & maj_sample) {
@@ -92,14 +72,6 @@ svm_summary<T> svm_solver<T>::train_single(svm_param p,
 
 	std::cout << "\ttime=" << t.elapsed()
 		  << std::flush;
-
-	// if (cur_solver.model->l > (cur_solver.instance.num_min + cur_solver.instance.num_maj) * 0.9
-	//     && !summaries.empty()) {
-	//         // don't evaluate models which are very likely prone to over fitting
-	//         // but at least evaluate once
-	//         std::cout << "not evaluated " << cur_solver.model->l << std::endl;
-	//         continue;
-	// }
 
 	svm_summary<T> summary = this->build_summary(min_sample, maj_sample);
 	summary.print_short();

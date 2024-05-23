@@ -27,9 +27,9 @@
 #include <queue>
 #include <vector>
 
-#include "limits.h"
+#include <climits>
 #include "tools/macros_assertions.h"
-#include "stdio.h"
+#include <cstdio>
 
 // allows us to disable most of the output during partitioning
 #ifdef KAFFPAOUTPUT
@@ -51,21 +51,10 @@ typedef unsigned int  NodeWeight;
 typedef double     EdgeWeight;
 typedef double FeatureData;
 typedef std::vector<FeatureData> FeatureVec;
-typedef EdgeWeight  Gain;
-typedef int     Color;
-typedef unsigned int  Count;
 typedef std::vector<NodeID> boundary_starting_nodes;
-typedef long FlowType;
 
 const EdgeID UNDEFINED_EDGE            = std::numeric_limits<EdgeID>::max();
-const NodeID NOTMAPPED                 = std::numeric_limits<EdgeID>::max();
 const NodeID UNDEFINED_NODE            = std::numeric_limits<NodeID>::max();
-const NodeID UNASSIGNED                = std::numeric_limits<NodeID>::max();
-const NodeID ASSIGNED                  = std::numeric_limits<NodeID>::max()-1;
-const PartitionID INVALID_PARTITION    = std::numeric_limits<PartitionID>::max();
-const PartitionID BOUNDARY_STRIPE_NODE = std::numeric_limits<PartitionID>::max();
-const int NOTINQUEUE           = std::numeric_limits<int>::max();
-const int ROOT             = 0;
 
 // for graph_access
 struct Node {
@@ -76,12 +65,6 @@ struct Node {
 struct Edge {
         NodeID target;
         EdgeWeight weight;
-};
-
-//for the gpa algorithm
-struct edge_source_pair {
-        EdgeID e;
-        NodeID source;
 };
 
 struct source_target_pair {

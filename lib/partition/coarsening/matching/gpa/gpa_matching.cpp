@@ -337,17 +337,3 @@ void gpa_matching::maximum_weight_matching( graph_access & G,
                 }
         }
 }
-
-template <typename VectorOrDeque>
-void gpa_matching::dump_unpacked_path( graph_access & G,
-                VectorOrDeque & unpacked_path,
-                std::vector<NodeID>& sources) {
-        //dump the path
-        for( unsigned i = 0; i < unpacked_path.size(); i++) {
-                EdgeID e = unpacked_path[i];
-                std::cout << "(" << sources[e] << " " << G.getEdgeTarget(e) << ") ";
-        }
-        std::cout << std::endl;
-
-
-}

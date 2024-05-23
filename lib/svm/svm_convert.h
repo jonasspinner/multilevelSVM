@@ -13,11 +13,7 @@ public:
 
         static svm_feature feature_to_node(const FeatureVec & vec);
 
-        static FeatureVec node_to_feature(const svm_feature & data);
-
         static svm_data graph_to_nodes(const graph_access & G);
-
-        static svm_data graph_part_to_nodes(const graph_access & G, const std::vector<NodeID> & sv);
 
         static DataSet::node2d svmdata_to_dataset(const svm_data & data);
 };

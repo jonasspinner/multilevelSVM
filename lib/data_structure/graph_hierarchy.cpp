@@ -97,10 +97,6 @@ graph_access* graph_hierarchy::pop_coarsest( ) {
         return current_coarsest;
 }
 
-graph_access* graph_hierarchy::get_finest() {
-        return m_finest_graph;
-}
-
 bool graph_hierarchy::isEmpty( ) {
         ASSERT_EQ(m_the_graph_hierarchy.size(), m_the_mappings.size());
         return size() <= 0;

@@ -41,9 +41,6 @@ class path {
 
                 void set_length(const EdgeID & length);
                 EdgeID get_length() const;
-
-                //returns wether the given node is an endpoint of the path
-                bool is_endpoint(const NodeID & id) const;
                 
                 //returns wether the path is a cycle or not.  
                 bool is_cycle() const;
@@ -95,10 +92,6 @@ inline EdgeID path::get_length( ) const {
 
 inline void path::set_length(const EdgeID & len) {
         length = len;        
-}
-
-inline bool path::is_endpoint(const NodeID & v) const {
-        return (v == tail) or (v == head);
 }
 
 inline bool path::is_cycle() const {

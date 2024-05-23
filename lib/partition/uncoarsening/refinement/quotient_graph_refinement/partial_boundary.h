@@ -57,7 +57,6 @@ class PartialBoundary {
                 bool contains(NodeID node);
                 void insert(NodeID node);
                 void clear();
-                void deleteNode(NodeID node);
                 NodeID size();
 
                 is_boundary_node_hashtable internal_boundary;
@@ -69,10 +68,6 @@ inline bool PartialBoundary::contains(NodeID node) {
 
 inline void PartialBoundary::insert(NodeID node) {
         internal_boundary[node].contains = true; 
-}
-
-inline void PartialBoundary::deleteNode(NodeID node) {
-        internal_boundary.erase(node);
 }
 
 inline NodeID PartialBoundary::size() {

@@ -32,17 +32,6 @@ void svm_result<T>::add(const std::vector<svm_summary<T>> & to_add) {
 }
 
 template<class T>
-std::vector<svm_param> svm_result<T>::all_params() {
-        std::vector<svm_param> seq;
-
-        for (const svm_summary<T> & smry : this->summaries) {
-                seq.push_back(std::make_pair(smry.C_log, smry.gamma_log));
-        }
-
-        return seq;
-}
-
-template<class T>
 void svm_result<T>::sort_summaries() {
         // insertion_sort
         size_t j;
