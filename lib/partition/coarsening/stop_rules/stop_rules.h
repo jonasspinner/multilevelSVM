@@ -23,7 +23,7 @@
 #ifndef STOP_RULES_SZ45JQS6
 #define STOP_RULES_SZ45JQS6
 
-#include <math.h>
+#include <cmath>
 
 #include "partition/partition_config.h"
 #include <iostream>

@@ -29,9 +29,6 @@
 #include "data_structure/graph_hierarchy.h"
 #include "definitions.h"
 #include "edge_rating/edge_ratings.h"
-#include "io/graph_io.h"
-#include "matching/gpa/gpa_matching.h"
-#include "matching/random_matching.h"
 #include "stop_rules/stop_rules.h"
 
 coarsening::coarsening() {

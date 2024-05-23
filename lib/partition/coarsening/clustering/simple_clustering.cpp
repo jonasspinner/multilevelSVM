@@ -1,7 +1,5 @@
 #include "simple_clustering.h"
 
-#include <utility>
-
 #include "algorithms/jarnik_prim.h"
 #include "data_structure/graph_access.h"
 

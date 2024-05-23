@@ -58,14 +58,12 @@ add_compile_options(-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -
         -Woverloaded-virtual -Wpedantic -Wsign-conversion -Wmisleading-indentation -Wduplicated-cond
         -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wuseless-cast -Wdouble-promotion -Wformat=2 -Wno-comment)
 
+add_compile_definitions(KAFFPAOUTPUT)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native -DNDEBUG -Wno-unused-parameter -funroll-loops")
 
 
 set(KAFFPA_SRC
         lib/data_structure/graph_hierarchy.cpp
-        lib/algorithms/strongly_connected_components.cpp
-        lib/algorithms/topological_sort.cpp
-        lib/algorithms/push_relabel.cpp
         lib/algorithms/jarnik_prim.cpp
         lib/io/graph_io.cpp
         lib/tools/quality_metrics.cpp
@@ -116,9 +114,19 @@ add_library(KASVM_LIB ${KAFFPA_SRC} ${KASVM_SRC})
 add_compile_definitions(MODE_KASVM)
 #add_compile_definitions(SVM_SOLVER=svm_solver_thunder SVM_MODEL=SVC)
 add_compile_definitions(SVM_SOLVER=svm_solver_libsvm SVM_MODEL=svm_model)
+
+
 add_executable(kasvm app/kasvm-train.cpp)
 target_link_libraries(kasvm PRIVATE KASVM_LIB ${BAYESOPT} ${NLOPT} argtable2 thundersvm gomp)
 
 
+add_executable(kasvm_predict app/kasvm-predict.cpp)
+target_link_libraries(kasvm_predict PRIVATE KASVM_LIB ${BAYESOPT} ${NLOPT} argtable2 thundersvm gomp)
+
+
+add_executable(single_level_svm app/single_level_svm.cpp)
+target_link_libraries(single_level_svm PRIVATE KASVM_LIB ${BAYESOPT} ${NLOPT} argtable2 thundersvm gomp)
+
+
 add_executable(prepare app/prepare.cpp lib/svm/svm_flann.cpp)
-target_link_libraries(prepare PRIVATE ${ARGTABLE2_LIB} gomp)
+target_link_libraries(prepare PRIVATE argtable2 gomp)

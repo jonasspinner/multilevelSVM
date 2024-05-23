@@ -23,16 +23,11 @@
 
 #include <unordered_map>
 
-#include <sstream>
 #include "../edge_rating/edge_ratings.h"
 #include "../matching/gpa/gpa_matching.h"
 #include "data_structure/union_find.h"
 #include "node_ordering.h"
-#include "partition/uncoarsening/refinement/kway_graph_refinement/kway_graph_refinement.h"
-#include "partition/uncoarsening/refinement/kway_graph_refinement/kway_graph_refinement_commons.h"
-#include "tools/quality_metrics.h"
 #include "tools/random_functions.h"
-#include "io/graph_io.h"
 
 #include "size_constraint_label_propagation.h"
 

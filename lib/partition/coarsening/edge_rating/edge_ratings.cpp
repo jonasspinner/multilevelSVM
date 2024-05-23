@@ -20,7 +20,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-#include <math.h>
+#include <cmath>
 
 #include "edge_ratings.h"
 #include "partition/partition_config.h"

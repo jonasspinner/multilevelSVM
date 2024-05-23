@@ -26,7 +26,7 @@
 #include <unordered_map>
 
 #include "definitions.h"
-#include "limits.h"
+#include <climits>
 #include "partial_boundary.h"
 
 using namespace __gnu_cxx;

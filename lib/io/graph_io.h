@@ -27,8 +27,8 @@
 #include <iostream>
 #include <limits>
 #include <ostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <vector>
 
 #include "definitions.h"
