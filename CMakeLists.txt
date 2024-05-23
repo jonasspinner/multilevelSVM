@@ -56,7 +56,8 @@ include_directories(lib)
 
 add_compile_options(-Wall -Wextra)
 add_compile_options(-Wunused -Wunused-function)
-add_compile_options(-Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference)
+add_compile_options(-Wnon-virtual-dtor -Woverloaded-virtual)
+#add_compile_options(-Wnull-dereference)
 #add_compile_options(-Wshadow -Wpedantic)
 #add_compile_options(-Wduplicated-cond -Wduplicated-branches -Wlogical-op)
 #add_compile_options( -Wsign-conversion -Wold-style-cast -Wuseless-cast  -Wcast-align)
@@ -70,23 +71,19 @@ set(KAFFPA_SRC
         lib/data_structure/graph_hierarchy.cpp
         lib/algorithms/jarnik_prim.cpp
         lib/io/graph_io.cpp
-        lib/tools/quality_metrics.cpp
         lib/tools/random_functions.cpp
         lib/partition/partition_config.cpp
         lib/partition/coarsening/coarsening.cpp
         lib/partition/coarsening/contraction.cpp
         lib/partition/coarsening/edge_rating/edge_ratings.cpp
-        lib/partition/coarsening/matching/matching.cpp
         lib/partition/coarsening/matching/random_matching.cpp
         lib/partition/coarsening/matching/gpa/path.cpp
         lib/partition/coarsening/matching/gpa/gpa_matching.cpp
         lib/partition/coarsening/matching/gpa/path_set.cpp
-        lib/partition/coarsening/clustering/node_ordering.cpp
         lib/partition/coarsening/clustering/size_constraint_label_propagation.cpp
         lib/partition/coarsening/clustering/simple_clustering.cpp
         lib/partition/coarsening/clustering/low_diameter_clustering.cpp
         lib/partition/uncoarsening/refinement/quotient_graph_refinement/complete_boundary.cpp
-        lib/partition/uncoarsening/refinement/quotient_graph_refinement/partial_boundary.cpp
 )
 
 

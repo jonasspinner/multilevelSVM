@@ -26,13 +26,6 @@
 #include "partition/partition_config.h"
 #include "tools/random_functions.h"
 
-edge_ratings::edge_ratings(const PartitionConfig & _partition_config) : partition_config(_partition_config){
-
-}
-
-edge_ratings::~edge_ratings() {
-
-}
 
 void edge_ratings::rate(graph_access & G, unsigned level) {
         //rate the edges

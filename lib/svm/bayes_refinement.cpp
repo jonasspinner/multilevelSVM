@@ -2,6 +2,7 @@
 #include <bayesopt/bayesopt.hpp>
 #include <bayesopt/parameters.hpp>
 #include <boost/numeric/ublas/vector.hpp>
+#include <utility>
 #include <thundersvm/model/svc.h>
 #include <svm.h>
 
@@ -17,14 +18,12 @@ bayes_refinement<T>::bayes_refinement(graph_hierarchy & min_hierarchy,
 				      PartitionConfig conf,
 				      bayesopt::BOptState state)
 	: svm_refinement<T>(min_hierarchy, maj_hierarchy, initial_result, conf)
-	, opt_state(state) {
+	, opt_state(std::move(state)) {
 	this->seed = conf.seed;
 	this->fix_num_vert_stop = conf.fix_num_vert_stop;
 	this->bayes_max_steps = conf.bayes_max_steps;
 }
 
-template<class T>
-bayes_refinement<T>::~bayes_refinement() {}
 
 template<class T>
 svm_result<T> bayes_refinement<T>::step(const svm_data & min_sample, const svm_data & maj_sample) {
@@ -77,14 +76,14 @@ public:
 		  summaries(summaries) {
 	}
 
-	double evaluateSample(const boost::numeric::ublas::vector<double> &query) {
+	double evaluateSample(const boost::numeric::ublas::vector<double> &query) override {
 		svm_param p = std::make_pair(query[0], query[1]);
 		auto summary = solver.train_single(p, min_sample, maj_sample);
 		summaries.push_back(summary);
 		return summary.eval(solver.get_instance());
 	}
 
-	bool checkReachability(const boost::numeric::ublas::vector<double> &query) { 
+	bool checkReachability(const boost::numeric::ublas::vector<double> &query) override {
 		return true;
 	}
 
@@ -125,7 +124,7 @@ svm_result<T> bayes_refinement<T>::train_bayes(svm_solver<T> & solver,
 	optimizer.setBoundingBox(lowerBound,upperBound);
 
 
-	if (state.mX.size() > 0) {
+	if (!state.mX.empty()) {
 		// restore previous optimization
 		optimizer.restoreOptimization(state);
 		bestPoint = optimizer.getFinalResult();

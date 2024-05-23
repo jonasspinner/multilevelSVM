@@ -28,28 +28,28 @@
 
 class edge_ratings {
 public:
-        edge_ratings(const PartitionConfig & partition_config);
-        virtual ~edge_ratings();
+        explicit edge_ratings(const PartitionConfig & _partition_config) : partition_config(_partition_config) {};
+        virtual ~edge_ratings() = default;
 
         void rate(graph_access & G, unsigned level);
-        void rate_expansion_star_2(graph_access & G);
-        void rate_expansion_star(graph_access & G);
-        void rate_expansion_star_2_algdist(graph_access & G);
-        void rate_inner_outer(graph_access & G);
-        void rate_pseudogeom(graph_access & G); 
-        void compute_algdist(graph_access & G, std::vector<float> & dist); 
-        void rate_separator_addx(graph_access & G);
-        void rate_separator_multx(graph_access & G);
-        void rate_separator_max(graph_access & G);
-        void rate_separator_log(graph_access & G);
-        void rate_separator_r1(graph_access & G);
-        void rate_separator_r2(graph_access & G);
-        void rate_separator_r3(graph_access & G);
-        void rate_separator_r4(graph_access & G);
-        void rate_separator_r5(graph_access & G);
-        void rate_separator_r6(graph_access & G);
-        void rate_separator_r7(graph_access & G);
-        void rate_separator_r8(graph_access & G);
+        static void rate_expansion_star_2(graph_access & G);
+        static void rate_expansion_star(graph_access & G);
+        static void rate_expansion_star_2_algdist(graph_access & G);
+        static void rate_inner_outer(graph_access & G);
+        static void rate_pseudogeom(graph_access & G);
+        static void compute_algdist(graph_access & G, std::vector<float> & dist);
+        static void rate_separator_addx(graph_access & G);
+        static void rate_separator_multx(graph_access & G);
+        static void rate_separator_max(graph_access & G);
+        static void rate_separator_log(graph_access & G);
+        static void rate_separator_r1(graph_access & G);
+        static void rate_separator_r2(graph_access & G);
+        static void rate_separator_r3(graph_access & G);
+        static void rate_separator_r4(graph_access & G);
+        static void rate_separator_r5(graph_access & G);
+        static void rate_separator_r6(graph_access & G);
+        static void rate_separator_r7(graph_access & G);
+        static void rate_separator_r8(graph_access & G);
 
 private:
         const PartitionConfig & partition_config;

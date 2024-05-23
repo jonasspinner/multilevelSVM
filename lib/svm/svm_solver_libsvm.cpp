@@ -1,26 +1,18 @@
-#include <algorithm>
 #include <functional>
+#include <utility>
 
 #include "svm/param_search.h"
 #include "svm/svm_solver_libsvm.h"
 #include "svm/svm_convert.h"
-#include "tools/timer.h"
-
-svm_solver_libsvm::svm_solver_libsvm(const svm_instance & instance)
-	: svm_solver(instance) {
-}
-
-svm_solver_libsvm::svm_solver_libsvm() : svm_solver() {
-}
 
 void svm_solver_libsvm::train() {
-        svm_problem prob;
+        svm_problem prob{};
         prob.l = this->instance.size();
         prob.y = this->instance.label_data();
         prob.x = this->instance.node_data();
 
         const char * error_msg = svm_check_parameter(&prob, &(this->param));
-        if (error_msg != NULL) {
+        if (error_msg != nullptr) {
                 std::cout << error_msg << std::endl;
                 std::cout << "we are exiting due to bad parameters"  << std::endl;
                 exit(0);

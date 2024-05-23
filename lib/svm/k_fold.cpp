@@ -1,20 +1,14 @@
 #include "io/graph_io.h"
 #include "svm/k_fold.h"
 #include "svm/svm_flann.h"
-#include "svm/svm_convert.h"
 #include "tools/random_functions.h"
-#include "tools/timer.h"
 
-k_fold::k_fold(PartitionConfig config) {
+k_fold::k_fold(const PartitionConfig& config) {
         this->iterations = config.kfold_iterations;
         this->cur_iteration = -1;
 	this->validation_percent = config.validation_percent;
 	this->validation_seperate = config.validation_seperate;
 }
-
-k_fold::~k_fold() {
-}
-
 
 bool k_fold::next(double & io_time) {
         this->cur_iteration += 1;
@@ -55,6 +49,6 @@ std::vector<std::vector<svm_node>>* k_fold::getMajTestData() {
         return &this->cur_maj_test;
 }
 
-int k_fold::getIteration() {
+int k_fold::getIteration() const {
 	return this->cur_iteration;
 }

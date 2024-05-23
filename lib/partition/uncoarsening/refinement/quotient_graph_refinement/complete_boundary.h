@@ -41,8 +41,8 @@ typedef std::vector<boundary_pair> QuotientGraphEdges;
 
 class complete_boundary {
         public:
-                complete_boundary(graph_access * G );
-                virtual ~complete_boundary();
+                explicit complete_boundary(graph_access * G );
+                virtual ~complete_boundary() = default;
 
                 void build();
 
@@ -53,18 +53,17 @@ class complete_boundary {
 
                 inline void getQuotientGraphEdges(QuotientGraphEdges & qgraph_edges);
 
-                inline void getUnderlyingQuotientGraph( graph_access & qgraph );
+                inline void getUnderlyingQuotientGraph( graph_access & Q_bar );
 
         private:
                 //updates lazy values that the access functions need
                 inline void update_lazy_values(boundary_pair * pair);
 
                 //lazy members to avoid hashtable loop ups
-                PartialBoundary*   m_pb_lhs_lazy;
-                PartialBoundary*   m_pb_rhs_lazy;
-                PartitionID        m_lazy_lhs;
-                PartitionID        m_lazy_rhs;
-                boundary_pair*     m_last_pair;
+                PartialBoundary*   m_pb_lhs_lazy{nullptr};
+                PartialBoundary*   m_pb_rhs_lazy{nullptr};
+                PartitionID        m_lazy_lhs{};
+                PartitionID        m_lazy_rhs{};
                 size_t             m_last_key;
                 hash_boundary_pair m_hbp;
 
@@ -83,8 +82,9 @@ class complete_boundary {
                 //////////////////////////////////////////////////////////////
 #ifndef NDEBUG
         public:
-                bool assert_bnodes_in_boundaries();
-                bool assert_boundaries_are_bnodes();
+    [[maybe_unused]] bool assert_bnodes_in_boundaries();
+
+    [[maybe_unused]] bool assert_boundaries_are_bnodes();
 #endif
 };
 
@@ -113,7 +113,7 @@ inline void complete_boundary::build() {
                         bool is_cut_edge             = (source_partition != target_partition);
 
                         if(is_cut_edge) {
-                                boundary_pair bp;
+                                boundary_pair bp{};
                                 bp.k   = m_graph_ref->get_partition_count();
                                 bp.lhs = source_partition;
                                 bp.rhs = target_partition;
@@ -192,17 +192,16 @@ inline void complete_boundary::update_lazy_values(boundary_pair * pair) {
                 m_pb_rhs_lazy = &dbp.pb_rhs;
                 m_lazy_lhs    = dbp.lhs;
                 m_lazy_rhs    = dbp.rhs;
-                m_last_pair   = pair;
                 m_last_key    = key;
         }
 }
 
 inline void complete_boundary::getUnderlyingQuotientGraph( graph_access & Q_bar ) {
-         basicGraph * graphref = new basicGraph;
+         auto * graphref = new basicGraph;
 
-         if(Q_bar.graphref != NULL) {
+
                 delete Q_bar.graphref;
-         }
+
          Q_bar.graphref = graphref;
 
          std::vector< std::vector< std::pair<PartitionID, EdgeWeight> > >  building_tool;
@@ -229,9 +228,9 @@ inline void complete_boundary::getUnderlyingQuotientGraph( graph_access & Q_bar 
                  NodeID node = Q_bar.new_node();
                  Q_bar.setNodeWeight(node,  m_block_infos[p].block_weight);
 
-                 for( unsigned j = 0; j < building_tool[p].size(); j++) {
-                         EdgeID e = Q_bar.new_edge(node, building_tool[p][j].first);
-                         Q_bar.setEdgeWeight(e, building_tool[p][j].second);
+                 for(auto & j : building_tool[p]) {
+                         EdgeID e = Q_bar.new_edge(node, j.first);
+                         Q_bar.setEdgeWeight(e, j.second);
                  }
          }
 
@@ -240,14 +239,15 @@ inline void complete_boundary::getUnderlyingQuotientGraph( graph_access & Q_bar 
 
 
 #ifndef NDEBUG
-inline bool complete_boundary::assert_bnodes_in_boundaries() {
+
+[[maybe_unused]] inline bool complete_boundary::assert_bnodes_in_boundaries() {
         PartitionID k = m_graph_ref->get_partition_count();
 
         for(PartitionID lhs = 0; lhs < k; lhs++) {
                 for(PartitionID rhs = 0; rhs < k; rhs++) {
                         if(rhs == lhs || lhs > rhs) continue;
 
-                        boundary_pair bp;
+                        boundary_pair bp{};
                         bp.k = m_graph_ref->get_partition_count();
                         bp.lhs = lhs;
                         bp.rhs = rhs;
@@ -295,7 +295,7 @@ inline bool complete_boundary::assert_bnodes_in_boundaries() {
         return true;
 }
 
-inline bool complete_boundary::assert_boundaries_are_bnodes() {
+[[maybe_unused]] inline bool complete_boundary::assert_boundaries_are_bnodes() {
         graph_access & G = *m_graph_ref;
         forall_nodes(G, n) {
                  PartitionID partition = G.getPartitionIndex(n);
@@ -304,7 +304,7 @@ inline bool complete_boundary::assert_boundaries_are_bnodes() {
                          PartitionID targets_partition = G.getPartitionIndex(target);
 
                          if(partition != targets_partition) {
-                                boundary_pair bp;
+                                boundary_pair bp{};
                                 bp.k   = G.get_partition_count();
                                 bp.lhs = partition;
                                 bp.rhs = targets_partition;
@@ -318,8 +318,7 @@ inline bool complete_boundary::assert_boundaries_are_bnodes() {
          } endfor
          QuotientGraphEdges qgraph_edges;
          getQuotientGraphEdges(qgraph_edges);
-         for( unsigned i = 0; i < qgraph_edges.size(); i++) {
-                 boundary_pair & pair = qgraph_edges[i];
+         for(auto & pair : qgraph_edges) {
                  ASSERT_NEQ(pair.lhs, pair.rhs);
          }
 

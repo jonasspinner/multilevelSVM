@@ -8,7 +8,7 @@
 class results
 {
 public:
-        results();
+        results() : cur_iteration(-1) {};
         void next();
         void setFloat(const std::string & tag, float result);
         void setString(const std::string & tag, const std::string & result);

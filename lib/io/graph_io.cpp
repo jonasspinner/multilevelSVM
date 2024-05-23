@@ -24,15 +24,8 @@
 #include <unordered_set>
 #include "graph_io.h"
 
-graph_io::graph_io() {
-                
-}
 
-graph_io::~graph_io() {
-                
-}
-
-int graph_io::writeGraphGDF(const graph_access & G_min, const graph_access & G_maj, std::string filename) {
+int graph_io::writeGraphGDF(const graph_access & G_min, const graph_access & G_maj, const std::string& filename) {
         std::ofstream f(filename.c_str());
 
         size_t min_nodes = G_min.number_of_nodes();
@@ -121,8 +114,8 @@ EdgeID graph_io::makeEdgesBidirectional(std::vector<std::vector<Edge>> & data) {
         for (NodeID from = 0; from < data.size(); ++from) {
                 for (EdgeID edge = 0; edge < data[from].size(); ++edge) {
                         Edge e = data[from][edge];
-                        if (neighbors[e.target].find(from) == neighbors[from].end()) {
-                                Edge back;
+                        if (neighbors[e.target].find(from) == neighbors[e.target].end()) {
+                                Edge back{};
                                 back.target = from;
                                 back.weight = e.weight;
                                 data[e.target].push_back(back);

@@ -25,14 +25,6 @@
 #include "tools/macros_assertions.h"
 #include "tools/timer.h"
 
-contraction::contraction() {
-
-}
-
-contraction::~contraction() {
-
-}
-
 // for documentation see technical reports of christian schulz
 void contraction::contract(const PartitionConfig & partition_config,
                            graph_access & G,
@@ -124,10 +116,10 @@ void contraction::contract(const PartitionConfig & partition_config,
 void contraction::contract_clustering(const PartitionConfig & partition_config,
                               graph_access & G,
                               graph_access & coarser,
-                              const Matching & edge_matching,
+                              const Matching & _edge_matching,
                               const CoarseMapping & coarse_mapping,
                               const NodeID & no_of_coarse_vertices,
-                              const NodePermutationMap & permutation) const {
+                              const NodePermutationMap & _permutation) const {
 
         if(partition_config.combine) {
                 coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
@@ -191,7 +183,7 @@ void contraction::contract_clustering(const PartitionConfig & partition_config,
 }
 
 FeatureVec contraction::combineFeatureVec(const FeatureVec & vec1, NodeWeight weight1,
-                                          const FeatureVec & vec2, NodeWeight weight2) const {
+                                          const FeatureVec & vec2, NodeWeight weight2) {
         size_t features = vec1.size();
         FeatureVec combined_features(features);
 
@@ -203,7 +195,7 @@ FeatureVec contraction::combineFeatureVec(const FeatureVec & vec1, NodeWeight we
         return combined_features;
 }
 
-void contraction::divideVec(FeatureVec & vec, NodeWeight weights) const {
+void contraction::divideVec(FeatureVec & vec, NodeWeight weights) {
         size_t features = vec.size();
 
         for (size_t i = 0; i < features; ++i) {

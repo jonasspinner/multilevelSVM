@@ -15,8 +15,8 @@
 class k_fold
 {
 public:
-        k_fold(PartitionConfig conf);
-        virtual ~k_fold();
+        explicit k_fold(const PartitionConfig& conf);
+        virtual ~k_fold() = default;
 
         bool next(double & io_time);
 
@@ -27,7 +27,7 @@ public:
         svm_data* getMinTestData();
         svm_data* getMajTestData();
 
-	int getIteration();
+	[[nodiscard]] int getIteration() const;
 
 protected:
         /// do kfold stuff in here

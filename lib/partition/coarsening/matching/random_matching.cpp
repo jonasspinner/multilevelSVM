@@ -25,13 +25,6 @@
 #include "tools/macros_assertions.h"
 #include "tools/random_functions.h"
 
-random_matching::random_matching() {
-
-}
-
-random_matching::~random_matching() {
-
-}
 
 void random_matching::match(const PartitionConfig & partition_config, 
                             graph_access & G, 
@@ -47,7 +40,7 @@ void random_matching::match(const PartitionConfig & partition_config,
 
         no_of_coarse_vertices = 0;
 
-        if(!(partition_config.matching_type == MATCHING_RANDOM_GPA)) { 
+        if(partition_config.matching_type != MATCHING_RANDOM_GPA) {
                 random_functions::permutate_entries(partition_config, permutation, true);
         } else {
                 for( unsigned int i = 0; i < permutation.size(); i++) {

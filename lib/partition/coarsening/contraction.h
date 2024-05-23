@@ -30,9 +30,6 @@
 
 class contraction {
         public:
-                contraction();
-                virtual ~contraction();
-
                 void contract(const PartitionConfig & partition_config,
                               graph_access & finer,
                               graph_access & coarser,
@@ -51,22 +48,22 @@ class contraction {
 
         private:
                 // visits an edge in G (and auxillary graph) and updates/creates and edge in coarser graph
-                void visit_edge(graph_access & G,
+                static void visit_edge(graph_access & G,
                                 graph_access & coarser,
                                 std::vector<NodeID> & edge_positions,
-                                const NodeID coarseNode,
-                                const EdgeID e,
-                                const std::vector<NodeID> & new_edge_targets) const;
+                                NodeID coarseNode,
+                                EdgeID e,
+                                const std::vector<NodeID> & new_edge_targets) ;
 
 
-                FeatureVec combineFeatureVec(const FeatureVec & vec1, NodeWeight weight1,
-                                             const FeatureVec & vec2, NodeWeight weight2) const;
+                [[nodiscard]] static FeatureVec combineFeatureVec(const FeatureVec & vec1, NodeWeight weight1,
+                                             const FeatureVec & vec2, NodeWeight weight2) ;
 
-                void divideVec(FeatureVec & vec, NodeWeight weights) const;
+                static void divideVec(FeatureVec & vec, NodeWeight weights) ;
 
                 void addWeightedToVec(FeatureVec & vec, const FeatureVec & vecToAdd, NodeWeight weight) const;
 
-		EdgeWeight calcFeatureDist(const FeatureVec & vec1,  const FeatureVec & vec2) const;
+		[[nodiscard]] EdgeWeight calcFeatureDist(const FeatureVec & vec1,  const FeatureVec & vec2) const;
 };
 
 inline void contraction::visit_edge(graph_access & G,
@@ -74,7 +71,7 @@ inline void contraction::visit_edge(graph_access & G,
                 std::vector<NodeID> & edge_positions,
                 const NodeID coarseNode,
                 const EdgeID e,
-                const std::vector<NodeID> & new_edge_targets) const {
+                const std::vector<NodeID> & new_edge_targets) {
 
         EdgeID new_coarse_edge_target = new_edge_targets[e];
         if(new_coarse_edge_target == coarseNode) return; //this is the matched edge ... return

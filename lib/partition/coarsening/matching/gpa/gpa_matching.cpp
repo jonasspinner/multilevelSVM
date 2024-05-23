@@ -28,14 +28,6 @@
 #include "tools/macros_assertions.h"
 #include "tools/random_functions.h"
 
-gpa_matching::gpa_matching() {
-
-}
-
-gpa_matching::~gpa_matching() {
-
-}
-
 
 void gpa_matching::match(const PartitionConfig & partition_config,
                 graph_access & G,

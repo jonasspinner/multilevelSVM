@@ -1,12 +1,8 @@
-#include <argtable2.h>
 #include <iostream>
 #include <iomanip>
-#include <math.h>
-#include <regex.h>
-#include <sstream>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
 #include <memory>
+#include <sstream>
 #include <svm.h>
 
 #include "data_structure/graph_access.h"
@@ -15,8 +11,6 @@
 #include "partition/coarsening/coarsening.h"
 #include "partition/partition_config.h"
 #include "svm/svm_solver_libsvm.h"
-#include "svm/svm_solver_thunder.h"
-#include "svm/svm_convert.h"
 #include "svm/k_fold.h"
 #include "svm/k_fold_build.h"
 #include "svm/k_fold_import.h"
@@ -31,7 +25,7 @@
 #include "parse_parameters.h"
 
 #include <thundersvm/util/log.h>
-void print_null(const char *s) {}
+void print_null(const char *_s) {}
 
 #ifndef SVM_SOLVER
 #define SVM_SOLVER svm_solver_thunder
@@ -64,22 +58,25 @@ int main(int argn, char *argv[]) {
 
 	switch (partition_config.validation_type) {
 	case KFOLD:
-		kfold.reset(new k_fold_build(partition_config,
-					     partition_config.filename));
+		kfold = std::make_unique<k_fold_build>(partition_config,
+					     partition_config.filename);
 		break;
 	case KFOLD_IMPORT:
-		kfold.reset(new k_fold_import(partition_config, exp,
-					      partition_config.filename));
+		kfold = std::make_unique<k_fold_import>(partition_config, exp,
+					      partition_config.filename);
 		break;
 	case ONCE:
-		kfold.reset(new k_fold_once(partition_config,
-					    partition_config.filename));
+		kfold = std::make_unique<k_fold_once>(partition_config,
+					    partition_config.filename);
 		break;
 	// case TRAIN_TEST_SPLIT:
 		// kfold.reset(new k_fold_traintest(partition_config,
 		// 				 partition_config.filename,
 		// 				 partition_config.testname));
-	}
+        case TRAIN_TEST_SPLIT:
+            abort();
+            break;
+    }
 
         timer t_all;
         timer t;

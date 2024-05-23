@@ -30,7 +30,3 @@ path::path(const NodeID & v) : head(v), tail(v), length(0), active(true) {
                 
 }
 
-path::~path() {
-                
-}
-

@@ -30,20 +30,20 @@
 
 class stop_rule {
         public:
-                stop_rule() {};
-                virtual ~stop_rule() {};
+                stop_rule() = default;
+                virtual ~stop_rule() = default;
                 virtual bool stop( NodeID number_of_finer_vertices, NodeID number_of_coarser_vertices ) = 0;
 };
 
 
 class simple_fixed_stop_rule : public stop_rule {
 public:
-        simple_fixed_stop_rule(PartitionConfig & config, NodeID number_of_nodes) {
+        simple_fixed_stop_rule(PartitionConfig & config, NodeID _number_of_nodes) {
                 num_stop = config.fix_num_vert_stop;
         };
 
-        virtual ~simple_fixed_stop_rule() {};
-        bool stop( NodeID number_of_finer_vertices, NodeID number_of_coarser_vertices );
+        ~simple_fixed_stop_rule() override = default;
+        bool stop( NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices ) override;
 
 private:
         NodeID num_stop;

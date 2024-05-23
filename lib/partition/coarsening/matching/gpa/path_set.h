@@ -32,10 +32,10 @@ class path_set {
         public:
 
                 path_set( graph_access * G, const PartitionConfig * config );
-                virtual ~path_set();
+                ~path_set() = default;
 
                 //returns the path that v lies on iff v is an endpoint
-                const path& get_path(const NodeID & v) const;
+                [[nodiscard]] const path& get_path(const NodeID & v) const;
 
                 // add the edge with given id to the path set if it is applicable
                 // returns true iff the edge was applicable
@@ -46,16 +46,16 @@ class path_set {
                 //**********
 
                 //returns the if of vertex next to v on the path
-                NodeID next_vertex( const NodeID & v ) const;       
+                [[nodiscard]] NodeID next_vertex( const NodeID & v ) const;
 
                 //returns the if of vertex previous to v on the path
-                NodeID prev_vertex( const NodeID & v ) const;      
+                [[nodiscard]] NodeID prev_vertex( const NodeID & v ) const;
 
                 //returns the id of the edge to the next vertex on the path
-                EdgeID edge_to_next(const NodeID & v) const;
+                [[nodiscard]] EdgeID edge_to_next(const NodeID & v) const;
 
                 //returns the id of the edge to the previous vertex on the path
-                EdgeID edge_to_prev(const NodeID & v) const;
+                [[nodiscard]] EdgeID edge_to_prev(const NodeID & v) const;
         private:
                 graph_access * pG;
 
@@ -90,7 +90,7 @@ class path_set {
                 // if prev[v] == v the prev_edge[v] = UNDEFINED_EDGE
                 std::vector<EdgeID> m_prev_edge;
 
-                inline bool is_endpoint(const NodeID & v) const {
+                [[nodiscard]] inline bool is_endpoint(const NodeID & v) const {
                         return (m_next[v] == v or m_prev[v] == v);
                 } 
 };

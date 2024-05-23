@@ -1,16 +1,17 @@
 #include <algorithm>
+#include <utility>
 
 #include <thundersvm/model/svc.h>
 #include "svm_result.h"
 
 template<class T>
-svm_result<T>::svm_result(const svm_instance & instance)
-	: instance(instance) {
+svm_result<T>::svm_result(svm_instance  instance)
+	: instance(std::move(instance)) {
 }
 
 template<class T>
-svm_result<T>::svm_result(const std::vector<svm_summary<T>> & summaries, const svm_instance & instance)
-        : summaries(summaries), instance(instance) {
+svm_result<T>::svm_result(const std::vector<svm_summary<T>> & summaries, svm_instance  instance)
+        : summaries(summaries), instance(std::move(instance)) {
 
         this->sort_summaries();
 }
@@ -49,7 +50,7 @@ void svm_result<T>::sort_summaries() {
 }
 
 template<class T>
-size_t svm_result<T>::get_best_index(const std::vector<std::pair<svm_summary<T>,svm_instance>> vec) {
+size_t svm_result<T>::get_best_index(const std::vector<std::pair<svm_summary<T>,svm_instance>> &vec) {
         size_t best_index = 0;
 
         for (size_t i = 1; i < vec.size(); i++) {

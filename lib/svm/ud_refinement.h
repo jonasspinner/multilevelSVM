@@ -14,7 +14,7 @@ public:
         ud_refinement(graph_hierarchy & min_hierarchy, graph_hierarchy & maj_hierarchy,
 		      const svm_result<T> & initial_result, PartitionConfig conf);
 
-	virtual ~ud_refinement();
+	virtual ~ud_refinement() = default;
 
         virtual svm_result<T> step(const svm_data & min_sample,
 				   const svm_data & maj_sample);
@@ -30,7 +30,7 @@ private:
 				       const svm_data & maj_sample,
 				       bool inherit_ud, float param_c, float param_g);
 
-        bool inherit_ud;
+        bool inherit_ud{};
 };
 
 #endif /* UD_REFINEMENT_H */

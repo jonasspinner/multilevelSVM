@@ -28,8 +28,8 @@
 
 class matching {
         public:
-                matching();
-                virtual ~matching();
+                matching() = default;
+                virtual ~matching() = default;
 
                 virtual void match(const PartitionConfig & partition_config, 
                                    graph_access & G, 
@@ -37,8 +37,6 @@ class matching {
                                    CoarseMapping & mapping, 
                                    NodeID & no_of_coarse_vertices,
                                    NodePermutationMap & permutation) = 0;
-
-                void print_matching(FILE * out, Matching & edge_matching);
 };
 
 #endif /* end of include guard: MATCHING_QL4RUO3D */

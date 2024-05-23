@@ -39,7 +39,7 @@ class coarsening_configurator {
                 coarsening_configurator( ) {};
                 virtual ~coarsening_configurator() {};
 
-                void configure_coarsening(const PartitionConfig & partition_config,
+                static void configure_coarsening(const PartitionConfig & partition_config,
                                           matching** edge_matcher,
                                           unsigned level);
 };

@@ -31,7 +31,7 @@
 #include "definitions.h"
 
 struct refinementNode {
-    PartitionID partitionIndex;
+    PartitionID partitionIndex{};
     FeatureVec featureVector;
 };
 
@@ -70,8 +70,8 @@ private:
     // construction of the graph
     void start_construction(NodeID n, EdgeID m) {
         m_building_graph = true;
-        node             = 0;
-        e                = 0;
+        current_node             = 0;
+        current_edge                = 0;
         m_last_source    = -1;
 
         //resizes property arrays
@@ -80,19 +80,19 @@ private:
         m_edges.resize(m);
         m_coarsening_edge_props.resize(m);
 
-        m_nodes[node].firstEdge = e;
+        m_nodes[current_node].firstEdge = current_edge;
     }
 
     EdgeID new_edge(NodeID source, NodeID target) {
         ASSERT_TRUE(m_building_graph);
-        ASSERT_TRUE(e < m_edges.size());
+        ASSERT_TRUE(current_edge < m_edges.size());
 
-        m_edges[e].target = target;
-        EdgeID e_bar = e;
-        ++e;
+        m_edges[current_edge].target = target;
+        EdgeID e_bar = current_edge;
+        ++current_edge;
 
         ASSERT_TRUE(source+1 < m_nodes.size());
-        m_nodes[source+1].firstEdge = e;
+        m_nodes[source+1].firstEdge = current_edge;
 
         //fill isolated sources at the end
         if ((NodeID)(m_last_source+1) < source) {
@@ -106,23 +106,23 @@ private:
 
     NodeID new_node() {
         ASSERT_TRUE(m_building_graph);
-        return node++;
+        return current_node++;
     }
 
     void finish_construction() {
         // inert dummy node
-        m_nodes.resize(node+1);
-        m_refinement_node_props.resize(node+1);
+        m_nodes.resize(current_node + 1);
+        m_refinement_node_props.resize(current_node + 1);
 
-        m_edges.resize(e);
-        m_coarsening_edge_props.resize(e);
+        m_edges.resize(current_edge);
+        m_coarsening_edge_props.resize(current_edge);
 
         m_building_graph = false;
 
         //fill isolated sources at the end
-        if ((unsigned int)(m_last_source) != node-1) {
+        if ((unsigned int)(m_last_source) != current_node - 1) {
                 //in that case at least the last node was an isolated node
-                for (NodeID i = node; i>(unsigned int)(m_last_source+1); i--) {
+                for (NodeID i = current_node; i > (unsigned int)(m_last_source + 1); i--) {
                         m_nodes[i].firstEdge = m_nodes[m_last_source+1].firstEdge;
                 }
         }
@@ -138,9 +138,9 @@ private:
 
     // construction properties
     bool m_building_graph;
-    int m_last_source;
-    NodeID node; //current node that is constructed
-    EdgeID e;    //current edge that is constructed
+    NodeID m_last_source{};
+    NodeID current_node{}; //current node that is constructed
+    EdgeID current_edge{}; //current edge that is constructed
 };
 
 //makros - graph access
@@ -155,7 +155,7 @@ class complete_boundary;
 class graph_access {
         friend class complete_boundary;
         public:
-                graph_access() { m_max_degree_computed = false; m_max_degree = 0; graphref = new basicGraph(); m_separator_block_ID = 2;}
+                graph_access() { graphref = new basicGraph(); }
                 virtual ~graph_access(){ delete graphref; };
 
                 /* ============================================================= */
@@ -169,48 +169,45 @@ class graph_access {
                 /* ============================================================= */
                 /* graph access methods */
                 /* ============================================================= */
-                NodeID number_of_nodes() const;
-                EdgeID number_of_edges() const;
+                [[nodiscard]] NodeID number_of_nodes() const;
+                [[nodiscard]] EdgeID number_of_edges() const;
 
-                EdgeID get_first_edge(NodeID node) const;
-                EdgeID get_first_invalid_edge(NodeID node) const;
+                [[nodiscard]] EdgeID get_first_edge(NodeID node) const;
+                [[nodiscard]] EdgeID get_first_invalid_edge(NodeID node) const;
 
-                PartitionID get_partition_count() const;
+                [[nodiscard]] PartitionID get_partition_count() const;
                 void set_partition_count(PartitionID count);
 
-                PartitionID getPartitionIndex(NodeID node) const;
+                [[nodiscard]] PartitionID getPartitionIndex(NodeID node) const;
                 void setPartitionIndex(NodeID node, PartitionID id);
 
-                PartitionID getSecondPartitionIndex(NodeID node) const;
+                [[nodiscard]] PartitionID getSecondPartitionIndex(NodeID node) const;
                 void setSecondPartitionIndex(NodeID node, PartitionID id);
 
-                const FeatureVec & getFeatureVec(NodeID node) const;
+                [[nodiscard]] const FeatureVec & getFeatureVec(NodeID node) const;
                 void setFeatureVec(NodeID node, const FeatureVec & vec);
 
                 //to be called if combine in meta heuristic is used
                 void resizeSecondPartitionIndex(unsigned no_nodes);
 
-                NodeWeight getNodeWeight(NodeID node) const;
+                [[nodiscard]] NodeWeight getNodeWeight(NodeID node) const;
                 void setNodeWeight(NodeID node, NodeWeight weight);
 
-                EdgeWeight getNodeDegree(NodeID node) const;
-                EdgeWeight getWeightedNodeDegree(NodeID node) const;
+                [[nodiscard]] EdgeWeight getNodeDegree(NodeID node) const;
+                [[nodiscard]] EdgeWeight getWeightedNodeDegree(NodeID node) const;
 
-                EdgeWeight getEdgeWeight(EdgeID edge) const;
+                [[nodiscard]] EdgeWeight getEdgeWeight(EdgeID edge) const;
                 void setEdgeWeight(EdgeID edge, EdgeWeight weight);
 
-                NodeID getEdgeTarget(EdgeID edge) const;
+                [[nodiscard]] NodeID getEdgeTarget(EdgeID edge) const;
 
-                EdgeRatingType getEdgeRating(EdgeID edge) const;
+                [[nodiscard]] EdgeRatingType getEdgeRating(EdgeID edge) const;
                 void setEdgeRating(EdgeID edge, EdgeRatingType rating);
 
-                void copy(graph_access & Gcopy);
+                void copy(graph_access & G_bar);
         private:
                 basicGraph * graphref;
-                bool         m_max_degree_computed;
-                unsigned int m_partition_count;
-                EdgeWeight   m_max_degree;
-                PartitionID  m_separator_block_ID;
+                unsigned int m_partition_count{};
                 std::vector<PartitionID> m_second_partition_index;
 };
 

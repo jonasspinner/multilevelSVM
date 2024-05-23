@@ -34,8 +34,8 @@ typedef std::mt19937 MersenneTwister;
 
 class random_functions {
         public:
-                random_functions();
-                virtual ~random_functions();
+                random_functions() = default;
+                virtual ~random_functions() = default;
 
                 template<typename sometype>
                         static void permutate_vector_fast(std::vector<sometype> & vec, bool init) {

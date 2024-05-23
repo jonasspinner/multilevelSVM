@@ -16,9 +16,6 @@ k_fold_import::k_fold_import(const PartitionConfig & config, int num_exp, const 
 	this->sample_percent  = config.sample_percent;
 }
 
-k_fold_import::~k_fold_import() {
-}
-
 void k_fold_import::next_intern(double & io_time) {
         this->cur_min_train.clear();
         this->cur_maj_train.clear();

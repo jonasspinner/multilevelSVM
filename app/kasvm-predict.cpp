@@ -1,21 +1,6 @@
-#include <argtable2.h>
-#include <iostream>
-#include <iomanip>
-#include <math.h>
-#include <regex.h>
-#include <sstream>
-#include <stdio.h>
-#include <string.h>
-#include <memory>
 #include <svm.h>
 
 #include "partition/partition_config.h"
-#include "svm/svm_solver_libsvm.h"
-#include "svm/svm_solver_thunder.h"
-#include "svm/svm_convert.h"
-#include "svm/svm_result.h"
-#include "svm/results.h"
-#include "tools/timer.h"
 #include "parse_parameters.h"
 
 #include <thundersvm/util/log.h>

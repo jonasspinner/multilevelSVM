@@ -22,19 +22,13 @@
 
 #include "graph_hierarchy.h"
 
-graph_hierarchy::graph_hierarchy() : m_current_coarser_graph(NULL),
-                                     m_current_coarse_mapping(NULL){
-
-}
 
 graph_hierarchy::~graph_hierarchy() {
-        for( unsigned i = 0; i < m_to_delete_mappings.size(); i++) {
-                if(m_to_delete_mappings[i] != NULL)
-                        delete m_to_delete_mappings[i];
+        for(auto & m_to_delete_mapping : m_to_delete_mappings) {
+                delete m_to_delete_mapping;
         }
 
         for( unsigned i = 1; i < m_to_delete_hierachies.size(); i++) {
-                if(m_to_delete_hierachies[i] != NULL)
                 delete m_to_delete_hierachies[i];
         }
 }
@@ -103,7 +97,7 @@ bool graph_hierarchy::isEmpty( ) {
 }
 
 unsigned int graph_hierarchy::size() {
-        if(m_the_graph_hierarchy.size() > 0 &&
+        if(!m_the_graph_hierarchy.empty() &&
            m_the_graph_hierarchy.top() == m_coarsest_graph) {
                 return m_the_graph_hierarchy.size() - 1;
         }

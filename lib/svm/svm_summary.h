@@ -26,26 +26,26 @@ public:
 
         std::shared_ptr<T> model;
 
-        int TP;
-        int TN;
-        int FP;
-        int FN;
-        double Acc;
-        double Sens;
-        double Spec;
-        double Gmean;
-        double F1;
-        double PPV;
-        double NPV;
+        int TP{};
+        int TN{};
+        int FP{};
+        int FN{};
+        double Acc{};
+        double Sens{};
+        double Spec{};
+        double Gmean{};
+        double F1{};
+        double PPV{};
+        double NPV{};
 
         std::vector<NodeID> SV_min;
         std::vector<NodeID> SV_maj;
 
-        double C;
-        double gamma;
+        double C{};
+        double gamma{};
 
-        double C_log;
-        double gamma_log;
+        double C_log{};
+        double gamma_log{};
 };
  
 struct summary_cmp_better_gmean

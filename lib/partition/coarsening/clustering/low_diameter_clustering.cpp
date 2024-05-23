@@ -5,12 +5,6 @@
 #include <algorithm>
 #include "tools/random_functions.h"
 
-low_diameter_clustering::low_diameter_clustering() {
-}
-
-low_diameter_clustering::~low_diameter_clustering() {
-}
-
 
 void low_diameter_clustering::match(const PartitionConfig & config,
                                     graph_access & G,

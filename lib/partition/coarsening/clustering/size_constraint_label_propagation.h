@@ -61,55 +61,49 @@ typedef std::unordered_map<const ensemble_pair,
 
 class size_constraint_label_propagation : public matching {
         public:
-                size_constraint_label_propagation();
-                virtual ~size_constraint_label_propagation();
+                size_constraint_label_propagation() = default;
+                ~size_constraint_label_propagation() override = default;
 
                 void match(const PartitionConfig & config, 
                                 graph_access & G, 
                                 Matching & _matching, 
                                 CoarseMapping & coarse_mapping, 
                                 NodeID & no_of_coarse_vertices,
-                                NodePermutationMap & permutation);
+                                NodePermutationMap & permutation) override;
 
 
                 void ensemble_clusterings(const PartitionConfig & config, 
-                                graph_access & G, 
-                                Matching & _matching, 
-                                CoarseMapping & coarse_mapping, 
-                                NodeID & no_of_coarse_vertices,
-                                NodePermutationMap & permutation);
+                                graph_access & G,
+                                CoarseMapping & coarse_mapping,
+                                NodeID & no_of_coarse_vertices);
 
-                void ensemble_two_clusterings( graph_access & G,
+                static void ensemble_two_clusterings( graph_access & G,
                                 std::vector<NodeID> & lhs, 
                                 std::vector<NodeID> & rhs, 
                                 std::vector< NodeID > & output,
                                 NodeID & no_of_coarse_vertices);
 
                 void match_internal(const PartitionConfig & config, 
-                                graph_access & G, 
-                                Matching & _matching, 
-                                CoarseMapping & coarse_mapping, 
-                                NodeID & no_of_coarse_vertices,
-                                NodePermutationMap & permutation);
-
-                void remap_cluster_ids(const PartitionConfig & partition_config, 
                                 graph_access & G,
+                                CoarseMapping & coarse_mapping, 
+                                NodeID & no_of_coarse_vertices);
+
+                static void remap_cluster_ids(graph_access & G,
                                 std::vector<NodeID> & cluster_id, 
                                 NodeID & no_of_coarse_vertices,
                                 bool apply_to_graph = false); 
 
-                void create_coarsemapping(const PartitionConfig & partition_config, 
-                                graph_access & G,
+                static void create_coarsemapping(graph_access & G,
                                 std::vector<NodeID> & cluster_id, 
                                 CoarseMapping & coarse_mapping); 
 
-                void label_propagation(const PartitionConfig & partition_config, 
+                static void label_propagation(const PartitionConfig & partition_config,
                                 graph_access & G,
                                 const NodeWeight & block_upperbound,
                                 std::vector<NodeID> & cluster_id, // output paramter
                                 NodeID & number_of_blocks); // output parameter
 
-                void label_propagation(const PartitionConfig & partition_config, 
+                static void label_propagation(const PartitionConfig & partition_config,
                                 graph_access & G, 
                                 std::vector<NodeWeight> & cluster_id,
                                 NodeID & number_of_blocks ); 

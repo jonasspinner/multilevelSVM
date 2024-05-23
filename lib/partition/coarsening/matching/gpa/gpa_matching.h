@@ -29,15 +29,15 @@
 
 class gpa_matching : public matching{
         public:
-                gpa_matching( );
-                virtual ~gpa_matching();
+                gpa_matching( ) = default;
+                ~gpa_matching() override = default;
 
                 void match(const PartitionConfig & config, 
                                 graph_access & G, 
                                 Matching & _matching, 
                                 CoarseMapping & coarse_mapping, 
                                 NodeID & no_of_coarse_vertices,
-                                NodePermutationMap & permutation);
+                                NodePermutationMap & permutation) override;
         private:
                 void init(graph_access & G, 
                           const PartitionConfig & partition_config, 

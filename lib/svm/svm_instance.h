@@ -11,7 +11,7 @@
 class svm_instance
 {
 public:
-        svm_instance();
+        svm_instance() = default;
 
         void read_problem(const svm_data & min_data, const svm_data & maj_data);
         void read_problem(const graph_access & G_min, const graph_access & G_maj);
@@ -21,9 +21,9 @@ public:
         svm_node** node_data();
 	DataSet::node2d node_data_thunder();
 
-        NodeID num_min;
-        NodeID num_maj;
-        NodeID features;
+        NodeID num_min{};
+        NodeID num_maj{};
+        NodeID features{};
 
         std::shared_ptr<std::vector<double>> labels;
 

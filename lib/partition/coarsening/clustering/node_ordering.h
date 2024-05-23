@@ -33,29 +33,26 @@
 
 class node_ordering {
 public:
-        node_ordering();
-        virtual ~node_ordering();
-
-        void order_nodes(const PartitionConfig & config, graph_access & G, std::vector< NodeID > & ordered_nodes) {
+        static void order_nodes(const PartitionConfig & config, graph_access & G, std::vector< NodeID > & ordered_nodes) {
                 forall_nodes(G, node) {
                         ordered_nodes[node] = node;
                 } endfor
 
                 switch( config.node_ordering ) {
                         case RANDOM_NODEORDERING:
-                                order_nodes_random(config, G, ordered_nodes);
+                                order_nodes_random(ordered_nodes);
                              break;
                         case DEGREE_NODEORDERING:
-                                order_nodes_degree(config, G, ordered_nodes);
+                                order_nodes_degree(G, ordered_nodes);
                              break;
                  }
         }
 
-        void order_nodes_random(const PartitionConfig & config, graph_access & G, std::vector< NodeID > & ordered_nodes) { 
+        static void order_nodes_random(std::vector< NodeID > & ordered_nodes) {
                 random_functions::permutate_vector_fast(ordered_nodes, false);
         }
 
-        void order_nodes_degree(const PartitionConfig & config, graph_access & G, std::vector< NodeID > & ordered_nodes) { 
+        static void order_nodes_degree(graph_access & G, std::vector< NodeID > & ordered_nodes) {
                 std::sort( ordered_nodes.begin(), ordered_nodes.end(), 
                            [&]( const NodeID & lhs, const NodeID & rhs) -> bool {
                                 return (G.getNodeDegree(lhs) < G.getNodeDegree(rhs));

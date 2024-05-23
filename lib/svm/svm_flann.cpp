@@ -1,9 +1,7 @@
 #include "svm_flann.h"
 
 #include <flann/flann.hpp>
-#include <utility>
 #include "definitions.h"
-#include "tools/timer.h"
 
 
 void svm_flann::run_flann(const std::vector<FeatureVec> & data, std::vector<std::vector<Edge>> & graph, int num_nn) {
@@ -26,13 +24,13 @@ void svm_flann::run_flann(const std::vector<FeatureVec> & data, std::vector<std:
         std::vector<std::vector<int>> indices;
         std::vector<std::vector<FeatureData>> distances;
 
-        // (num_nn + 1) because we don't count the vertex it self as neighbor but flann does
+        // (num_nn + 1) because we don't count the vertex itself as neighbor but flann does
         index.knnSearch(mat, indices, distances, num_nn + 1, params);
 
         graph.clear();
         graph.reserve(rows);
         for (size_t i = 0; i < rows; ++i) {
-		graph.push_back(std::vector<Edge>());
+		graph.emplace_back();
 		graph.back().reserve(num_nn);
 
                 for (size_t j = 0; j < (size_t) num_nn + 1; ++j) {
@@ -42,7 +40,7 @@ void svm_flann::run_flann(const std::vector<FeatureVec> & data, std::vector<std:
                         if (target == i) //exclude self loops
                                 continue;
 
-                        Edge edge;
+                        Edge edge{};
                         edge.target = target;
                         edge.weight = weight;
                         graph.back().push_back(edge);

@@ -28,7 +28,7 @@
 // Configuration for the partitioning.
 struct PartitionConfig
 {
-        PartitionConfig() {}
+        PartitionConfig() = default;
 
 
         //============================================================
@@ -46,7 +46,7 @@ struct PartitionConfig
 
         bool rate_first_level_inner_outer = false;
 
-        NodeWeight max_vertex_weight;
+        NodeWeight max_vertex_weight{};
 
         unsigned aggressive_random_levels = 3;
 
@@ -82,11 +82,11 @@ struct PartitionConfig
 
         long seed = 0;
 
-        std::string filename = "";
+        std::string filename;
 
-        std::string filename_output = "";
+        std::string filename_output;
 
-        double time_limit;
+        double time_limit{};
 
         int timeout = 0;
 
@@ -130,7 +130,7 @@ struct PartitionConfig
         //=======================================
         //=======================================
 
-        bool balance_edges;
+        bool balance_edges{};
 
         bool gpa_grow_paths_between_blocks = true;
 
@@ -168,12 +168,9 @@ struct PartitionConfig
 
 	int bayes_max_steps = 10;
 
-        void LogDump(FILE *out) const {
-        }
+	void print() const;
 
-	void print();
-
-	void apply();
+	void apply() const;
 };
 
 #endif /* end of include guard: PARTITION_CONFIG_DI1ES4T0 */

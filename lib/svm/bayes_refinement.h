@@ -16,7 +16,7 @@ public:
 			 const svm_result<T> & initial_result, PartitionConfig conf,
 			 bayesopt::BOptState state);
 
-	virtual ~bayes_refinement();
+	virtual ~bayes_refinement() = default;
 
         svm_result<T> step(const svm_data & min_sample, const svm_data & maj_sample) override;
 
@@ -28,9 +28,9 @@ public:
 					 int optimization_steps,
 					 long seed);
 private:
-	long seed;
-	int fix_num_vert_stop;
-	int bayes_max_steps;
+	long seed{};
+	int fix_num_vert_stop{};
+	int bayes_max_steps{};
 	bayesopt::BOptState opt_state;
 };
 

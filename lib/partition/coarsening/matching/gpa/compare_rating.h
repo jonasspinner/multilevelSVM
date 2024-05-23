@@ -28,8 +28,8 @@
 
 class compare_rating : public std::binary_function<EdgeRatingType, EdgeRatingType, bool> {
         public:
-                compare_rating(graph_access * pG) : G(pG) {};
-                virtual ~compare_rating() {};
+                explicit compare_rating(graph_access * pG) : G(pG) {};
+                virtual ~compare_rating() = default;
 
                 bool operator() (const EdgeRatingType left, const EdgeRatingType right ) {
                         return G->getEdgeRating(left) > G->getEdgeRating(right);

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
-#include <algorithm>
 #include <cmath>
 #include <functional>
+#include <utility>
 #include <thundersvm/model/svc.h>
 
 #include "svm/param_search.h"
@@ -11,8 +11,8 @@
 #include "tools/timer.h"
 
 template<class T>
-svm_solver<T>::svm_solver(const svm_instance & instance)
-    : instance(instance) {
+svm_solver<T>::svm_solver(svm_instance  instance)
+    : instance(std::move(instance)) {
         this->param.svm_type = C_SVC;
         this->param.kernel_type = RBF;
         this->param.degree = 3;
@@ -26,12 +26,8 @@ svm_solver<T>::svm_solver(const svm_instance & instance)
         this->param.shrinking = 1;
         this->param.probability = 0;
         this->param.nr_weight = 0;
-        this->param.weight_label = NULL;
-        this->param.weight = NULL;
-}
-
-template<class T>
-svm_solver<T>::svm_solver() {
+        this->param.weight_label = nullptr;
+        this->param.weight = nullptr;
 }
 
 template<class T>

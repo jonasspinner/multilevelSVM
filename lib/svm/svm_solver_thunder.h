@@ -9,8 +9,10 @@
 class svm_solver_thunder : public svm_solver<SVC>
 {
 public:
-	svm_solver_thunder();
-        svm_solver_thunder(const svm_instance & instance);
+    	svm_solver_thunder() : svm_solver<SVC>() {};
+        explicit svm_solver_thunder(svm_instance instance) : svm_solver<SVC>(std::move(instance)) {};
+
+        ~svm_solver_thunder() override = default;
 
         void train() override;
         int predict(const std::vector<svm_node> & node) override;

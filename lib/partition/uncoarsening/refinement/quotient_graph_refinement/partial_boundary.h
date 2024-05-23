@@ -51,8 +51,8 @@ typedef std::unordered_map<const NodeID, is_boundary, hash_boundary_nodes, compa
 
 class PartialBoundary {
         public:
-                PartialBoundary( );
-                virtual ~PartialBoundary();
+                PartialBoundary( ) = default;
+                virtual ~PartialBoundary() = default;
 
                 bool contains(NodeID node);
                 void insert(NodeID node);

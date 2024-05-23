@@ -2,10 +2,6 @@
 #include <iostream>
 #include <iomanip>
 
-results::results() {
-        this->cur_iteration = -1;
-}
-
 void results::next() {
         this->cur_iteration += 1;
 }

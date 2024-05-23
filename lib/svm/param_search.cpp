@@ -1,9 +1,8 @@
-#include <iostream>
 #include <cmath>
 
 #include "param_search.h"
 
-constexpr int param_search::UDTable[31][30][2];
+
 
 std::vector<svm_param> param_search::around(float c_center, float c_radius, float c_step,
                                             float g_center, float g_radius, float g_step) {
@@ -23,7 +22,7 @@ std::vector<svm_param> param_search::grid(float c_from, float c_to, float c_step
 
         for (auto&& c : seq_c) {
                 for (auto&& g : seq_g) {
-                        seq.push_back(std::make_pair(c,g));
+                        seq.emplace_back(c,g);
                 }
         }
 
@@ -96,7 +95,7 @@ std::vector<std::pair<float,float>> param_search::ud(float c_from, float c_to, f
                 g = log(g) / log(lg_base);
                 // end scale */
 
-                seq.push_back(std::make_pair(c,g));
+                seq.emplace_back(c,g);
         }
 
         return seq;

@@ -1,8 +1,6 @@
 #include "svm_instance.h"
 #include "svm_convert.h"
 
-svm_instance::svm_instance() {
-}
 
 void svm_instance::read_problem(const svm_data & min_data, const svm_data & maj_data) {
         this->num_min = min_data.size();
@@ -37,10 +35,10 @@ void svm_instance::allocate_prob(NodeID total_size) {
 }
 
 void svm_instance::add_to_problem(const svm_data & data, int label) {
-        for (NodeID node = 0; node < data.size(); node++) {
+        for (const auto & node : data) {
                 this->labels->push_back(label);
 
-                this->nodes->push_back(data[node]);
+                this->nodes->push_back(node);
                 this->nodes_meta->push_back(this->nodes->back().data());
         }
 }
@@ -49,7 +47,7 @@ void svm_instance::add_to_problem(const graph_access & G, int label) {
         forall_nodes(G, node) {
                 this->labels->push_back(label);
 
-                const FeatureVec vec = G.getFeatureVec(node);
+                const FeatureVec& vec = G.getFeatureVec(node);
                 svm_feature svm_nodes = svm_convert::feature_to_node(vec);
                 this->nodes->push_back(std::move(svm_nodes));
                 this->nodes_meta->push_back(this->nodes->back().data());

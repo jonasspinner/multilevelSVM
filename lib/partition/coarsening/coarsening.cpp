@@ -22,6 +22,7 @@
 
 #include <limits>
 #include <sstream>
+#include <memory>
 
 #include "coarsening.h"
 #include "coarsening_configurator.h"
@@ -31,35 +32,27 @@
 #include "edge_rating/edge_ratings.h"
 #include "stop_rules/stop_rules.h"
 
-coarsening::coarsening() {
-
-}
-
-coarsening::~coarsening() {
-
-}
-
 void coarsening::perform_coarsening(const PartitionConfig & partition_config, graph_access & G, graph_hierarchy & hierarchy) {
 
         NodeID no_of_coarser_vertices = G.number_of_nodes();
         NodeID no_of_finer_vertices   = std::numeric_limits<NodeID>::max();
 
         edge_ratings rating(partition_config);
-        CoarseMapping* coarse_mapping = NULL;
+        CoarseMapping* coarse_mapping = nullptr;
 
         graph_access* finer                      = &G;
-        matching* edge_matcher                   = NULL;
-        contraction* contracter                  = new contraction();
+        matching* edge_matcher                   = nullptr;
+        std::unique_ptr<contraction> contracter                  = std::make_unique<contraction>();
         PartitionConfig copy_of_partition_config = partition_config;
 
-        stop_rule* coarsening_stop_rule = NULL;
+        std::unique_ptr<stop_rule> coarsening_stop_rule;
 
         switch (partition_config.stop_rule) {
         case STOP_RULE_SIMPLE_FIXED:
-                coarsening_stop_rule = new simple_fixed_stop_rule(copy_of_partition_config, G.number_of_nodes());
+                coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config, G.number_of_nodes());
                 break;
         default:
-                coarsening_stop_rule = new simple_fixed_stop_rule(copy_of_partition_config, G.number_of_nodes());
+                coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config, G.number_of_nodes());
         }
 
         coarsening_configurator coarsening_config;
@@ -67,7 +60,7 @@ void coarsening::perform_coarsening(const PartitionConfig & partition_config, gr
         unsigned int level    = 0;
 
         while (coarsening_stop_rule->stop(no_of_finer_vertices, no_of_coarser_vertices)) {
-                graph_access* coarser = new graph_access();
+                auto* coarser = new graph_access();
                 coarse_mapping        = new CoarseMapping();
                 Matching edge_matching;
                 NodePermutationMap permutation;
@@ -97,8 +90,5 @@ void coarsening::perform_coarsening(const PartitionConfig & partition_config, gr
                 level++;
         }
 
-        hierarchy.push_back(finer, NULL); // append the last created level
-
-        delete contracter;
-        delete coarsening_stop_rule;
+        hierarchy.push_back(finer, nullptr); // append the last created level
 }

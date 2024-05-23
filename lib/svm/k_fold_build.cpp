@@ -15,9 +15,6 @@ k_fold_build::k_fold_build(const PartitionConfig & config, const std::string & f
         readData(filename);
 }
 
-k_fold_build::~k_fold_build() {
-}
-
 void k_fold_build::readData(const std::string & filename) {
         timer t;
 
@@ -36,7 +33,7 @@ void k_fold_build::readData(const std::string & filename) {
 }
 
 
-void k_fold_build::next_intern(double & io_time) {
+void k_fold_build::next_intern(double & _io_time) {
         this->cur_min_train.clear();
         this->cur_maj_train.clear();
         this->cur_min_val.clear();

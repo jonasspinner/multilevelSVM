@@ -25,23 +25,15 @@
 
 #include "../edge_rating/edge_ratings.h"
 #include "../matching/gpa/gpa_matching.h"
-#include "data_structure/union_find.h"
 #include "node_ordering.h"
 #include "tools/random_functions.h"
 
 #include "size_constraint_label_propagation.h"
 
-size_constraint_label_propagation::size_constraint_label_propagation() {
-                
-}
-
-size_constraint_label_propagation::~size_constraint_label_propagation() {
-                
-}
 
 void size_constraint_label_propagation::match(const PartitionConfig & partition_config, 
                                               graph_access & G, 
-                                              Matching & _matching, 
+                                              Matching & _matching,
                                               CoarseMapping & coarse_mapping, 
                                               NodeID & no_of_coarse_vertices,
                                               NodePermutationMap & permutation) {
@@ -50,24 +42,22 @@ void size_constraint_label_propagation::match(const PartitionConfig & partition_
         no_of_coarse_vertices = 0;
 
         if ( partition_config.ensemble_clusterings ) {
-                ensemble_clusterings(partition_config, G, _matching, coarse_mapping, no_of_coarse_vertices, permutation);
+                ensemble_clusterings(partition_config, G, coarse_mapping, no_of_coarse_vertices);
         } else {
-                match_internal(partition_config, G, _matching, coarse_mapping, no_of_coarse_vertices, permutation);
+                match_internal(partition_config, G, coarse_mapping, no_of_coarse_vertices);
         }
 }
 
 void size_constraint_label_propagation::match_internal(const PartitionConfig & partition_config, 
                                               graph_access & G, 
-                                              Matching & _matching, 
-                                              CoarseMapping & coarse_mapping, 
-                                              NodeID & no_of_coarse_vertices,
-                                              NodePermutationMap & permutation) {
+                                              CoarseMapping & coarse_mapping,
+                                              NodeID & no_of_coarse_vertices) {
 
         std::vector<NodeWeight> cluster_id(G.number_of_nodes());
         NodeWeight block_upperbound = ceil(partition_config.upper_bound_partition/(double)partition_config.cluster_coarsening_factor);
 
         label_propagation( partition_config, G, block_upperbound, cluster_id, no_of_coarse_vertices);
-        create_coarsemapping( partition_config, G, cluster_id, coarse_mapping);
+        create_coarsemapping(G, cluster_id, coarse_mapping);
 }
 
 void size_constraint_label_propagation::ensemble_two_clusterings( graph_access & G, 
@@ -80,7 +70,7 @@ void size_constraint_label_propagation::ensemble_two_clusterings( graph_access &
         hash_ensemble new_mapping; 
         no_of_coarse_vertices = 0;
         for( NodeID node = 0; node < lhs.size(); node++) {
-                ensemble_pair cur_pair;
+                ensemble_pair cur_pair{};
                 cur_pair.lhs = lhs[node]; 
                 cur_pair.rhs = rhs[node]; 
                 cur_pair.n   = G.number_of_nodes(); 
@@ -99,10 +89,8 @@ void size_constraint_label_propagation::ensemble_two_clusterings( graph_access &
 
 void size_constraint_label_propagation::ensemble_clusterings(const PartitionConfig & partition_config, 
                                                              graph_access & G, 
-                                                             Matching & _matching, 
-                                                             CoarseMapping & coarse_mapping, 
-                                                             NodeID & no_of_coarse_vertices,
-                                                             NodePermutationMap & permutation) {
+                                                             CoarseMapping & coarse_mapping,
+                                                             NodeID & no_of_coarse_vertices) {
         int runs = partition_config.number_of_clusterings;
         std::vector< NodeID >  cur_cluster(G.number_of_nodes(), 0);
         std::vector< NodeID >  ensemble_cluster(G.number_of_nodes(),0);
@@ -127,7 +115,7 @@ void size_constraint_label_propagation::ensemble_clusterings(const PartitionConf
                 new_cf = random_functions::nextInt(10, 30);
         }
 
-        create_coarsemapping( partition_config, G, ensemble_cluster, coarse_mapping);
+        create_coarsemapping(G, ensemble_cluster, coarse_mapping);
 
 
 }
@@ -146,8 +134,7 @@ void size_constraint_label_propagation::label_propagation(const PartitionConfig 
                                                          const NodeWeight & block_upperbound,
                                                          std::vector<NodeWeight> & cluster_id,  
                                                          NodeID & no_of_blocks) {
-        // in this case the _matching paramter is not used 
-        // coarse_mappng stores cluster id and the mapping (it is identical)
+        // coarse_mapping stores cluster id and the mapping (it is identical)
         std::vector<PartitionID> hash_map(G.number_of_nodes(),0);
         std::vector<NodeID> permutation(G.number_of_nodes());
         std::vector<NodeWeight> cluster_sizes(G.number_of_nodes());
@@ -164,7 +151,6 @@ void size_constraint_label_propagation::label_propagation(const PartitionConfig 
         n_ordering.order_nodes(partition_config, G, permutation);
 
         for( int j = 0; j < partition_config.label_iterations; j++) {
-                unsigned int change_counter = 0;
                 forall_nodes(G, i) {
                         NodeID node = permutation[i];
                         //now move the node to the cluster that is most common in the neighborhood
@@ -199,18 +185,16 @@ void size_constraint_label_propagation::label_propagation(const PartitionConfig 
 			cluster_local_sizes[cluster_id[node]]--;
 			cluster_sizes[max_block]         += G.getNodeWeight(node);
 			cluster_local_sizes[max_block]++;
-			change_counter                   += (cluster_id[node] != max_block);
 			cluster_id[node]                  = max_block;
                 } endfor
         }
 
-        remap_cluster_ids( partition_config, G, cluster_id, no_of_blocks);
+        remap_cluster_ids(G, cluster_id, no_of_blocks);
 }
 
 
 
-void size_constraint_label_propagation::create_coarsemapping(const PartitionConfig & partition_config, 
-                                                             graph_access & G,
+void size_constraint_label_propagation::create_coarsemapping(graph_access & G,
                                                              std::vector<NodeWeight> & cluster_id,
                                                              CoarseMapping & coarse_mapping) {
         forall_nodes(G, node) {
@@ -218,8 +202,7 @@ void size_constraint_label_propagation::create_coarsemapping(const PartitionConf
         } endfor
 }
 
-void size_constraint_label_propagation::remap_cluster_ids(const PartitionConfig & partition_config, 
-                                                          graph_access & G,
+void size_constraint_label_propagation::remap_cluster_ids(graph_access & G,
                                                           std::vector<NodeWeight> & cluster_id,
                                                           NodeID & no_of_coarse_vertices, bool apply_to_graph) {
 

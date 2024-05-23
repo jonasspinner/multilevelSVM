@@ -29,7 +29,7 @@
 
 class graph_hierarchy {
 public:
-        graph_hierarchy( );
+        graph_hierarchy() = default;
         virtual ~graph_hierarchy();
 
         void push_back(graph_access * G, CoarseMapping * coarse_mapping);
@@ -48,10 +48,10 @@ private:
         std::stack<CoarseMapping*>  m_the_mappings;
         std::vector<CoarseMapping*> m_to_delete_mappings;
         std::vector<graph_access*>  m_to_delete_hierachies;
-        graph_access  * m_current_coarser_graph;
-        graph_access  * m_coarsest_graph;
-        graph_access  * m_finest_graph = nullptr;
-        CoarseMapping * m_current_coarse_mapping;
+        graph_access  * m_current_coarser_graph{nullptr};
+        graph_access  * m_coarsest_graph{nullptr};
+        graph_access  * m_finest_graph{nullptr};
+        CoarseMapping * m_current_coarse_mapping{nullptr};
 };
 
 

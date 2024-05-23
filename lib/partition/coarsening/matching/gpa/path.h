@@ -28,25 +28,25 @@
 class path {
         public:
                 path( );
-                path( const NodeID & v );
-                virtual ~path();
+                explicit path( const NodeID & v );
+                ~path() = default;
 
                 void init(const NodeID & v);
 
-                NodeID get_tail() const;
-                void set_tail(const NodeID & id);
+                [[nodiscard]] NodeID get_tail() const;
+                void set_tail(const NodeID & v);
 
-                NodeID get_head() const;
-                void set_head(const NodeID & id);
+                [[nodiscard]] NodeID get_head() const;
+                void set_head(const NodeID & v);
 
                 void set_length(const EdgeID & length);
-                EdgeID get_length() const;
+                [[nodiscard]] EdgeID get_length() const;
                 
                 //returns wether the path is a cycle or not.  
-                bool is_cycle() const;
+                [[nodiscard]] bool is_cycle() const;
 
-                bool is_active() const;
-                void set_active(const bool active);
+                [[nodiscard]] bool is_active() const;
+                void set_active(bool active);
 
         private:
                 //Last vertex of the path. Cycles have head == tail

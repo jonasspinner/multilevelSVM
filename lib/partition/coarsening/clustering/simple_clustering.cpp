@@ -4,10 +4,6 @@
 #include "data_structure/graph_access.h"
 
 
-simple_clustering::simple_clustering() {}
-
-simple_clustering::~simple_clustering() {}
-
 void simple_clustering::match(const PartitionConfig & config,
                               graph_access & G,
                               Matching & _matching,

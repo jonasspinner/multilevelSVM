@@ -5,14 +5,13 @@
 
 #include "svm/svm_refinement.h"
 #include "svm/svm_convert.h"
-#include "tools/timer.h"
 
 
 template<class T>
 svm_refinement<T>::svm_refinement(graph_hierarchy & min_hierarchy,
 				  graph_hierarchy & maj_hierarchy,
 				  const svm_result<T> & initial_result,
-				  PartitionConfig conf)
+				  const PartitionConfig& conf)
     : result(initial_result) {
         this->min_hierarchy = &min_hierarchy;
         this->maj_hierarchy = &maj_hierarchy;
@@ -35,10 +34,6 @@ svm_refinement<T>::svm_refinement(graph_hierarchy & min_hierarchy,
 }
 
 template<class T>
-svm_refinement<T>::~svm_refinement() {
-}
-
-template<class T>
 bool svm_refinement<T>::is_done() {
         return this->min_hierarchy->isEmpty() && this->maj_hierarchy->isEmpty();
 }
@@ -51,7 +46,7 @@ int svm_refinement<T>::get_level() {
 template<class T>
 void svm_refinement<T>::uncoarse(const std::vector<NodeID> & sv_min,
 				 const std::vector<NodeID> & sv_maj) {
-        // if maj_hierarchy is larger then start by only uncoarse the maj graph
+        // if maj_hierarchy is larger than start by only uncoarse the maj graph
         if (!min_hierarchy->isEmpty() && min_hierarchy->size() >= maj_hierarchy->size()) {
                 std::cout << "minority uncoarsed" << std::endl;
                 this->G_min = this->min_hierarchy->pop_finer_and_project();

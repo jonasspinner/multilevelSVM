@@ -14,9 +14,6 @@ fix_refinement<T>::fix_refinement(graph_hierarchy & min_hierarchy,
 }
 
 template<class T>
-fix_refinement<T>::~fix_refinement() {}
-
-template<class T>
 svm_result<T> fix_refinement<T>::step(const svm_data & min_sample, const svm_data & maj_sample) {
 	std::cout << "FIX refinement at level " << this->get_level() << std::endl;
 

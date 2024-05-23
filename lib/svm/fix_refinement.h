@@ -11,7 +11,7 @@ class fix_refinement : public svm_refinement<T>
 public:
 	fix_refinement(graph_hierarchy & min_hierarchy, graph_hierarchy & maj_hierarchy,
 		       const svm_result<T> & initial_result, PartitionConfig conf);
-	virtual ~fix_refinement();
+	virtual ~fix_refinement() = default;
 
 	svm_result<T> step(const svm_data & min_sample, const svm_data & maj_sample) override;
 

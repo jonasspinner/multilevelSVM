@@ -1,20 +1,14 @@
 #include <algorithm>
 #include <functional>
+#include <memory>
 
 #include "svm/param_search.h"
 #include "svm/svm_solver_thunder.h"
 #include "svm/svm_convert.h"
-#include "tools/timer.h"
 
-svm_solver_thunder::svm_solver_thunder(const svm_instance & instance)
-	: svm_solver(instance) {
-}
-
-svm_solver_thunder::svm_solver_thunder() : svm_solver() {
-}
 
 void svm_solver_thunder::train() {
-	this->model = std::shared_ptr<SVC>(new SVC());
+	this->model = std::make_shared<SVC>();
 	SvmParam param;
 	param.svm_type = SvmParam::SVM_TYPE::C_SVC;
 	param.kernel_type = SvmParam::KERNEL_TYPE::RBF;

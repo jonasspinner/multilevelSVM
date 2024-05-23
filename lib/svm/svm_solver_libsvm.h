@@ -9,8 +9,8 @@
 class svm_solver_libsvm : public svm_solver<svm_model>
 {
 public:
-	svm_solver_libsvm();
-        svm_solver_libsvm(const svm_instance & instance);
+	    svm_solver_libsvm() : svm_solver<svm_model>() {};
+        explicit svm_solver_libsvm(svm_instance instance) : svm_solver<svm_model>(std::move(instance)) {};
 
         void train() override;
         int predict(const std::vector<svm_node> & node) override;

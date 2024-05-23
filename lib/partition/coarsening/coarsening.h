@@ -29,10 +29,7 @@
 
 class coarsening {
 public:
-        coarsening ();
-        virtual ~coarsening ();
-
-        void perform_coarsening(const PartitionConfig & config, graph_access & G, graph_hierarchy & hierarchy);
+        static void perform_coarsening(const PartitionConfig & config, graph_access & G, graph_hierarchy & hierarchy);
 };
 
 #endif /* end of include guard: COARSENING_UU97ZBTR */

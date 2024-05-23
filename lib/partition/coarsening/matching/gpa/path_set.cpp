@@ -41,7 +41,3 @@ path_set::path_set( graph_access * G_, const PartitionConfig * config_ ): pG(G_)
        
 }
 
-path_set::~path_set() {
-                
-}
-

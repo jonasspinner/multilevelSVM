@@ -15,8 +15,9 @@ template<class T>
 class svm_solver
 {
 public:
-        svm_solver();
-        svm_solver(const svm_instance & instance);
+        svm_solver() = default;
+        explicit svm_solver(svm_instance  instance);
+        virtual ~svm_solver() = default;
 
         virtual void train() = 0;
 	svm_result<T> train_range(const std::vector<svm_param> & params,
@@ -42,8 +43,8 @@ public:
 	const svm_instance & get_instance();
 
 protected:
-        svm_parameter param;
-        svm_instance instance;
+        svm_parameter param{};
+        svm_instance instance{};
 	std::shared_ptr<T> model;
 };
 

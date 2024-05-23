@@ -15,9 +15,6 @@ ud_refinement<T>::ud_refinement(graph_hierarchy & min_hierarchy,
 }
 
 template<class T>
-ud_refinement<T>::~ud_refinement() {}
-
-template<class T>
 svm_result<T> ud_refinement<T>::step(const svm_data & min_sample, const svm_data & maj_sample) {
 	std::cout << "UD refinement at level " << this->get_level() << std::endl;
 

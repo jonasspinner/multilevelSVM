@@ -11,8 +11,8 @@ template<class T>
 class svm_result
 {
 public:
-        svm_result(const svm_instance & instance);
-        svm_result(const std::vector<svm_summary<T>> & summaries, const svm_instance & instance);
+        explicit svm_result(svm_instance  instance);
+        svm_result(const std::vector<svm_summary<T>> & summaries, svm_instance  instance);
 
         svm_summary<T> best();
 
@@ -24,7 +24,7 @@ public:
         std::vector<svm_summary<T>> summaries;
         svm_instance instance;
 
-        static size_t get_best_index(const std::vector<std::pair<svm_summary<T>,svm_instance>> vec);
+        static size_t get_best_index(const std::vector<std::pair<svm_summary<T>,svm_instance>> &vec);
 };
 
 

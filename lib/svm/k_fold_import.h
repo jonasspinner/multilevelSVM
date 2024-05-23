@@ -8,10 +8,10 @@ class k_fold_import: public k_fold
 {
 public:
         k_fold_import(const PartitionConfig & config, int num_exp, const std::string & basename);
-        virtual ~k_fold_import();
+        ~k_fold_import() override = default;
 
 protected:
-        virtual void next_intern(double & io_time) override;
+        void next_intern(double & io_time) override;
 	double read_class(const std::string & filename,
 			  graph_access & target_graph,
 			  std::vector<std::vector<svm_node>> & target_val);

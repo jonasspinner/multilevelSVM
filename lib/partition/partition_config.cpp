@@ -4,7 +4,7 @@
 
 #include "tools/random_functions.h"
 
-void PartitionConfig::print() {
+void PartitionConfig::print() const {
 	std::cout << "file: " << this->filename << std::endl;
 	std::cout << "num_experiments: " << this->num_experiments << std::endl;
 	std::cout << "kfold_iterations: " << this->kfold_iterations << std::endl;
@@ -35,7 +35,7 @@ void PartitionConfig::print() {
 	std::cout << "seed: " << this->seed << std::endl;
 }
 
-void PartitionConfig::apply() {
+void PartitionConfig::apply() const {
 	random_functions::setSeed(this->seed);
 	if (this->n_cores > 0) {
 		omp_set_num_threads(this->n_cores);

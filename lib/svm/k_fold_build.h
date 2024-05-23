@@ -8,10 +8,10 @@ class k_fold_build: public k_fold
 {
 public:
         k_fold_build(const PartitionConfig & config, const std::string & basename);
-        virtual ~k_fold_build();
+        ~k_fold_build() override = default;
 
 protected:
-        virtual void next_intern(double & io_time) override;
+        void next_intern(double & io_time) override;
 
         void readData(const std::string & filename);
         void calculate_kfold_class(const std::vector<FeatureVec> & features_full,

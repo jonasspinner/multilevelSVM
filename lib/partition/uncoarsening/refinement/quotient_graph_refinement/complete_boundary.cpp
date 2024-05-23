@@ -21,18 +21,11 @@
  *****************************************************************************/
 
 #include "complete_boundary.h"
-#include "tools/quality_metrics.h"
 
 complete_boundary::complete_boundary(graph_access * G) {
         m_graph_ref   = G;
-        m_pb_lhs_lazy = 0;
-        m_pb_rhs_lazy = 0;
-        m_last_pair   = 0;
         m_last_key    = -1;
         m_block_infos.resize(G->get_partition_count());
         delete Q.graphref;
-        Q.graphref    = NULL;
-}
-
-complete_boundary::~complete_boundary() {
+        Q.graphref    = nullptr;
 }

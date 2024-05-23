@@ -36,11 +36,11 @@
 
 class graph_io {
         public:
-                graph_io();
-                virtual ~graph_io () ;
+                graph_io() = default;
+                virtual ~graph_io () = default;
 
 		static
-		int writeGraphGDF(const graph_access & G_min, const graph_access & G_maj, std::string filename);
+		int writeGraphGDF(const graph_access & G_min, const graph_access & G_maj, const std::string& filename);
 
                 static
                 int readFeatures(graph_access & G, const std::vector<FeatureVec> & data);

@@ -8,10 +8,10 @@ class k_fold_once : public k_fold_build
 {
 public:
 	k_fold_once(const PartitionConfig & config, const std::string & basename);
-	virtual ~k_fold_once();
+	~k_fold_once() override =default;
 
 protected:
-	virtual void next_intern(double & io_time) override;
+	void next_intern(double & io_time) override;
 };
 
 #endif /* K_FOLD_ONCE_H */
