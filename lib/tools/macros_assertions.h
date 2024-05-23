@@ -34,7 +34,7 @@
 // A custom assertion macro that does not kill the program but prints to
 // stderr instead.  
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_TRUE(x) do {} while (false);
+# define ASSERT_TRUE(x) do {} while (false)
 #else
 # define ASSERT_TRUE(expression) \
         do { \
@@ -49,7 +49,7 @@
 // Assert: left != right.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_NEQ(left, right) do {} while (false);
+# define ASSERT_NEQ(left, right) do {} while (false)
 #else
 # define ASSERT_NEQ(left, right) \
         do { \
@@ -65,7 +65,7 @@
 // Assert: left == right.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_EQ(left, right) do {} while (false);
+# define ASSERT_EQ(left, right) do {} while (false)
 #else
 # define ASSERT_EQ(left, right) \
         do { \
@@ -81,7 +81,7 @@
 // Assert: left < right.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_LT(left, right) do {} while (false);
+# define ASSERT_LT(left, right) do {} while (false)
 #else
 # define ASSERT_LT(left, right) \
         do { \
@@ -97,7 +97,7 @@
 // Assert: left > right.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_GT(left, right) do {} while (false);
+# define ASSERT_GT(left, right) do {} while (false)
 #else
 # define ASSERT_GT(left, right) \
         do { \
@@ -113,7 +113,7 @@
 // Assert: left <= right.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_LEQ(left, right) do {} while (false);
+# define ASSERT_LEQ(left, right) do {} while (false)
 #else
 # define ASSERT_LEQ(left, right) \
         do { \
@@ -129,7 +129,7 @@
 // Assert: left >= right.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_GEQ(left, right) do {} while (false);
+# define ASSERT_GEQ(left, right) do {} while (false)
 #else
 # define ASSERT_GEQ(left, right) \
         do { \
@@ -145,7 +145,7 @@
 // Assert: x <= y <= z.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_BETWEEN(x, y, z) do {} while (false);
+# define ASSERT_BETWEEN(x, y, z) do {} while (false)
 #else
 # define ASSERT_BETWEEN(left, x, right) \
         do { \
@@ -162,7 +162,7 @@
 // Assert: \forall begin <= i < end: sequence[i] > x.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_RANGE_GT(sequence, begin, end, x, i) do {} while (false);
+# define ASSERT_RANGE_GT(sequence, begin, end, x, i) do {} while (false)
 #else
 # define ASSERT_RANGE_GT(sequence, begin, end, x, i) \
         for (int i = begin; i < end; ++i) { \
@@ -173,7 +173,7 @@
 // Assert: \forall begin <= i < end: sequence[i] >= x.
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_RANGE_GEQ(sequence, begin, end, x, i) do {} while (false);
+# define ASSERT_RANGE_GEQ(sequence, begin, end, x, i) do {} while (false)
 #else
 # define ASSERT_RANGE_GEQ(sequence, begin, end, x, i) \
         for (int i = begin; i < end; ++i) { \
@@ -183,7 +183,7 @@
 
 //#ifdef NDEBUG
 #if (defined(NDEBUG) || defined(SPEEDPROFILING))
-# define ASSERT_RANGE_EQ(sequence, begin, end, x) do {} while (false);
+# define ASSERT_RANGE_EQ(sequence, begin, end, x) do {} while (false)
 #else
 # define ASSERT_RANGE_EQ(sequence, begin, end, x) \
         for (unsigned int i = begin; i < end; ++i) { \
