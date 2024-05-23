@@ -1,3 +1,5 @@
+#include <thundersvm/model/svc.h>
+
 #include "fix_refinement.h"
 #include "svm_summary.h"
 #include "svm_solver_factory.h"

@@ -1,3 +1,4 @@
+#include <thundersvm/model/svc.h>
 #include "svm/ud_refinement.h"
 
 #include "svm/param_search.h"

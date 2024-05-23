@@ -37,7 +37,7 @@ int svm_solver_libsvm::predict(const std::vector<svm_node> & nodes) {
 }
 
 
-void svm_solver_libsvm::export_to_file(const string & path) {
+void svm_solver_libsvm::export_to_file(const std::string & path) {
 	int ret = svm_save_model(path.c_str(), this->model.get());
 	assert(ret == 0);
 }

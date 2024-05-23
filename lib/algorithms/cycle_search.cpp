@@ -24,8 +24,8 @@
 
 #include "algorithms/strongly_connected_components.h"
 #include "cycle_search.h"
-#include "random_functions.h"
-#include "timer.h"
+#include "tools/random_functions.h"
+#include "tools/timer.h"
 
 double cycle_search::total_time = 0;
 

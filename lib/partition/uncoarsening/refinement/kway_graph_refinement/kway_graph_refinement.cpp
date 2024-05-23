@@ -26,8 +26,8 @@
 #include "kway_graph_refinement.h"
 #include "kway_graph_refinement_core.h"
 #include "kway_stop_rule.h"
-#include "quality_metrics.h"
-#include "random_functions.h"
+#include "tools/quality_metrics.h"
+#include "tools/random_functions.h"
 
 kway_graph_refinement::kway_graph_refinement() {
 }

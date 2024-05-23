@@ -35,7 +35,7 @@ public:
 	virtual std::vector<int> predict_batch(const svm_data & data);
         virtual int predict(const std::vector<svm_node> & node) = 0;
 
-	virtual void export_to_file(const string & path) = 0;
+	virtual void export_to_file(const std::string & path) = 0;
 
 	virtual std::pair<std::vector<NodeID>, std::vector<NodeID>> get_SV() = 0;
 
