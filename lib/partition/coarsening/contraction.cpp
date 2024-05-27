@@ -32,7 +32,7 @@ void contraction::contract(const PartitionConfig &partition_config,
                            const Matching &edge_matching,
                            const CoarseMapping &coarse_mapping,
                            const NodeID &no_of_coarse_vertices,
-                           const NodePermutationMap &permutation) const {
+                           const NodePermutationMap &permutation) {
 
     if (partition_config.matching_type == LP_CLUSTERING
         || partition_config.matching_type == SIMPLE_CLUSTERING
@@ -46,11 +46,9 @@ void contraction::contract(const PartitionConfig &partition_config,
     }
 
     std::vector<NodeID> new_edge_targets(G.number_of_edges());
-    forall_edges(G, e)
-            {
-                new_edge_targets[e] = coarse_mapping[G.getEdgeTarget(e)];
-            }
-    endfor
+    for (auto e: G.edges()) {
+        new_edge_targets[e] = coarse_mapping[G.getEdgeTarget(e)];
+    }
 
     std::vector<EdgeID> edge_positions(no_of_coarse_vertices, UNDEFINED_EDGE);
 
@@ -208,7 +206,7 @@ FeatureVec contraction::combineFeatureVec(const FeatureVec &vec1, NodeWeight wei
 }
 
 void contraction::divideVec(FeatureVec &vec, NodeWeight weights) {
-    for (double & f : vec) {
+    for (double &f: vec) {
         f /= (float) weights;
     }
 }

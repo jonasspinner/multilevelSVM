@@ -57,7 +57,7 @@ void gpa_matching::match(const PartitionConfig &partition_config,
     path_set pathset(&G, &partition_config);
 
     //grow the paths
-    forall_edges(G, e)
+    for (auto  e : G.edges())
             {
                 EdgeID curEdge = edge_permutation[e];
                 NodeID source = sources[curEdge];
@@ -81,7 +81,6 @@ void gpa_matching::match(const PartitionConfig &partition_config,
 
                 pathset.add_if_applicable(source, curEdge);
             }
-    endfor
 
     extract_paths_apply_matching(G, sources, edge_matching, pathset);
 

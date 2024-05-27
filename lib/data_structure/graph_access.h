@@ -180,7 +180,6 @@ private:
 };
 
 //macros - graph access
-#define forall_edges(G, e) { for(EdgeID e : G.edges()) {
 #define forall_out_edges(G, e, n) { for(EdgeID e = G.get_first_edge(n), end = G.get_first_invalid_edge(n); e < end; ++e) {
 #define endfor }}
 
