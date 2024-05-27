@@ -179,9 +179,8 @@ private:
     EdgeID current_edge{}; //current edge that is constructed
 };
 
-//makros - graph access
+//macros - graph access
 #define forall_edges(G, e) { for(EdgeID e : G.edges()) {
-#define forall_nodes(G, n) { for(NodeID n : G.nodes()) {
 #define forall_out_edges(G, e, n) { for(EdgeID e = G.get_first_edge(n), end = G.get_first_invalid_edge(n); e < end; ++e) {
 #define endfor }}
 
@@ -436,19 +435,17 @@ inline void graph_access::copy(graph_access &G_bar) {
     G_bar.start_construction(number_of_nodes(), number_of_edges());
 
     basicGraph &ref = *graphref;
-    forall_nodes(ref, node)
-            {
-                NodeID shadow_node = G_bar.new_node();
-                G_bar.setNodeWeight(shadow_node, getNodeWeight(node));
-                forall_out_edges(ref, e, node)
-                        {
-                            NodeID target = getEdgeTarget(e);
-                            EdgeID shadow_edge = G_bar.new_edge(shadow_node, target);
-                            G_bar.setEdgeWeight(shadow_edge, getEdgeWeight(e));
-                        }
-                endfor
-            }
-    endfor
+    for (auto node: ref.nodes()) {
+        NodeID shadow_node = G_bar.new_node();
+        G_bar.setNodeWeight(shadow_node, getNodeWeight(node));
+        forall_out_edges(ref, e, node)
+                {
+                    NodeID target = getEdgeTarget(e);
+                    EdgeID shadow_edge = G_bar.new_edge(shadow_node, target);
+                    G_bar.setEdgeWeight(shadow_edge, getEdgeWeight(e));
+                }
+        endfor
+    }
 
     G_bar.finish_construction();
 }

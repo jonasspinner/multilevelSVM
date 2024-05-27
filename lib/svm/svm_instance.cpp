@@ -44,16 +44,14 @@ void svm_instance::add_to_problem(const svm_data &data, int label) {
 }
 
 void svm_instance::add_to_problem(const graph_access &G, int label) {
-    forall_nodes(G, node)
-            {
-                this->labels->push_back(label);
+    for (auto node: G.nodes()) {
+        this->labels->push_back(label);
 
-                const FeatureVec &vec = G.getFeatureVec(node);
-                svm_feature svm_nodes = svm_convert::feature_to_node(vec);
-                this->nodes->push_back(std::move(svm_nodes));
-                this->nodes_meta->push_back(this->nodes->back().data());
-            }
-    endfor
+        const FeatureVec &vec = G.getFeatureVec(node);
+        svm_feature svm_nodes = svm_convert::feature_to_node(vec);
+        this->nodes->push_back(std::move(svm_nodes));
+        this->nodes_meta->push_back(this->nodes->back().data());
+    }
 }
 
 int svm_instance::size() {

@@ -37,18 +37,16 @@ void low_diameter_clustering::match(const PartitionConfig &config,
 
     while (numVisited < G.number_of_nodes()) {
         // add new BFS centers
-        forall_nodes(G, v)
-                {
-                    // node is unvisited
-                    // and should be added in the current round
-                    if (C[v].first == std::numeric_limits<EdgeWeight>::max()
-                        && delta[v].first < rounds + 1) {
-                        frontier.push_back(v);
-                        C[v].first = -1;
-                        C[v].second = v;
-                    }
-                }
-        endfor
+        for (auto v: G.nodes()) {
+            // node is unvisited
+            // and should be added in the current round
+            if (C[v].first == std::numeric_limits<EdgeWeight>::max()
+                && delta[v].first < rounds + 1) {
+                frontier.push_back(v);
+                C[v].first = -1;
+                C[v].second = v;
+            }
+        }
         numVisited += frontier.size();
         std::unordered_set<NodeID> next_frontier;
         for (NodeID v: frontier) {
@@ -90,15 +88,13 @@ void low_diameter_clustering::remap_cluster_ids(const graph_access &G,
     coarse_mapping.resize(G.number_of_nodes());
     no_of_coarse_vertices = 0;
     std::unordered_map<NodeID, NodeID> remap;
-    forall_nodes(G, node)
-            {
-                NodeID cur_cluster = C[node].second;
-                if (remap.count(cur_cluster) == 0) {
-                    remap[cur_cluster] = no_of_coarse_vertices;
-                    no_of_coarse_vertices += 1;
-                }
+    for (auto node: G.nodes()) {
+        NodeID cur_cluster = C[node].second;
+        if (remap.count(cur_cluster) == 0) {
+            remap[cur_cluster] = no_of_coarse_vertices;
+            no_of_coarse_vertices += 1;
+        }
 
-                coarse_mapping[node] = remap[cur_cluster];
-            }
-    endfor
+        coarse_mapping[node] = remap[cur_cluster];
+    }
 }

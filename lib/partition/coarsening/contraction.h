@@ -38,13 +38,13 @@ public:
                   const NodeID &no_of_coarse_vertices,
                   const NodePermutationMap &permutation) const;
 
-    void contract_clustering(const PartitionConfig &partition_config,
+    static void contract_clustering(const PartitionConfig &partition_config,
                              graph_access &finer,
                              graph_access &coarser,
                              const Matching &edge_matching,
                              const CoarseMapping &coarse_mapping,
                              const NodeID &no_of_coarse_vertices,
-                             const NodePermutationMap &permutation) const;
+                             const NodePermutationMap &permutation) ;
 
 private:
     // visits an edge in G (and auxillary graph) and updates/creates and edge in coarser graph
@@ -61,9 +61,9 @@ private:
 
     static void divideVec(FeatureVec &vec, NodeWeight weights);
 
-    void addWeightedToVec(FeatureVec &vec, const FeatureVec &vecToAdd, NodeWeight weight) const;
+    static void addWeightedToVec(FeatureVec &vec, const FeatureVec &vecToAdd, NodeWeight weight) ;
 
-    [[nodiscard]] EdgeWeight calcFeatureDist(const FeatureVec &vec1, const FeatureVec &vec2) const;
+    [[nodiscard]] static EdgeWeight calcFeatureDist(const FeatureVec &vec1, const FeatureVec &vec2) ;
 };
 
 inline void contraction::visit_edge(graph_access &G,

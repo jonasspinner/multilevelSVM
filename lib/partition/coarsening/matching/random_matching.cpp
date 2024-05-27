@@ -48,45 +48,41 @@ void random_matching::match(const PartitionConfig &partition_config,
         }
     }
 
-    forall_nodes(G, n)
-            {
-                edge_matching[n] = n;
-            }
-    endfor
+    for (auto n: G.nodes()) {
+        edge_matching[n] = n;
+    }
 
     //copy n paste from the first if clause but this time all edges are matchable
-    forall_nodes(G, n)
-            {
-                NodeID curNode = permutation[n];
-                NodeWeight curNodeWeight = G.getNodeWeight(curNode);
+    for (auto n: G.nodes()) {
+        NodeID curNode = permutation[n];
+        NodeWeight curNodeWeight = G.getNodeWeight(curNode);
 
-                if (edge_matching[curNode] == curNode) {
-                    //match with a random neighbor
-                    NodeID matchingPartner = curNode;
-                    forall_out_edges(G, e, curNode)
-                            {
-                                NodeID target = G.getEdgeTarget(e);
-                                NodeWeight coarser_weight = G.getNodeWeight(target) + curNodeWeight;
+        if (edge_matching[curNode] == curNode) {
+            //match with a random neighbor
+            NodeID matchingPartner = curNode;
+            forall_out_edges(G, e, curNode)
+                    {
+                        NodeID target = G.getEdgeTarget(e);
+                        NodeWeight coarser_weight = G.getNodeWeight(target) + curNodeWeight;
 
-                                if (edge_matching[target] == target
-                                    && coarser_weight <= partition_config.max_vertex_weight) {
-                                    matchingPartner = target;
-                                    ASSERT_NEQ(curNode, target);
-                                    break;
-                                }
-                            }
-                    endfor
+                        if (edge_matching[target] == target
+                            && coarser_weight <= partition_config.max_vertex_weight) {
+                            matchingPartner = target;
+                            ASSERT_NEQ(curNode, target);
+                            break;
+                        }
+                    }
+            endfor
 
-                    coarse_mapping[matchingPartner] = no_of_coarse_vertices;
-                    coarse_mapping[curNode] = no_of_coarse_vertices;
+            coarse_mapping[matchingPartner] = no_of_coarse_vertices;
+            coarse_mapping[curNode] = no_of_coarse_vertices;
 
-                    edge_matching[matchingPartner] = curNode;
-                    edge_matching[curNode] = matchingPartner;
+            edge_matching[matchingPartner] = curNode;
+            edge_matching[curNode] = matchingPartner;
 
-                    no_of_coarse_vertices++;
-                }
-            }
-    endfor
+            no_of_coarse_vertices++;
+        }
+    }
 
     PRINT(std::cout << "log>" << "no of coarse nodes: " << no_of_coarse_vertices << std::endl;)
 }

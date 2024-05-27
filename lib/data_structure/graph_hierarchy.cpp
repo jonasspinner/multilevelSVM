@@ -64,13 +64,11 @@ graph_access *graph_hierarchy::pop_finer_and_project() {
     //perform projection
     graph_access &fRef = *finer;
     graph_access &cRef = *m_current_coarser_graph;
-    forall_nodes(fRef, n)
-            {
-                NodeID coarser_node = (*coarse_mapping)[n];
-                PartitionID coarser_partition_id = cRef.getPartitionIndex(coarser_node);
-                fRef.setPartitionIndex(n, coarser_partition_id);
-            }
-    endfor
+    for (auto n: fRef.nodes()) {
+        NodeID coarser_node = (*coarse_mapping)[n];
+        PartitionID coarser_partition_id = cRef.getPartitionIndex(coarser_node);
+        fRef.setPartitionIndex(n, coarser_partition_id);
+    }
 
     m_current_coarse_mapping = coarse_mapping;
     finer->set_partition_count(m_current_coarser_graph->get_partition_count());

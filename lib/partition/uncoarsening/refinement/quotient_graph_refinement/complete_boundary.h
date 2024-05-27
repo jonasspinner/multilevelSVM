@@ -100,36 +100,33 @@ inline void complete_boundary::build() {
         m_block_infos[block].block_no_nodes = 0;
     }
 
-    forall_nodes(G, n)
-            {
-                PartitionID source_partition = G.getPartitionIndex(n);
-                m_block_infos[source_partition].block_weight += G.getNodeWeight(n);
-                m_block_infos[source_partition].block_no_nodes += 1;
+    for (auto n: G.nodes()) {
+        PartitionID source_partition = G.getPartitionIndex(n);
+        m_block_infos[source_partition].block_weight += G.getNodeWeight(n);
+        m_block_infos[source_partition].block_no_nodes += 1;
 
-                if (G.getNodeDegree(n) == 0) {
-                    m_singletons.push_back(n);
+        if (G.getNodeDegree(n) == 0) {
+            m_singletons.push_back(n);
+        }
+
+        forall_out_edges(G, e, n)
+                {
+                    NodeID targetID = G.getEdgeTarget(e);
+                    PartitionID target_partition = G.getPartitionIndex(targetID);
+                    bool is_cut_edge = (source_partition != target_partition);
+
+                    if (is_cut_edge) {
+                        boundary_pair bp{};
+                        bp.k = m_graph_ref->get_partition_count();
+                        bp.lhs = source_partition;
+                        bp.rhs = target_partition;
+                        update_lazy_values(&bp);
+                        m_pairs[bp].edge_cut += G.getEdgeWeight(e);
+                        insert(n, source_partition, &bp);
+                    }
                 }
-
-                forall_out_edges(G, e, n)
-                        {
-                            NodeID targetID = G.getEdgeTarget(e);
-                            PartitionID target_partition = G.getPartitionIndex(targetID);
-                            bool is_cut_edge = (source_partition != target_partition);
-
-                            if (is_cut_edge) {
-                                boundary_pair bp{};
-                                bp.k = m_graph_ref->get_partition_count();
-                                bp.lhs = source_partition;
-                                bp.rhs = target_partition;
-                                update_lazy_values(&bp);
-                                m_pairs[bp].edge_cut += G.getEdgeWeight(e);
-                                insert(n, source_partition, &bp);
-                            }
-                        }
-                endfor
-            }
-    endfor
-
+        endfor
+    }
     block_pairs::iterator iter;
     for (iter = m_pairs.begin(); iter != m_pairs.end(); iter++) {
         data_boundary_pair &value = iter->second;
@@ -264,33 +261,31 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
             NodeID rhs_no_nodes = 0;
 
             EdgeWeight edge_cut = 0;
-            forall_nodes(G, n)
-                    {
-                        PartitionID source_partition = G.getPartitionIndex(n);
-                        if (source_partition == lhs) {
-                            lhs_part_weight += G.getNodeWeight(n);
-                            lhs_no_nodes++;
-                        } else if (source_partition == rhs) {
-                            rhs_part_weight += G.getNodeWeight(n);
-                            rhs_no_nodes++;
+            for (auto n: G.nodes()) {
+                PartitionID source_partition = G.getPartitionIndex(n);
+                if (source_partition == lhs) {
+                    lhs_part_weight += G.getNodeWeight(n);
+                    lhs_no_nodes++;
+                } else if (source_partition == rhs) {
+                    rhs_part_weight += G.getNodeWeight(n);
+                    rhs_no_nodes++;
+                }
+
+                forall_out_edges(G, e, n)
+                        {
+                            NodeID targetID = G.getEdgeTarget(e);
+                            PartitionID target_partition = G.getPartitionIndex(targetID);
+                            bool is_cut_edge = (source_partition == lhs && target_partition == rhs)
+                                               || (source_partition == rhs && target_partition == lhs);
+
+                            if (is_cut_edge) {
+                                edge_cut += G.getEdgeWeight(e);
+                                ASSERT_TRUE(contains(n, source_partition, &bp));
+                            }
+
                         }
-
-                        forall_out_edges(G, e, n)
-                                {
-                                    NodeID targetID = G.getEdgeTarget(e);
-                                    PartitionID target_partition = G.getPartitionIndex(targetID);
-                                    bool is_cut_edge = (source_partition == lhs && target_partition == rhs)
-                                                       || (source_partition == rhs && target_partition == lhs);
-
-                                    if (is_cut_edge) {
-                                        edge_cut += G.getEdgeWeight(e);
-                                        ASSERT_TRUE(contains(n, source_partition, &bp));
-                                    }
-
-                                }
-                        endfor
-                    }
-            endfor
+                endfor
+            }
 
             ASSERT_EQ(m_block_infos[lhs].block_weight, lhs_part_weight);
             ASSERT_EQ(m_block_infos[rhs].block_weight, rhs_part_weight);
@@ -305,29 +300,28 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
 
 [[maybe_unused]] inline bool complete_boundary::assert_boundaries_are_bnodes() {
     graph_access &G = *m_graph_ref;
-    forall_nodes(G, n)
-            {
-                PartitionID partition = G.getPartitionIndex(n);
-                forall_out_edges(G, e, n)
-                        {
-                            NodeID target = G.getEdgeTarget(e);
-                            PartitionID targets_partition = G.getPartitionIndex(target);
+    for (auto n: G.nodes()) {
+        PartitionID partition = G.getPartitionIndex(n);
+        forall_out_edges(G, e, n)
+                {
+                    NodeID target = G.getEdgeTarget(e);
+                    PartitionID targets_partition = G.getPartitionIndex(target);
 
-                            if (partition != targets_partition) {
-                                boundary_pair bp{};
-                                bp.k = G.get_partition_count();
-                                bp.lhs = partition;
-                                bp.rhs = targets_partition;
+                    if (partition != targets_partition) {
+                        boundary_pair bp{};
+                        bp.k = G.get_partition_count();
+                        bp.lhs = partition;
+                        bp.rhs = targets_partition;
 
-                                ASSERT_TRUE(contains(n, partition, &bp));
-                                ASSERT_TRUE(contains(target, targets_partition, &bp));
+                        ASSERT_TRUE(contains(n, partition, &bp));
+                        ASSERT_TRUE(contains(target, targets_partition, &bp));
 
-                            }
-                        }
-                endfor
+                    }
+                }
+        endfor
 
-            }
-    endfor
+    }
+
     QuotientGraphEdges qgraph_edges;
     getQuotientGraphEdges(qgraph_edges);
     for (auto &pair: qgraph_edges) {

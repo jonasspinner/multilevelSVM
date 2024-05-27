@@ -24,17 +24,15 @@ svm_refinement<T>::svm_refinement(graph_hierarchy &min_hierarchy,
 
     // init identity data_mapping
     this->data_mapping_min.reserve(uncoarsed_data_min.size());
-    forall_nodes((*G_min), node)
-            {
-                this->data_mapping_min.push_back(node);
-            }
-    endfor
+    for (auto node: (*G_min).nodes()) {
+        this->data_mapping_min.push_back(node);
+    }
+
     this->data_mapping_maj.reserve(uncoarsed_data_maj.size());
-    forall_nodes((*G_maj), node)
-            {
-                this->data_mapping_maj.push_back(node);
-            }
-    endfor
+    for (auto node: (*G_maj).nodes()) {
+        this->data_mapping_maj.push_back(node);
+    }
+
 }
 
 template<class T>
@@ -81,15 +79,13 @@ svm_data svm_refinement<T>::uncoarse_SV(graph_access &G,
 
     data_mapping.clear();
 
-    forall_nodes(G, node)
-            {
-                NodeID coarse_node = coarse_mapping[node];
-                if (sv_set.find(coarse_node) != sv_set.end()) {
-                    data_mapping.push_back(node);
-                    svm_feature feature = svm_convert::feature_to_node(G.getFeatureVec(node));
-                    new_data.push_back(std::move(feature));
-                }
-        endfor
+    for (auto node: G.nodes()) {
+        NodeID coarse_node = coarse_mapping[node];
+        if (sv_set.find(coarse_node) != sv_set.end()) {
+            data_mapping.push_back(node);
+            svm_feature feature = svm_convert::feature_to_node(G.getFeatureVec(node));
+            new_data.push_back(std::move(feature));
+        }
     }
 
     std::cout << "uncoarsened nodes " << G.number_of_nodes()

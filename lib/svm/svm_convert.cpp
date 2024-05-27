@@ -24,11 +24,9 @@ svm_feature svm_convert::feature_to_node(const FeatureVec &vec) {
 svm_data svm_convert::graph_to_nodes(const graph_access &G) {
     std::vector<std::vector<svm_node>> nodes;
 
-    forall_nodes(G, n)
-            {
-                nodes.push_back(svm_convert::feature_to_node(G.getFeatureVec(n)));
-            }
-    endfor
+    for (auto n: G.nodes()) {
+        nodes.push_back(svm_convert::feature_to_node(G.getFeatureVec(n)));
+    }
 
     return nodes;
 }

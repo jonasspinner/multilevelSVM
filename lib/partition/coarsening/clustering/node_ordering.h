@@ -34,11 +34,9 @@
 class node_ordering {
 public:
     static void order_nodes(const PartitionConfig &config, graph_access &G, std::vector<NodeID> &ordered_nodes) {
-        forall_nodes(G, node)
-                {
-                    ordered_nodes[node] = node;
-                }
-        endfor
+        for (auto node: G.nodes()) {
+            ordered_nodes[node] = node;
+        }
 
         switch (config.node_ordering) {
             case DEGREE_NODEORDERING:
