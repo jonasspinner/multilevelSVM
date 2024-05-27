@@ -39,7 +39,7 @@ coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_ac
     NodeID no_of_finer_vertices = std::numeric_limits<NodeID>::max();
 
     edge_ratings rating(partition_config);
-    CoarseMapping *coarse_mapping = nullptr;
+    CoarseMapping *coarse_mapping;
 
     graph_access *finer = &G;
     std::unique_ptr<matching> edge_matcher;

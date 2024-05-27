@@ -52,7 +52,7 @@ void random_matching::match(const PartitionConfig &partition_config,
         edge_matching[n] = n;
     }
 
-    //copy n paste from the first if clause but this time all edges are matchable
+    //copy n paste from the first if-clause but this time all edges are matchable
     for (auto n: G.nodes()) {
         NodeID curNode = permutation[n];
         NodeWeight curNodeWeight = G.getNodeWeight(curNode);

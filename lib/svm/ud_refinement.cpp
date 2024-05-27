@@ -120,7 +120,7 @@ svm_result<T> ud_refinement<T>::train_refinement(svm_solver<T> &solver,
     } else {
         std::cout << "2nd sweep with logC=" << param_c << " logGamma=" << param_g << std::endl;
         params = param_search::ud(-5, 15, -10, 10, false, true, param_c, param_g);
-        params.push_back(std::make_pair(param_c, param_g));
+        params.emplace_back(param_c, param_g);
     }
 
 

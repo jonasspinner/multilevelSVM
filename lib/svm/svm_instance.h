@@ -16,7 +16,7 @@ public:
 
     void read_problem(const graph_access &G_min, const graph_access &G_maj);
 
-    int size();
+    [[nodiscard]] size_t size() const;
 
     double *label_data();
 

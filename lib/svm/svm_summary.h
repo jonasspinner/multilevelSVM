@@ -12,13 +12,13 @@ class svm_summary {
 public:
     svm_summary(NodeID tp, NodeID tn, NodeID fp, NodeID fn);
 
-    void print();
+    void print() const;
 
-    void print_short();
+    void print_short() const;
 
-    NodeID num_SV_min();
+    [[nodiscard]] NodeID num_SV_min() const;
 
-    NodeID num_SV_maj();
+    [[nodiscard]] NodeID num_SV_maj() const;
 
     bool operator>(const svm_summary new_) const {
         return (this->Gmean > new_.Gmean);

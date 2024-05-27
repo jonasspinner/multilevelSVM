@@ -109,10 +109,6 @@ struct PartitionConfig {
 
     int number_of_clusterings = 1;
 
-    double balance_factor = 0;
-
-    int repetitions = 1;
-
     //=======================================
     //==========LABEL PROPAGATION============
     //=======================================

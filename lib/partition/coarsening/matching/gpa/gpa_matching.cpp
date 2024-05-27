@@ -57,30 +57,29 @@ void gpa_matching::match(const PartitionConfig &partition_config,
     path_set pathset(&G, &partition_config);
 
     //grow the paths
-    for (auto  e : G.edges())
-            {
-                EdgeID curEdge = edge_permutation[e];
-                NodeID source = sources[curEdge];
-                NodeID target = G.getEdgeTarget(curEdge);
-                if (target < source) continue; // get rid of double edges
+    for (auto e: G.edges()) {
+        EdgeID curEdge = edge_permutation[e];
+        NodeID source = sources[curEdge];
+        NodeID target = G.getEdgeTarget(curEdge);
+        if (target < source) continue; // get rid of double edges
 
-                if (G.getEdgeRating(curEdge) == 0.0) {
-                    continue;
-                }
+        if (G.getEdgeRating(curEdge) == 0.0) {
+            continue;
+        }
 
-                //max vertex weight constraint
-                if (G.getNodeWeight(source) + G.getNodeWeight(target) > partition_config.max_vertex_weight) {
-                    continue;
-                }
+        //max vertex weight constraint
+        if (G.getNodeWeight(source) + G.getNodeWeight(target) > partition_config.max_vertex_weight) {
+            continue;
+        }
 
-                if (partition_config.combine) {
-                    if (G.getSecondPartitionIndex(source) != G.getSecondPartitionIndex(target)) {
-                        continue;
-                    }
-                }
-
-                pathset.add_if_applicable(source, curEdge);
+        if (partition_config.combine) {
+            if (G.getSecondPartitionIndex(source) != G.getSecondPartitionIndex(target)) {
+                continue;
             }
+        }
+
+        pathset.add_if_applicable(source, curEdge);
+    }
 
     extract_paths_apply_matching(G, sources, edge_matching, pathset);
 
@@ -201,7 +200,7 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
 
             if (p.get_length() == 1) {
                 //match them directly
-                EdgeID e = 0;
+                EdgeID e;
                 if (pathset.next_vertex(p.get_tail()) == p.get_head()) {
                     e = pathset.edge_to_next(p.get_tail());
                 } else {

@@ -32,7 +32,7 @@ public:
 
     virtual ~edge_ratings() = default;
 
-    void rate(graph_access &G, unsigned level);
+    void rate(graph_access &G, unsigned level) const;
 
     static void rate_expansion_star_2(graph_access &G);
 

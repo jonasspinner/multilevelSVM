@@ -27,7 +27,7 @@
 #include "tools/random_functions.h"
 
 
-void edge_ratings::rate(graph_access &G, unsigned level) {
+void edge_ratings::rate(graph_access &G, unsigned level) const {
     //rate the edges
     if (level == 0 && partition_config.first_level_random_matching) {
         return;
@@ -55,7 +55,6 @@ void edge_ratings::rate(graph_access &G, unsigned level) {
                 rate_expansion_star_2_algdist(G);
                 break;
             case WEIGHT:
-                break;
             case REALWEIGHT:
                 break;
             case SEPARATOR_MULTX:
@@ -73,36 +72,27 @@ void edge_ratings::rate(graph_access &G, unsigned level) {
             case SEPARATOR_R1:
                 rate_separator_r1(G);
                 break;
-
             case SEPARATOR_R2:
                 rate_separator_r2(G);
                 break;
-
             case SEPARATOR_R3:
                 rate_separator_r3(G);
                 break;
-
             case SEPARATOR_R4:
                 rate_separator_r4(G);
                 break;
-
             case SEPARATOR_R5:
                 rate_separator_r5(G);
                 break;
-
             case SEPARATOR_R6:
                 rate_separator_r6(G);
                 break;
-
             case SEPARATOR_R7:
                 rate_separator_r7(G);
                 break;
-
             case SEPARATOR_R8:
                 rate_separator_r8(G);
                 break;
-
-
         }
     }
 }

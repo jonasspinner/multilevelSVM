@@ -1,8 +1,6 @@
-#include <algorithm>
 #include <functional>
 #include <memory>
 
-#include "svm/param_search.h"
 #include "svm/svm_solver_thunder.h"
 #include "svm/svm_convert.h"
 
@@ -63,10 +61,7 @@ std::pair<std::vector<NodeID>, std::vector<NodeID>> svm_solver_thunder::get_SV()
     std::vector<NodeID> SV_min;
     std::vector<NodeID> SV_maj;
 
-    for (size_t i = 0; i < SV_ind.size(); i++) {
-        int index = SV_ind[i];
-        // std::cout << index << std::endl;
-
+    for (int index: SV_ind) {
         if (index < instance.num_min) {
             SV_min.push_back(index);
         } else {

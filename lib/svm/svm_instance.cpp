@@ -54,7 +54,7 @@ void svm_instance::add_to_problem(const graph_access &G, int label) {
     }
 }
 
-int svm_instance::size() {
+size_t svm_instance::size() const {
     return this->labels->size();
 }
 

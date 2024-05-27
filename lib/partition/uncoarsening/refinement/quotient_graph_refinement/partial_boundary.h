@@ -52,40 +52,17 @@ typedef std::unordered_map<const NodeID, is_boundary, hash_boundary_nodes, compa
 
 class PartialBoundary {
 public:
-    PartialBoundary() = default;
+    bool contains(NodeID node) {
+        return internal_boundary.find(node) != internal_boundary.end();
+    }
 
-    virtual ~PartialBoundary() = default;
+    inline void insert(NodeID node) { internal_boundary[node].contains = true; }
 
-    bool contains(NodeID node);
+    inline NodeID size() const { return internal_boundary.size(); }
 
-    void insert(NodeID node);
-
-    void clear();
-
-    NodeID size();
+    inline void clear() { return internal_boundary.clear(); }
 
     is_boundary_node_hashtable internal_boundary;
 };
 
-inline bool PartialBoundary::contains(NodeID node) {
-    return internal_boundary.find(node) != internal_boundary.end();
-}
-
-inline void PartialBoundary::insert(NodeID node) {
-    internal_boundary[node].contains = true;
-}
-
-inline NodeID PartialBoundary::size() {
-    return internal_boundary.size();
-}
-
-inline void PartialBoundary::clear() {
-    return internal_boundary.clear();
-}
-
-
-
-//iterator for
-#define forall_boundary_nodes(boundary, n) { is_boundary_node_hashtable::iterator iter; NodeID n; for(iter = boundary.internal_boundary.begin(); iter != boundary.internal_boundary.end(); iter++ ) { n = iter->first;
-
-#endif /* end of include guard: PARTIAL_BOUNDARY_963CRO9F */
+#endif /* end of include guard: PARTIAL_BOUNDARY_963CRO9F_ */

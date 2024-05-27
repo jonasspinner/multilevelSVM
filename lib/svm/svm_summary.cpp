@@ -30,7 +30,7 @@ svm_summary<T>::svm_summary(NodeID tp, NodeID tn, NodeID fp, NodeID fn) {
 
 
 template<class T>
-void svm_summary<T>::print() {
+void svm_summary<T>::print() const {
     std::cout << std::setprecision(5)
               << "log C: " << this->C_log
               << " log g: " << this->gamma_log
@@ -57,7 +57,7 @@ void svm_summary<T>::print() {
 }
 
 template<class T>
-void svm_summary<T>::print_short() {
+void svm_summary<T>::print_short() const {
     std::cout << std::setprecision(3)
               << "  \tACC=" << this->Acc
               << "\tGmean=" << this->Gmean
@@ -69,12 +69,12 @@ void svm_summary<T>::print_short() {
 }
 
 template<class T>
-NodeID svm_summary<T>::num_SV_min() {
+NodeID svm_summary<T>::num_SV_min() const {
     return this->SV_min.size();
 }
 
 template<class T>
-NodeID svm_summary<T>::num_SV_maj() {
+NodeID svm_summary<T>::num_SV_maj() const {
     return this->SV_maj.size();
 }
 
