@@ -20,8 +20,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-#ifndef GRAPH_HIERACHY_UMHG74CO
-#define GRAPH_HIERACHY_UMHG74CO
+#ifndef GRAPH_HIERARCHY_UMHG74CO
+#define GRAPH_HIERARCHY_UMHG74CO
 
 #include <stack>
 
@@ -52,7 +52,7 @@ private:
     std::stack<graph_access *> m_the_graph_hierarchy;
     std::stack<CoarseMapping *> m_the_mappings;
     std::vector<CoarseMapping *> m_to_delete_mappings;
-    std::vector<graph_access *> m_to_delete_hierachies;
+    std::vector<graph_access *> m_to_delete_hierarchies;
     graph_access *m_current_coarser_graph{nullptr};
     graph_access *m_coarsest_graph{nullptr};
     graph_access *m_finest_graph{nullptr};
@@ -60,4 +60,4 @@ private:
 };
 
 
-#endif /* end of include guard: GRAPH_HIERACHY_UMHG74CO */
+#endif /* end of include guard: GRAPH_HIERARCHY_UMHG74CO */

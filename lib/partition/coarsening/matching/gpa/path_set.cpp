@@ -32,12 +32,14 @@ path_set::path_set(graph_access *G_, const PartitionConfig *config_) : pG(G_), c
                                                                        m_prev_edge(m_no_of_paths, UNDEFINED_EDGE) {
 
     graph_access &G = *pG;
-    forall_nodes(G, node){
+    forall_nodes(G, node)
+            {
                 m_paths[node].init(node);
                 m_vertex_to_path[node] = node;
                 m_next[node] = node;
                 m_prev[node] = node;
-            }endfor
+            }
+    endfor
 
 }
 

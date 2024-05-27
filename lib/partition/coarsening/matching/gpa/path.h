@@ -27,9 +27,9 @@
 
 class path {
 public:
-    path();
+    path() : head(UNDEFINED_NODE), tail(UNDEFINED_NODE), length(0), active(false) {}
 
-    explicit path(const NodeID &v);
+    explicit path(const NodeID &v) : head(v), tail(v), length(0), active(true) {}
 
     ~path() = default;
 

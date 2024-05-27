@@ -34,22 +34,19 @@
 class node_ordering {
 public:
     static void order_nodes(const PartitionConfig &config, graph_access &G, std::vector<NodeID> &ordered_nodes) {
-        forall_nodes(G, node){
+        forall_nodes(G, node)
+                {
                     ordered_nodes[node] = node;
-                }endfor
+                }
+        endfor
 
         switch (config.node_ordering) {
-            case RANDOM_NODEORDERING:
-                order_nodes_random(ordered_nodes);
-                break;
             case DEGREE_NODEORDERING:
                 order_nodes_degree(G, ordered_nodes);
                 break;
+            default:
+                throw std::invalid_argument("only DEGREE_NODEORDERING is supported by order_nodes");
         }
-    }
-
-    static void order_nodes_random(std::vector<NodeID> &ordered_nodes) {
-        random_functions::permutate_vector_fast(ordered_nodes, false);
     }
 
     static void order_nodes_degree(graph_access &G, std::vector<NodeID> &ordered_nodes) {

@@ -41,12 +41,12 @@ public:
                NodePermutationMap &permutation) override;
 
 private:
-    void init(graph_access &G,
-              const PartitionConfig &partition_config,
-              NodePermutationMap &permutation,
-              Matching &edge_matching,
-              std::vector<EdgeID> &edge_permutation,
-              std::vector<NodeID> &sources);
+    static void init(graph_access &G,
+                     const PartitionConfig &partition_config,
+                     NodePermutationMap &permutation,
+                     Matching &edge_matching,
+                     std::vector<EdgeID> &edge_permutation,
+                     std::vector<NodeID> &sources);
 
     void extract_paths_apply_matching(graph_access &G,
                                       std::vector<NodeID> &sources,
@@ -64,10 +64,10 @@ private:
                                  std::vector<EdgeID> &matched_edges,
                                  EdgeRatingType &final_rating);
 
-    void apply_matching(graph_access &G,
-                        std::vector<EdgeID> &matched_edges,
-                        std::vector<NodeID> &sources,
-                        Matching &edge_matching);
+    static void apply_matching(graph_access &G,
+                               std::vector<EdgeID> &matched_edges,
+                               std::vector<NodeID> &sources,
+                               Matching &edge_matching);
 };
 
 

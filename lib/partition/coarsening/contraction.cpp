@@ -46,9 +46,11 @@ void contraction::contract(const PartitionConfig &partition_config,
     }
 
     std::vector<NodeID> new_edge_targets(G.number_of_edges());
-    forall_edges(G, e){
+    forall_edges(G, e)
+            {
                 new_edge_targets[e] = coarse_mapping[G.getEdgeTarget(e)];
-            }endfor
+            }
+    endfor
 
     std::vector<EdgeID> edge_positions(no_of_coarse_vertices, UNDEFINED_EDGE);
 
@@ -59,7 +61,8 @@ void contraction::contract(const PartitionConfig &partition_config,
 
     NodeID cur_no_vertices = 0;
 
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 NodeID node = permutation[n];
                 //we look only at the coarser nodes
                 if (coarse_mapping[node] != cur_no_vertices)
@@ -74,9 +77,11 @@ void contraction::contract(const PartitionConfig &partition_config,
                 }
 
                 // do something with all outgoing edges (in auxillary graph)
-                forall_out_edges(G, e, node){
+                forall_out_edges(G, e, node)
+                        {
                             visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
-                        }endfor
+                        }
+                endfor
 
                 //this node was really matched
                 NodeID matched_neighbor = edge_matching[node];
@@ -96,16 +101,21 @@ void contraction::contract(const PartitionConfig &partition_config,
 
                     coarser.setFeatureVec(coarseNode, new_feature_vec);
 
-                    forall_out_edges(G, e, matched_neighbor){
+                    forall_out_edges(G, e, matched_neighbor)
+                            {
                                 visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
-                            }endfor
+                            }
+                    endfor
                 }
-                forall_out_edges(coarser, e, coarseNode){
+                forall_out_edges(coarser, e, coarseNode)
+                        {
                             edge_positions[coarser.getEdgeTarget(e)] = UNDEFINED_EDGE;
-                        }endfor
+                        }
+                endfor
 
                 cur_no_vertices++;
-            }endfor
+            }
+    endfor
 
     ASSERT_RANGE_EQ(edge_positions, 0, edge_positions.size(), UNDEFINED_EDGE);
     ASSERT_EQ(no_of_coarse_vertices, cur_no_vertices);
@@ -117,22 +127,24 @@ void contraction::contract(const PartitionConfig &partition_config,
 void contraction::contract_clustering(const PartitionConfig &partition_config,
                                       graph_access &G,
                                       graph_access &coarser,
-                                      const Matching &_edge_matching,
+                                      const Matching &,
                                       const CoarseMapping &coarse_mapping,
                                       const NodeID &no_of_coarse_vertices,
-                                      const NodePermutationMap &_permutation) const {
+                                      const NodePermutationMap &) const {
 
     if (partition_config.combine) {
         coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
     }
 
-    //save partition map -- important if the graph is allready partitioned
+    //save partition map -- important if the graph is already partitioned
     std::vector<int> partition_map(G.number_of_nodes());
-    int k = G.get_partition_count();
-    forall_nodes(G, node){
+    auto k = G.get_partition_count();
+    forall_nodes(G, node)
+            {
                 partition_map[node] = G.getPartitionIndex(node);
                 G.setPartitionIndex(node, coarse_mapping[node]);
-            }endfor
+            }
+    endfor
 
     G.set_partition_count(no_of_coarse_vertices);
 
@@ -147,7 +159,8 @@ void contraction::contract_clustering(const PartitionConfig &partition_config,
     int num_features = G.getFeatureVec(0).size();
     std::vector<FeatureVec> combined_feature_vecs(no_of_coarse_vertices, FeatureVec(num_features, 0));
 
-    forall_nodes(G, node){
+    forall_nodes(G, node)
+            {
                 NodeID coarsed_node = coarse_mapping[node];
                 // line commented out to keep the cluster index of the clustering in the partition index
                 // G.setPartitionIndex(node, partition_map[node]);
@@ -162,24 +175,31 @@ void contraction::contract_clustering(const PartitionConfig &partition_config,
                     coarser.setSecondPartitionIndex(coarse_mapping[node], G.getSecondPartitionIndex(node));
                 }
 
-            }endfor
+            }
+    endfor
 
-    forall_nodes(coarser, node){
+    forall_nodes(coarser, node)
+            {
                 divideVec(combined_feature_vecs[node], block_size[node]);
                 coarser.setFeatureVec(node, combined_feature_vecs[node]);
-        endfor}
+        endfor
+    }
 
     timer t;
 
     //calculate edge weights based on the distance of the feature vec
-    forall_nodes(coarser, node){
-                forall_out_edges(coarser, e, node){
+    forall_nodes(coarser, node)
+            {
+                forall_out_edges(coarser, e, node)
+                        {
                             NodeID target = coarser.getEdgeTarget(e);
                             EdgeWeight newWeight =
                                     1 / calcFeatureDist(coarser.getFeatureVec(node), coarser.getFeatureVec(target));
                             coarser.setEdgeWeight(e, newWeight);
-                    endfor}
-        endfor}
+                    endfor
+                }
+        endfor
+    }
 
     std::cout << "calc new weights took " << t.elapsed() << std::endl;
 }

@@ -26,6 +26,7 @@
 #include <bitset>
 #include <cassert>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include "definitions.h"
@@ -156,9 +157,7 @@ class graph_access {
     friend class complete_boundary;
 
 public:
-    graph_access() { graphref = new basicGraph(); }
-
-    virtual ~graph_access() { delete graphref; };
+    graph_access() : graphref(std::make_unique<basicGraph>()) {}
 
     /* ============================================================= */
     /* build methods */
@@ -222,7 +221,7 @@ public:
     void copy(graph_access &G_bar);
 
 private:
-    basicGraph *graphref;
+    std::unique_ptr<basicGraph> graphref;
     unsigned int m_partition_count{};
     std::vector<PartitionID> m_second_partition_index;
 };

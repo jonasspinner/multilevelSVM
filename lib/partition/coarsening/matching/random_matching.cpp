@@ -48,19 +48,23 @@ void random_matching::match(const PartitionConfig &partition_config,
         }
     }
 
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 edge_matching[n] = n;
-            }endfor
+            }
+    endfor
 
     //copy n paste from the first if clause but this time all edges are matchable
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 NodeID curNode = permutation[n];
                 NodeWeight curNodeWeight = G.getNodeWeight(curNode);
 
                 if (edge_matching[curNode] == curNode) {
                     //match with a random neighbor
-                    int matchingPartner = curNode;
-                    forall_out_edges(G, e, curNode){
+                    NodeID matchingPartner = curNode;
+                    forall_out_edges(G, e, curNode)
+                            {
                                 NodeID target = G.getEdgeTarget(e);
                                 NodeWeight coarser_weight = G.getNodeWeight(target) + curNodeWeight;
 
@@ -70,7 +74,8 @@ void random_matching::match(const PartitionConfig &partition_config,
                                     ASSERT_NEQ(curNode, target);
                                     break;
                                 }
-                            }endfor
+                            }
+                    endfor
 
                     coarse_mapping[matchingPartner] = no_of_coarse_vertices;
                     coarse_mapping[curNode] = no_of_coarse_vertices;
@@ -80,7 +85,8 @@ void random_matching::match(const PartitionConfig &partition_config,
 
                     no_of_coarse_vertices++;
                 }
-            }endfor
+            }
+    endfor
 
     PRINT(std::cout << "log>" << "no of coarse nodes: " << no_of_coarse_vertices << std::endl;)
 }

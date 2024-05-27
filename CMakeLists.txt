@@ -54,10 +54,13 @@ include_directories(extern/flann-1.8.4/include)
 include_directories(lib)
 
 
+#add_compile_options(-fsanitize=address,undefined)
+#add_link_options(-fsanitize=address,undefined)
+
 add_compile_options(-Wall -Wextra)
 add_compile_options(-Wunused -Wunused-function)
 add_compile_options(-Wnon-virtual-dtor -Woverloaded-virtual)
-#add_compile_options(-Wnull-dereference)
+add_compile_options(-Wnull-dereference)
 #add_compile_options(-Wshadow -Wpedantic)
 #add_compile_options(-Wduplicated-cond -Wduplicated-branches -Wlogical-op)
 #add_compile_options( -Wsign-conversion -Wold-style-cast -Wuseless-cast  -Wcast-align)
@@ -77,7 +80,6 @@ set(KAFFPA_SRC
         lib/partition/coarsening/contraction.cpp
         lib/partition/coarsening/edge_rating/edge_ratings.cpp
         lib/partition/coarsening/matching/random_matching.cpp
-        lib/partition/coarsening/matching/gpa/path.cpp
         lib/partition/coarsening/matching/gpa/gpa_matching.cpp
         lib/partition/coarsening/matching/gpa/path_set.cpp
         lib/partition/coarsening/clustering/size_constraint_label_propagation.cpp

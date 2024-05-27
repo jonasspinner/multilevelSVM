@@ -100,7 +100,8 @@ inline void complete_boundary::build() {
         m_block_infos[block].block_no_nodes = 0;
     }
 
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 PartitionID source_partition = G.getPartitionIndex(n);
                 m_block_infos[source_partition].block_weight += G.getNodeWeight(n);
                 m_block_infos[source_partition].block_no_nodes += 1;
@@ -109,7 +110,8 @@ inline void complete_boundary::build() {
                     m_singletons.push_back(n);
                 }
 
-                forall_out_edges(G, e, n){
+                forall_out_edges(G, e, n)
+                        {
                             NodeID targetID = G.getEdgeTarget(e);
                             PartitionID target_partition = G.getPartitionIndex(targetID);
                             bool is_cut_edge = (source_partition != target_partition);
@@ -123,8 +125,10 @@ inline void complete_boundary::build() {
                                 m_pairs[bp].edge_cut += G.getEdgeWeight(e);
                                 insert(n, source_partition, &bp);
                             }
-                        }endfor
-            }endfor
+                        }
+                endfor
+            }
+    endfor
 
     block_pairs::iterator iter;
     for (iter = m_pairs.begin(); iter != m_pairs.end(); iter++) {
@@ -202,11 +206,9 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
     auto *graphref = new basicGraph;
 
 
-    delete Q_bar.graphref;
+    Q_bar.graphref.reset(graphref);
 
-    Q_bar.graphref = graphref;
-
-    std::vector<std::vector<std::pair<PartitionID, EdgeWeight> > > building_tool;
+    std::vector<std::vector<std::pair<PartitionID, EdgeWeight>>> building_tool;
     building_tool.resize(m_block_infos.size());
 
     block_pairs::iterator iter;
@@ -262,7 +264,8 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
             NodeID rhs_no_nodes = 0;
 
             EdgeWeight edge_cut = 0;
-            forall_nodes(G, n){
+            forall_nodes(G, n)
+                    {
                         PartitionID source_partition = G.getPartitionIndex(n);
                         if (source_partition == lhs) {
                             lhs_part_weight += G.getNodeWeight(n);
@@ -272,7 +275,8 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
                             rhs_no_nodes++;
                         }
 
-                        forall_out_edges(G, e, n){
+                        forall_out_edges(G, e, n)
+                                {
                                     NodeID targetID = G.getEdgeTarget(e);
                                     PartitionID target_partition = G.getPartitionIndex(targetID);
                                     bool is_cut_edge = (source_partition == lhs && target_partition == rhs)
@@ -283,8 +287,10 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
                                         ASSERT_TRUE(contains(n, source_partition, &bp));
                                     }
 
-                                }endfor
-                    }endfor
+                                }
+                        endfor
+                    }
+            endfor
 
             ASSERT_EQ(m_block_infos[lhs].block_weight, lhs_part_weight);
             ASSERT_EQ(m_block_infos[rhs].block_weight, rhs_part_weight);
@@ -299,9 +305,11 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
 
 [[maybe_unused]] inline bool complete_boundary::assert_boundaries_are_bnodes() {
     graph_access &G = *m_graph_ref;
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 PartitionID partition = G.getPartitionIndex(n);
-                forall_out_edges(G, e, n){
+                forall_out_edges(G, e, n)
+                        {
                             NodeID target = G.getEdgeTarget(e);
                             PartitionID targets_partition = G.getPartitionIndex(target);
 
@@ -315,9 +323,11 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
                                 ASSERT_TRUE(contains(target, targets_partition, &bp));
 
                             }
-                        }endfor
+                        }
+                endfor
 
-            }endfor
+            }
+    endfor
     QuotientGraphEdges qgraph_edges;
     getQuotientGraphEdges(qgraph_edges);
     for (auto &pair: qgraph_edges) {

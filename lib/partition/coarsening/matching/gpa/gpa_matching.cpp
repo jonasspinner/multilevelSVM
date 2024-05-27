@@ -48,9 +48,7 @@ void gpa_matching::match(const PartitionConfig &partition_config,
 
     //permutation of the edges for random tie breaking
     if (partition_config.edge_rating_tiebreaking) {
-        PartitionConfig gpa_perm_config = partition_config;
-        gpa_perm_config.permutation_quality = PERMUTATION_QUALITY_GOOD;
-        random_functions::permutate_entries(gpa_perm_config, edge_permutation, false);
+        random_functions::permutate_vector_good(edge_permutation, false);
     }
 
     compare_rating cmp(&G);
@@ -59,7 +57,8 @@ void gpa_matching::match(const PartitionConfig &partition_config,
     path_set pathset(&G, &partition_config);
 
     //grow the paths
-    forall_edges(G, e){
+    forall_edges(G, e)
+            {
                 EdgeID curEdge = edge_permutation[e];
                 NodeID source = sources[curEdge];
                 NodeID target = G.getEdgeTarget(curEdge);
@@ -81,14 +80,16 @@ void gpa_matching::match(const PartitionConfig &partition_config,
                 }
 
                 pathset.add_if_applicable(source, curEdge);
-            }endfor
+            }
+    endfor
 
     extract_paths_apply_matching(G, sources, edge_matching, pathset);
 
     // all matched pairs are now in edge_matching
     // now construct the coarsemapping
     no_of_coarse_vertices = 0;
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 if (G.getPartitionIndex(n) != G.getPartitionIndex(edge_matching[n])) {
                     // v cycle... they shouldnt be contraced
                     edge_matching[n] = n;
@@ -111,7 +112,8 @@ void gpa_matching::match(const PartitionConfig &partition_config,
                     no_of_coarse_vertices++;
                 }
 
-            }endfor
+            }
+    endfor
 }
 
 void gpa_matching::init(graph_access &G,
@@ -121,11 +123,13 @@ void gpa_matching::init(graph_access &G,
                         std::vector<EdgeID> &edge_permutation,
                         std::vector<NodeID> &sources) {
 
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 permutation[n] = n;
                 edge_matching[n] = n;
 
-                forall_out_edges(G, e, n){
+                forall_out_edges(G, e, n)
+                        {
                             sources[e] = n;
                             edge_permutation.push_back(e);
 
@@ -134,8 +138,10 @@ void gpa_matching::init(graph_access &G,
                                 G.setEdgeRating(e, G.getEdgeWeight(e));
                             }
 
-                        }endfor
-            }endfor
+                        }
+                endfor
+            }
+    endfor
 
 
 }
@@ -150,7 +156,8 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
     // the matched edges.
     EdgeRatingType matching_rating, second_matching_rating;
 
-    forall_nodes(G, n){
+    forall_nodes(G, n)
+            {
                 const path &p = pathset.get_path(n);
 
                 if (not p.is_active()) {
@@ -174,19 +181,13 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
                     EdgeID first = unpacked_cycle.front();
                     unpacked_cycle.pop_front();
 
-                    maximum_weight_matching(G,
-                                            unpacked_cycle,
-                                            a_matching,
-                                            matching_rating);
+                    maximum_weight_matching(G, unpacked_cycle, a_matching, matching_rating);
 
                     unpacked_cycle.push_front(first);
                     EdgeID last = unpacked_cycle.back();
                     unpacked_cycle.pop_back();
 
-                    maximum_weight_matching(G,
-                                            unpacked_cycle,
-                                            a_second_matching,
-                                            second_matching_rating);
+                    maximum_weight_matching(G, unpacked_cycle, a_second_matching, second_matching_rating);
 
                     unpacked_cycle.push_back(last);
 
@@ -231,7 +232,8 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
                     //apply matched edges
                     apply_matching(G, a_matching, sources, edge_matching);
                 }
-            }endfor
+            }
+    endfor
 }
 
 
@@ -241,8 +243,7 @@ void gpa_matching::apply_matching(graph_access &G,
                                   Matching &edge_matching) {
 
     //apply matched edges
-    for (unsigned i = 0; i < matched_edges.size(); i++) {
-        EdgeID e = matched_edges[i];
+    for (unsigned int e: matched_edges) {
         NodeID source = sources[e];
         NodeID target = G.getEdgeTarget(e);
 

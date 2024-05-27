@@ -21,7 +21,7 @@ public:
 private:
     void visit_children(NodeID cur_node);
 
-    graph_access *tree{};
+    std::unique_ptr<graph_access> tree;
     CoarseMapping *coarse_mapping{};
     NodeID cur_cluster = 0;
     NodeID cur_cluster_nodes = 0;

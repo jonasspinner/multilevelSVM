@@ -28,8 +28,8 @@ graph_hierarchy::~graph_hierarchy() {
         delete m_to_delete_mapping;
     }
 
-    for (unsigned i = 1; i < m_to_delete_hierachies.size(); i++) {
-        delete m_to_delete_hierachies[i];
+    for (unsigned i = 1; i < m_to_delete_hierarchies.size(); i++) {
+        delete m_to_delete_hierarchies[i];
     }
 }
 
@@ -37,7 +37,7 @@ void graph_hierarchy::push_back(graph_access *G, CoarseMapping *coarse_mapping) 
     m_the_graph_hierarchy.push(G);
     m_the_mappings.push(coarse_mapping);
     m_to_delete_mappings.push_back(coarse_mapping);
-    m_to_delete_hierachies.push_back(G);
+    m_to_delete_hierarchies.push_back(G);
     m_coarsest_graph = G;
     if (m_finest_graph == nullptr) {
         m_finest_graph = G;
@@ -47,7 +47,7 @@ void graph_hierarchy::push_back(graph_access *G, CoarseMapping *coarse_mapping) 
 graph_access *graph_hierarchy::pop_finer_and_project() {
     graph_access *finer = pop_coarsest();
 
-    CoarseMapping *coarse_mapping = m_the_mappings.top(); // mapps finer to coarser nodes
+    CoarseMapping *coarse_mapping = m_the_mappings.top(); // maps finer to coarser nodes
     m_the_mappings.pop();
 
     if (finer == m_coarsest_graph) {
@@ -64,11 +64,13 @@ graph_access *graph_hierarchy::pop_finer_and_project() {
     //perform projection
     graph_access &fRef = *finer;
     graph_access &cRef = *m_current_coarser_graph;
-    forall_nodes(fRef, n){
+    forall_nodes(fRef, n)
+            {
                 NodeID coarser_node = (*coarse_mapping)[n];
                 PartitionID coarser_partition_id = cRef.getPartitionIndex(coarser_node);
                 fRef.setPartitionIndex(n, coarser_partition_id);
-            }endfor
+            }
+    endfor
 
     m_current_coarse_mapping = coarse_mapping;
     finer->set_partition_count(m_current_coarser_graph->get_partition_count());

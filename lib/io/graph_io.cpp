@@ -37,44 +37,58 @@ int graph_io::writeGraphGDF(const graph_access &G_min, const graph_access &G_maj
     f << std::endl;
 
     // NODES
-    forall_nodes(G_min, node){
+    forall_nodes(G_min, node)
+            {
                 f << node << ",-1," << G_min.getPartitionIndex(node) << "," << G_min.getNodeWeight(node);
                 for (auto &feature: G_min.getFeatureVec(node)) {
                     f << "," << feature;
                 }
                 f << std::endl;
-            }endfor
+            }
+    endfor
 
-    forall_nodes(G_maj, node){
+    forall_nodes(G_maj, node)
+            {
                 f << node + min_nodes << ",1," << G_maj.getPartitionIndex(node) << "," << G_maj.getNodeWeight(node);
                 for (auto &feature: G_maj.getFeatureVec(node)) {
                     f << "," << feature;
                 }
                 f << std::endl;
-            }endfor
+            }
+    endfor
 
 
     f << "edgedef>from VARCHAR,to VARCHAR" << std::endl;
 
     // EDGES
-    forall_nodes(G_min, node){
-                forall_out_edges(G_min, e, node){
+    forall_nodes(G_min, node)
+            {
+                forall_out_edges(G_min, e, node)
+                        {
                             f << node << "," << G_min.getEdgeTarget(e) << std::endl;
-                        }endfor
-            }endfor
-    forall_nodes(G_maj, node){
-                forall_out_edges(G_maj, e, node){
+                        }
+                endfor
+            }
+    endfor
+    forall_nodes(G_maj, node)
+            {
+                forall_out_edges(G_maj, e, node)
+                        {
                             f << node + min_nodes << "," << G_maj.getEdgeTarget(e) + min_nodes << std::endl;
-                        }endfor
-            }endfor
+                        }
+                endfor
+            }
+    endfor
     f.close();
     return 0;
 }
 
 int graph_io::readFeatures(graph_access &G, const std::vector<FeatureVec> &data) {
-    forall_nodes(G, node){
+    forall_nodes(G, node)
+            {
                 G.setFeatureVec(node, data[node]);
-            }endfor
+            }
+    endfor
     return 0;
 }
 
@@ -125,9 +139,7 @@ EdgeID graph_io::makeEdgesBidirectional(std::vector<std::vector<Edge>> &data) {
     }
 
     for (auto &nodeData: data) {
-        for (auto &edge: nodeData) {
-            post++;
-        }
+        post += nodeData.size();
     }
 
     std::cout << "edges pre: " << pre << " post: " << post << std::endl;

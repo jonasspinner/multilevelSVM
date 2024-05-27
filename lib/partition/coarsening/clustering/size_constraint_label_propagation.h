@@ -73,10 +73,10 @@ public:
                NodePermutationMap &permutation) override;
 
 
-    void ensemble_clusterings(const PartitionConfig &config,
-                              graph_access &G,
-                              CoarseMapping &coarse_mapping,
-                              NodeID &no_of_coarse_vertices);
+    static void ensemble_clusterings(const PartitionConfig &config,
+                                     graph_access &G,
+                                     CoarseMapping &coarse_mapping,
+                                     NodeID &no_of_coarse_vertices);
 
     static void ensemble_two_clusterings(graph_access &G,
                                          std::vector<NodeID> &lhs,
@@ -84,10 +84,10 @@ public:
                                          std::vector<NodeID> &output,
                                          NodeID &no_of_coarse_vertices);
 
-    void match_internal(const PartitionConfig &config,
-                        graph_access &G,
-                        CoarseMapping &coarse_mapping,
-                        NodeID &no_of_coarse_vertices);
+    static void match_internal(const PartitionConfig &config,
+                               graph_access &G,
+                               CoarseMapping &coarse_mapping,
+                               NodeID &no_of_coarse_vertices);
 
     static void remap_cluster_ids(graph_access &G,
                                   std::vector<NodeID> &cluster_id,

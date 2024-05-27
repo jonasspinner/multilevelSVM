@@ -138,16 +138,13 @@ public:
     }
 
     static double next() {
-        return (double) rand() / (double) RAND_MAX; // rnd in 0,1
+        std::uniform_real_distribution<double> A(0, 1);
+        return A(m_mt);
     }
 
     static double nextDouble(double lb, double rb) {
-        double rnbr = (double) rand() / (double) RAND_MAX; // rnd in 0,1
-        double length = rb - lb;
-        rnbr *= length;
-        rnbr += lb;
-
-        return rnbr;
+        std::uniform_real_distribution<double> A(lb, rb);
+        return A(m_mt);
     }
 
     static double nextFromExp(double lambda) {

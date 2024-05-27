@@ -8,7 +8,7 @@
 
 void low_diameter_clustering::match(const PartitionConfig &config,
                                     graph_access &G,
-                                    Matching &_matching,
+                                    Matching &,
                                     CoarseMapping &coarse_mapping,
                                     NodeID &no_of_coarse_vertices,
                                     NodePermutationMap &permutation) {
@@ -37,7 +37,8 @@ void low_diameter_clustering::match(const PartitionConfig &config,
 
     while (numVisited < G.number_of_nodes()) {
         // add new BFS centers
-        forall_nodes(G, v){
+        forall_nodes(G, v)
+                {
                     // node is unvisited
                     // and should be added in the current round
                     if (C[v].first == std::numeric_limits<EdgeWeight>::max()
@@ -46,17 +47,19 @@ void low_diameter_clustering::match(const PartitionConfig &config,
                         C[v].first = -1;
                         C[v].second = v;
                     }
-                }endfor
+                }
+        endfor
         numVisited += frontier.size();
         std::unordered_set<NodeID> next_frontier;
         for (NodeID v: frontier) {
-            forall_out_edges (G, e, v){
+            forall_out_edges (G, e, v)
+                    {
                         NodeID w = G.getEdgeTarget(e);
                         // EdgeWeight dist = C[v].first + G.getEdgeWeight(e);
-                        // if egde from frontier node to unvisited node
+                        // if edge from frontier node to unvisited node
                         if (C[w].first != -1
                             && C[w].first > delta[C[v].second].second) {
-                            // and frontier node is the nearest of the possible canditats this round
+                            // and frontier node is the nearest of the possible indicants this round
                             // && C[w].first > dist) {
                             // 	C[w].first = dist;
                             C[w].first = delta[C[v].second].second;
@@ -65,7 +68,8 @@ void low_diameter_clustering::match(const PartitionConfig &config,
                         }
                         // else intercomponent edge
                         // ignored handled later by the framework
-                    }endfor
+                    }
+            endfor
         }
         for (NodeID w: next_frontier) {
             C[w].first = -1;
@@ -86,7 +90,8 @@ void low_diameter_clustering::remap_cluster_ids(const graph_access &G,
     coarse_mapping.resize(G.number_of_nodes());
     no_of_coarse_vertices = 0;
     std::unordered_map<NodeID, NodeID> remap;
-    forall_nodes(G, node){
+    forall_nodes(G, node)
+            {
                 NodeID cur_cluster = C[node].second;
                 if (remap.count(cur_cluster) == 0) {
                     remap[cur_cluster] = no_of_coarse_vertices;
@@ -94,5 +99,6 @@ void low_diameter_clustering::remap_cluster_ids(const graph_access &G,
                 }
 
                 coarse_mapping[node] = remap[cur_cluster];
-            }endfor
+            }
+    endfor
 }

@@ -42,44 +42,33 @@ coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_ac
     CoarseMapping *coarse_mapping = nullptr;
 
     graph_access *finer = &G;
-    matching *edge_matcher = nullptr;
-    std::unique_ptr<contraction> contracter = std::make_unique<contraction>();
+    std::unique_ptr<matching> edge_matcher;
+    contraction contraction;
     PartitionConfig copy_of_partition_config = partition_config;
 
-    std::unique_ptr<stop_rule> coarsening_stop_rule;
+    simple_fixed_stop_rule coarsening_stop_rule(copy_of_partition_config);
 
-    switch (partition_config.stop_rule) {
-        case STOP_RULE_SIMPLE_FIXED:
-            coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config,
-                                                                            G.number_of_nodes());
-            break;
-        default:
-            coarsening_stop_rule = std::make_unique<simple_fixed_stop_rule>(copy_of_partition_config,
-                                                                            G.number_of_nodes());
+    if (partition_config.stop_rule != STOP_RULE_SIMPLE_FIXED) {
+        throw std::invalid_argument("only STOP_RULE_SIMPLE_FIXED supported");
     }
-
-    coarsening_configurator coarsening_config;
 
     unsigned int level = 0;
 
-    while (coarsening_stop_rule->stop(no_of_finer_vertices, no_of_coarser_vertices)) {
+    while (coarsening_stop_rule.stop(no_of_finer_vertices, no_of_coarser_vertices)) {
         auto *coarser = new graph_access();
         coarse_mapping = new CoarseMapping();
         Matching edge_matching;
         NodePermutationMap permutation;
         no_of_finer_vertices = no_of_coarser_vertices;
 
-        coarsening_config.configure_coarsening(copy_of_partition_config,
-                                               &edge_matcher, level);
+        coarsening_configurator::configure_coarsening(copy_of_partition_config, &edge_matcher, level);
         rating.rate(*finer, level);
 
         edge_matcher->match(copy_of_partition_config, *finer,
                             edge_matching, *coarse_mapping,
                             no_of_coarser_vertices, permutation);
 
-        delete edge_matcher;
-
-        contracter->contract(copy_of_partition_config, *finer, *coarser,
+        contraction.contract(copy_of_partition_config, *finer, *coarser,
                              edge_matching, *coarse_mapping,
                              no_of_coarser_vertices, permutation);
 

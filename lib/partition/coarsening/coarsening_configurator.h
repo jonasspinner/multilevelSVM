@@ -36,44 +36,39 @@
 
 class coarsening_configurator {
 public:
-    coarsening_configurator() {};
-
-    virtual ~coarsening_configurator() {};
-
     static void configure_coarsening(const PartitionConfig &partition_config,
-                                     matching **edge_matcher,
+                                     std::unique_ptr<matching> *edge_matcher,
                                      unsigned level);
 };
 
 inline void coarsening_configurator::configure_coarsening(const PartitionConfig &partition_config,
-                                                          matching **edge_matcher,
+                                                          std::unique_ptr<matching> *edge_matcher,
                                                           unsigned level) {
 
     switch (partition_config.matching_type) {
         case MATCHING_RANDOM:
-            *edge_matcher = new random_matching();
+            *edge_matcher = std::make_unique<random_matching>();
             break;
         case MATCHING_GPA:
-            *edge_matcher = new gpa_matching();
+            *edge_matcher = std::make_unique<gpa_matching>();
             break;
         case MATCHING_RANDOM_GPA:
-            *edge_matcher = new gpa_matching();
+            *edge_matcher = std::make_unique<gpa_matching>();
             break;
         case LP_CLUSTERING:
-            *edge_matcher = new size_constraint_label_propagation();
+            *edge_matcher = std::make_unique<size_constraint_label_propagation>();
             break;
         case SIMPLE_CLUSTERING:
-            *edge_matcher = new simple_clustering();
+            *edge_matcher = std::make_unique<simple_clustering>();
             break;
         case LOW_DIAMETER:
-            *edge_matcher = new low_diameter_clustering();
+            *edge_matcher = std::make_unique<low_diameter_clustering>();
             break;
     }
 
     if (partition_config.matching_type == MATCHING_RANDOM_GPA && level < partition_config.aggressive_random_levels) {
-        delete *edge_matcher;
         PRINT(std::cout << "random matching" << std::endl;)
-        *edge_matcher = new random_matching();
+        *edge_matcher = std::make_unique<random_matching>();
     }
 }
 
