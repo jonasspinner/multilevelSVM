@@ -40,25 +40,60 @@ struct coarseningEdge {
     EdgeRatingType rating;
 };
 
+template<class T>
+class Range {
+    T m_end;
+
+    struct Iterator {
+        T m_value;
+
+        friend class Range;
+
+    public:
+        T operator*() const { return m_value; }
+
+        const Iterator &operator++() {
+            ++m_value;
+            return *this;
+        }
+
+        Iterator operator++(int) {
+            Iterator copy(*this);
+            ++m_value;
+            return copy;
+        }
+
+        bool operator==(const Iterator &other) const { return m_value == other.m_value; }
+
+        bool operator!=(const Iterator &other) const { return m_value != other.m_value; }
+
+    protected:
+        explicit Iterator(T value) : m_value(value) {}
+    };
+
+public:
+    explicit Range(T end) : m_end(end) {}
+
+    [[nodiscard]] Iterator begin() const { return Iterator{0}; }
+
+    [[nodiscard]] Iterator end() const { return Iterator{m_end}; }
+};
+
 class graph_access;
 
 //construction etc. is encapsulated in basicGraph / access to properties etc. is encapsulated in graph_access
 class basicGraph {
     friend class graph_access;
 
-public:
-    basicGraph() : m_building_graph(false) {
-    }
-
 private:
     //methods only to be used by friend class
-    EdgeID number_of_edges() {
-        return m_edges.size();
-    }
+    [[nodiscard]] EdgeID number_of_edges() const { return m_edges.size(); }
 
-    NodeID number_of_nodes() {
-        return m_nodes.size() - 1;
-    }
+    [[nodiscard]] NodeID number_of_nodes() const { return m_nodes.size() - 1; }
+
+    [[nodiscard]] Range<EdgeID> edges() const { return Range<EdgeID>{number_of_edges()}; }
+
+    [[nodiscard]] Range<NodeID> nodes() const { return Range<NodeID>{number_of_nodes()}; }
 
     inline EdgeID get_first_edge(const NodeID &node) {
         return m_nodes[node].firstEdge;
@@ -138,15 +173,15 @@ private:
     std::vector<coarseningEdge> m_coarsening_edge_props;
 
     // construction properties
-    bool m_building_graph;
+    bool m_building_graph{false};
     NodeID m_last_source{};
     NodeID current_node{}; //current node that is constructed
     EdgeID current_edge{}; //current edge that is constructed
 };
 
 //makros - graph access
-#define forall_edges(G, e) { for(EdgeID e = 0, end = G.number_of_edges(); e < end; ++e) {
-#define forall_nodes(G, n) { for(NodeID n = 0, end = G.number_of_nodes(); n < end; ++n) {
+#define forall_edges(G, e) { for(EdgeID e : G.edges()) {
+#define forall_nodes(G, n) { for(NodeID n : G.nodes()) {
 #define forall_out_edges(G, e, n) { for(EdgeID e = G.get_first_edge(n), end = G.get_first_invalid_edge(n); e < end; ++e) {
 #define endfor }}
 
@@ -176,6 +211,10 @@ public:
     [[nodiscard]] NodeID number_of_nodes() const;
 
     [[nodiscard]] EdgeID number_of_edges() const;
+
+    [[nodiscard]] Range<NodeID> nodes() const { return graphref->nodes(); }
+
+    [[nodiscard]] Range<EdgeID> edges() const { return graphref->edges(); }
 
     [[nodiscard]] EdgeID get_first_edge(NodeID node) const;
 
