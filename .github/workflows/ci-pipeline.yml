@@ -20,7 +20,7 @@ jobs:
           submodules: 'true'
 
       - name: Install dependencies
-        run: sudo apt install -y clang clang-tidy clang-format cppcheck ninja-build libboost-all-dev
+        run: sudo apt install -y clang clang-tidy clang-format cppcheck ninja-build libboost-all-dev libeigen3-dev
 
       - name: Print tools versions
         run: |
