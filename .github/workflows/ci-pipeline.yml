@@ -20,7 +20,7 @@ jobs:
           submodules: recursive
 
       - name: Install dependencies
-        run: sudo apt install -y clang clang-tidy clang-format cppcheck ninja-build libboost-all-dev
+        run: sudo apt install -y clang clang-tidy clang-format cppcheck ninja-build libboost-all-dev libomp-dev
 
       - name: Print tools versions
         run: |
