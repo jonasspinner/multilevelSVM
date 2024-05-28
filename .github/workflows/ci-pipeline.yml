@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
 
       - name: Install dependencies
         run: sudo apt install -y clang clang-tidy clang-format cppcheck ninja-build
@@ -27,6 +29,10 @@ jobs:
           cmake --version
           echo "Ninja" $(ninja --version)
           cppcheck --version
+
+      - run: |
+          cmake -B extern/bayesopt/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++ -DBAYESOPT_BUILD_EXAMPLES=OFF -DBAYESOPT_MATLAB_COMPATIBLE=OFF -DBAYESOPT_BUILD_SOBOL=OFF extern/bayesopt
+          ninja -C extern/bayesopt/build
 
       - name: Build under GCC
         run: |
