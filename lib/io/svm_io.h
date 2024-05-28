@@ -26,7 +26,7 @@ std::vector<T> svm_io::take_sample(const std::vector<T> &data, float percentage)
     sample.reserve(data.size() * percentage);
 
     for (const auto &entry: data) {
-        if (random_functions::next() > percentage) {
+        if (random_functions::next() > static_cast<double>(percentage)) {
             continue;
         }
 

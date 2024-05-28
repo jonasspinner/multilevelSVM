@@ -27,13 +27,11 @@
 
 class path {
 public:
-    path() : head(UNDEFINED_NODE), tail(UNDEFINED_NODE), length(0), active(false) {}
+    path() = default;
 
-    explicit path(const NodeID &v) : head(v), tail(v), length(0), active(true) {}
+    constexpr explicit path(const NodeID &v) : head(v), tail(v), length(0), active(true) {}
 
-    ~path() = default;
-
-    void init(const NodeID &v);
+    void init(const NodeID &v) { *this = path(v); }
 
     [[nodiscard]] NodeID get_tail() const;
 
@@ -47,7 +45,7 @@ public:
 
     [[nodiscard]] EdgeID get_length() const;
 
-    //returns wether the path is a cycle or not.
+    //returns weather the path is a cycle or not.
     [[nodiscard]] bool is_cycle() const;
 
     [[nodiscard]] bool is_active() const;
@@ -56,25 +54,18 @@ public:
 
 private:
     //Last vertex of the path. Cycles have head == tail
-    NodeID head;
+    NodeID head{UNDEFINED_NODE};
 
     //First vertex of the path. Cycles have head == tail
-    NodeID tail;
+    NodeID tail{UNDEFINED_NODE};
 
     //Number of edges in the graph
-    EdgeID length;
+    EdgeID length{0};
 
     // True iff the parth is still in use. False iff it has been removed.
-    bool active;
+    bool active{false};
 
 };
-
-inline void path::init(const NodeID &v) {
-    head = v;
-    tail = v;
-    length = 0;
-    active = true;
-}
 
 inline NodeID path::get_tail() const {
     return tail;

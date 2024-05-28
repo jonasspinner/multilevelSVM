@@ -20,8 +20,8 @@ public:
 
     [[nodiscard]] NodeID num_SV_maj() const;
 
-    bool operator>(const svm_summary new_) const {
-        return (this->Gmean > new_.Gmean);
+    bool operator>(const svm_summary &other) const {
+        return (this->Gmean > other.Gmean);
     }
 
     float eval(const svm_instance &instance);

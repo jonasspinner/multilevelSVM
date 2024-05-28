@@ -33,8 +33,6 @@ public:
 
     path_set(graph_access *G, const PartitionConfig *config);
 
-    ~path_set() = default;
-
     //returns the path that v lies on iff v is an endpoint
     [[nodiscard]] const path &get_path(const NodeID &v) const;
 

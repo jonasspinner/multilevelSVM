@@ -127,9 +127,7 @@ inline void complete_boundary::build() {
                 }
         endfor
     }
-    block_pairs::iterator iter;
-    for (iter = m_pairs.begin(); iter != m_pairs.end(); iter++) {
-        data_boundary_pair &value = iter->second;
+    for (auto &[_, value]: m_pairs) {
         value.edge_cut /= 2;
     }
 
@@ -171,9 +169,7 @@ inline NodeID complete_boundary::size(PartitionID partition, boundary_pair *pair
 
 inline void complete_boundary::getQuotientGraphEdges(QuotientGraphEdges &qgraph_edges) {
     //the quotient graph is stored implicitly in the pairs hashtable
-    block_pairs::iterator iter;
-    for (iter = m_pairs.begin(); iter != m_pairs.end(); iter++) {
-        boundary_pair key = iter->first;
+    for (const auto &[key, _]: m_pairs) {
         qgraph_edges.push_back(key);
     }
 }
@@ -208,10 +204,7 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
     std::vector<std::vector<std::pair<PartitionID, EdgeWeight>>> building_tool;
     building_tool.resize(m_block_infos.size());
 
-    block_pairs::iterator iter;
-    for (iter = m_pairs.begin(); iter != m_pairs.end(); iter++) {
-        boundary_pair cur_pair = iter->first;
-
+    for (const auto &[cur_pair, _]: m_pairs) {
         std::pair<PartitionID, EdgeWeight> qedge_lhs;
         qedge_lhs.first = cur_pair.rhs;
         qedge_lhs.second = m_pairs[cur_pair].edge_cut;

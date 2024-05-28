@@ -35,15 +35,12 @@ void svm_result<T>::add(const std::vector<svm_summary<T>> &to_add) {
 template<class T>
 void svm_result<T>::sort_summaries() {
     // insertion_sort
-    size_t j;
 
     for (size_t i = 0; i < this->summaries.size(); i++) {
-        j = i;
+        auto j = i;
 
         while (j > 0 && summary_cmp_better_gmean_sv::comp(this->summaries[j], this->summaries[j - 1])) {
-            svm_summary<T> temp = std::move(this->summaries[j]);
-            this->summaries[j] = std::move(this->summaries[j - 1]);
-            this->summaries[j - 1] = std::move(temp);
+            std::swap(this->summaries[j], this->summaries[j - 1]);
             j--;
         }
     }

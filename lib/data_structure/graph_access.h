@@ -37,11 +37,12 @@ struct refinementNode {
 };
 
 struct coarseningEdge {
-    EdgeRatingType rating;
+    EdgeRatingType rating{};
 };
 
 template<class T>
 class Range {
+    T m_begin;
     T m_end;
 
     struct Iterator {
@@ -72,9 +73,9 @@ class Range {
     };
 
 public:
-    explicit Range(T end) : m_end(end) {}
+    Range(T begin, T end) : m_begin(begin), m_end(end) {}
 
-    [[nodiscard]] Iterator begin() const { return Iterator{0}; }
+    [[nodiscard]] Iterator begin() const { return Iterator{m_begin}; }
 
     [[nodiscard]] Iterator end() const { return Iterator{m_end}; }
 };
@@ -91,9 +92,9 @@ private:
 
     [[nodiscard]] NodeID number_of_nodes() const { return m_nodes.size() - 1; }
 
-    [[nodiscard]] Range<EdgeID> edges() const { return Range<EdgeID>{number_of_edges()}; }
+    [[nodiscard]] Range<EdgeID> edges() const { return Range<EdgeID>{0, number_of_edges()}; }
 
-    [[nodiscard]] Range<NodeID> nodes() const { return Range<NodeID>{number_of_nodes()}; }
+    [[nodiscard]] Range<NodeID> nodes() const { return Range<NodeID>{0, number_of_nodes()}; }
 
     inline EdgeID get_first_edge(const NodeID &node) {
         return m_nodes[node].firstEdge;
@@ -146,7 +147,7 @@ private:
     }
 
     void finish_construction() {
-        // inert dummy node
+        // insert dummy node
         m_nodes.resize(current_node + 1);
         m_refinement_node_props.resize(current_node + 1);
 

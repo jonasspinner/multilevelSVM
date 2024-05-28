@@ -30,19 +30,15 @@
 
 class simple_fixed_stop_rule {
 public:
-    explicit simple_fixed_stop_rule(PartitionConfig &config) {
-        num_stop = config.fix_num_vert_stop;
-    };
+    explicit simple_fixed_stop_rule(PartitionConfig &config) : num_stop(config.fix_num_vert_stop) {}
 
-    [[nodiscard]] bool stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices) const;
+    [[nodiscard]] bool stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices) const {
+        double contraction_rate = no_of_finer_vertices / (double) no_of_coarser_vertices;
+        return contraction_rate >= 1.05 && no_of_coarser_vertices >= num_stop;
+    }
 
 private:
     NodeID num_stop;
 };
-
-inline bool simple_fixed_stop_rule::stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices) const {
-    double contraction_rate = no_of_finer_vertices / (double) no_of_coarser_vertices;
-    return contraction_rate >= 1.05 && no_of_coarser_vertices >= num_stop;
-}
 
 #endif /* end of include guard: STOP_RULES_SZ45JQS6 */

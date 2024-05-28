@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 ### thundersvm
 set(USE_CUDA OFF CACHE BOOL "" FORCE)
 set(USE_EIGEN ON CACHE BOOL "" FORCE)
-add_subdirectory(extern/thundersvm EXCLUDE_FROM_ALL)
+add_subdirectory(extern/thundersvm EXCLUDE_FROM_ALL SYSTEM)
 include_directories(SYSTEM extern/thundersvm/include)
 include_directories(SYSTEM ${PROJECT_BINARY_DIR}/extern/thundersvm) # to use config.h
 link_directories(${PROJECT_BINARY_DIR}/extern/thundersvm)
@@ -23,6 +23,7 @@ include_directories(SYSTEM extern/argtable-2.10/include)
 
 ### libsvm
 set(LIBSVM_SRC extern/libsvm-3.22/src/svm.cpp)
+set_property(SOURCE ${LIBSVM_SRC} PROPERTY SYSTEM)
 include_directories(SYSTEM extern/libsvm-3.22/include)
 
 ### flann

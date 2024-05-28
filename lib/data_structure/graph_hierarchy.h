@@ -31,7 +31,7 @@ class graph_hierarchy {
 public:
     graph_hierarchy() = default;
 
-    virtual ~graph_hierarchy();
+    ~graph_hierarchy();
 
     void push_back(graph_access *G, CoarseMapping *coarse_mapping);
 
@@ -41,9 +41,9 @@ public:
 
     CoarseMapping *get_mapping_of_current_finer();
 
-    bool isEmpty();
+    [[nodiscard]] bool isEmpty() const;
 
-    unsigned int size();
+    [[nodiscard]] unsigned int size() const;
 
 private:
     //private functions

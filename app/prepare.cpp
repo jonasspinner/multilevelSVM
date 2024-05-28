@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
     }
 
     size_t rows = data.size();
-    size_t cols = data[0].size();
+    size_t cols = data.empty() ? 0 : data[0].size();
 
     std::cout << "rows: " << rows << " cols: " << cols << std::endl;
 
@@ -279,6 +279,7 @@ void read_csv(const std::string &filename, MyMat &data, std::vector<int> &labels
 
     std::ifstream file;
     file.open(filename);
+    assert(file.is_open());
     for (std::string line; getline(file, line);) {
         std::stringstream sep(line);
 

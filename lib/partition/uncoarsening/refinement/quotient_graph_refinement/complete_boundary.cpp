@@ -22,9 +22,7 @@
 
 #include "complete_boundary.h"
 
-complete_boundary::complete_boundary(graph_access *G) {
-    m_graph_ref = G;
-    m_last_key = -1;
+complete_boundary::complete_boundary(graph_access *G) : m_last_key(-1), m_graph_ref(G) {
     m_block_infos.resize(G->get_partition_count());
     Q.graphref.reset();
 }

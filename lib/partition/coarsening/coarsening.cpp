@@ -43,7 +43,6 @@ coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_ac
 
     graph_access *finer = &G;
     std::unique_ptr<matching> edge_matcher;
-    contraction contraction;
     PartitionConfig copy_of_partition_config = partition_config;
 
     simple_fixed_stop_rule coarsening_stop_rule(copy_of_partition_config);
@@ -68,9 +67,9 @@ coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_ac
                             edge_matching, *coarse_mapping,
                             no_of_coarser_vertices, permutation);
 
-        contraction.contract(copy_of_partition_config, *finer, *coarser,
-                             edge_matching, *coarse_mapping,
-                             no_of_coarser_vertices, permutation);
+        contraction::contract(copy_of_partition_config, *finer, *coarser,
+                              edge_matching, *coarse_mapping,
+                              no_of_coarser_vertices, permutation);
 
         hierarchy.push_back(finer, coarse_mapping);
 

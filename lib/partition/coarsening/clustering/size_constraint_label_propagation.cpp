@@ -62,8 +62,8 @@ void size_constraint_label_propagation::match_internal(const PartitionConfig &pa
 }
 
 void size_constraint_label_propagation::ensemble_two_clusterings(graph_access &G,
-                                                                 std::vector<NodeID> &lhs,
-                                                                 std::vector<NodeID> &rhs,
+                                                                 const std::vector<NodeID> &lhs,
+                                                                 const std::vector<NodeID> &rhs,
                                                                  std::vector<NodeID> &output,
                                                                  NodeID &no_of_coarse_vertices) {
 

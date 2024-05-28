@@ -46,11 +46,7 @@ struct hash_ensemble_pair {
 };
 
 struct data_ensemble_pair {
-    NodeID mapping;
-
-    data_ensemble_pair() {
-        mapping = 0;
-    }
+    NodeID mapping{0};
 };
 
 typedef std::unordered_map<const ensemble_pair,
@@ -79,8 +75,8 @@ public:
                                      NodeID &no_of_coarse_vertices);
 
     static void ensemble_two_clusterings(graph_access &G,
-                                         std::vector<NodeID> &lhs,
-                                         std::vector<NodeID> &rhs,
+                                         const std::vector<NodeID> &lhs,
+                                         const std::vector<NodeID> &rhs,
                                          std::vector<NodeID> &output,
                                          NodeID &no_of_coarse_vertices);
 

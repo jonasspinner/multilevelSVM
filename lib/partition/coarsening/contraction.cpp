@@ -20,6 +20,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
+#include <algorithm>
 #include "contraction.h"
 #include "partition/uncoarsening/refinement/quotient_graph_refinement/complete_boundary.h"
 #include "tools/macros_assertions.h"
@@ -132,11 +133,8 @@ void contraction::contract_clustering(const PartitionConfig &partition_config,
         coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
     }
 
-    //save partition map -- important if the graph is already partitioned
-    std::vector<int> partition_map(G.number_of_nodes());
     auto k = G.get_partition_count();
     for (auto node: G.nodes()) {
-        partition_map[node] = G.getPartitionIndex(node);
         G.setPartitionIndex(node, coarse_mapping[node]);
     }
 
@@ -155,8 +153,6 @@ void contraction::contract_clustering(const PartitionConfig &partition_config,
 
     for (auto node: G.nodes()) {
         NodeID coarsed_node = coarse_mapping[node];
-        // line commented out to keep the cluster index of the clustering in the partition index
-        // G.setPartitionIndex(node, partition_map[node]);
         coarser.setPartitionIndex(coarsed_node, G.getPartitionIndex(node));
 
         addWeightedToVec(combined_feature_vecs[coarsed_node],
@@ -207,7 +203,7 @@ FeatureVec contraction::combineFeatureVec(const FeatureVec &vec1, NodeWeight wei
 
 void contraction::divideVec(FeatureVec &vec, NodeWeight weights) {
     for (double &f: vec) {
-        f /= (float) weights;
+        f /= weights;
     }
 }
 

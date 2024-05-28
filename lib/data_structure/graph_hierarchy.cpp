@@ -91,12 +91,12 @@ graph_access *graph_hierarchy::pop_coarsest() {
     return current_coarsest;
 }
 
-bool graph_hierarchy::isEmpty() {
+bool graph_hierarchy::isEmpty() const {
     ASSERT_EQ(m_the_graph_hierarchy.size(), m_the_mappings.size());
-    return size() <= 0;
+    return size() == 0;
 }
 
-unsigned int graph_hierarchy::size() {
+unsigned int graph_hierarchy::size() const {
     if (!m_the_graph_hierarchy.empty() &&
         m_the_graph_hierarchy.top() == m_coarsest_graph) {
         return m_the_graph_hierarchy.size() - 1;

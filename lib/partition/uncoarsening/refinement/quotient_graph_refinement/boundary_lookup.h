@@ -48,18 +48,11 @@ struct compare_boundary_pair {
 struct data_boundary_pair {
     PartialBoundary pb_lhs;
     PartialBoundary pb_rhs;
-    PartitionID lhs;
-    PartitionID rhs;
-    EdgeWeight edge_cut;
+    PartitionID lhs{std::numeric_limits<PartitionID>::max()};
+    PartitionID rhs{std::numeric_limits<PartitionID>::max()};
+    EdgeWeight edge_cut{0};
 
-    bool initialized;
-
-    data_boundary_pair() {
-        edge_cut = 0;
-        lhs = std::numeric_limits<PartitionID>::max();
-        rhs = std::numeric_limits<PartitionID>::max();
-        initialized = false;
-    }
+    bool initialized{false};
 };
 
 struct hash_boundary_pair {

@@ -7,21 +7,17 @@ void results::next() {
 }
 
 void results::setFloat(const std::string &tag, float result) {
-    if (this->floats.count(tag) <= 0) {
-        this->floats[tag] = std::vector<float>(this->cur_iteration + 1, 0);
-        this->tag_order.push_back(tag);
-    }
-    this->floats[tag].resize(this->cur_iteration + 1);
-    this->floats[tag][this->cur_iteration] = result;
+    auto [it, inserted] = this->floats.try_emplace(tag, this->cur_iteration + 1, 0);
+    if (inserted) { this->tag_order.push_back(tag); }
+    it->second.resize(this->cur_iteration + 1);
+    it->second[this->cur_iteration] = result;
 }
 
 void results::setString(const std::string &tag, const std::string &result) {
-    if (this->strings.count(tag) <= 0) {
-        this->strings[tag] = std::vector<std::string>(this->cur_iteration + 1);
-        this->tag_order.push_back(tag);
-    }
-    this->strings[tag].resize(this->cur_iteration + 1);
-    this->strings[tag][this->cur_iteration] = result;
+    auto [it, inserted] = this->strings.try_emplace(tag, this->cur_iteration + 1);
+    if (inserted) { this->tag_order.push_back(tag); }
+    it->second.resize(this->cur_iteration + 1);
+    it->second[this->cur_iteration] = result;
 }
 
 void results::print() {

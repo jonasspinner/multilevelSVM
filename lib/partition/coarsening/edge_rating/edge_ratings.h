@@ -28,9 +28,7 @@
 
 class edge_ratings {
 public:
-    explicit edge_ratings(const PartitionConfig &_partition_config) : partition_config(_partition_config) {};
-
-    virtual ~edge_ratings() = default;
+    constexpr explicit edge_ratings(const PartitionConfig &_partition_config) : partition_config(_partition_config) {};
 
     void rate(graph_access &G, unsigned level) const;
 

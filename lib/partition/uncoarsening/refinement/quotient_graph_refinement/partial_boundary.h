@@ -34,11 +34,7 @@ struct compare_nodes_contains {
 
 
 struct is_boundary {
-    bool contains;
-
-    is_boundary() {
-        contains = false;
-    }
+    bool contains{false};
 };
 
 
@@ -52,15 +48,13 @@ typedef std::unordered_map<const NodeID, is_boundary, hash_boundary_nodes, compa
 
 class PartialBoundary {
 public:
-    bool contains(NodeID node) {
-        return internal_boundary.find(node) != internal_boundary.end();
-    }
+    [[nodiscard]] bool contains(NodeID node) const { return internal_boundary.find(node) != internal_boundary.end(); }
 
-    inline void insert(NodeID node) { internal_boundary[node].contains = true; }
+    void insert(NodeID node) { internal_boundary[node].contains = true; }
 
-    inline NodeID size() const { return internal_boundary.size(); }
+    [[nodiscard]] NodeID size() const { return internal_boundary.size(); }
 
-    inline void clear() { return internal_boundary.clear(); }
+    void clear() { return internal_boundary.clear(); }
 
     is_boundary_node_hashtable internal_boundary;
 };
