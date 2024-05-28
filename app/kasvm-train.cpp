@@ -1,30 +1,30 @@
-#include <iostream>
-#include <iomanip>
+#include <svm.h>
+#include <thundersvm/util/log.h>
+
 #include <cmath>
+#include <iomanip>
+#include <iostream>
 #include <memory>
 #include <sstream>
-#include <svm.h>
 
 #include "data_structure/graph_access.h"
 #include "data_structure/graph_hierarchy.h"
 #include "io/graph_io.h"
+#include "parse_parameters.h"
 #include "partition/coarsening/coarsening.h"
 #include "partition/partition_config.h"
-#include "svm/svm_solver_libsvm.h"
+#include "svm/bayes_refinement.h"
+#include "svm/fix_refinement.h"
 #include "svm/k_fold.h"
 #include "svm/k_fold_build.h"
 #include "svm/k_fold_import.h"
 #include "svm/k_fold_once.h"
-#include "svm/svm_refinement.h"
-#include "svm/ud_refinement.h"
-#include "svm/bayes_refinement.h"
-#include "svm/fix_refinement.h"
-#include "svm/svm_result.h"
 #include "svm/results.h"
+#include "svm/svm_refinement.h"
+#include "svm/svm_result.h"
+#include "svm/svm_solver_libsvm.h"
+#include "svm/ud_refinement.h"
 #include "tools/timer.h"
-#include "parse_parameters.h"
-
-#include <thundersvm/util/log.h>
 
 void print_null(const char *_s) {}
 
@@ -58,25 +58,22 @@ int main(int argn, char *argv[]) {
         std::unique_ptr<k_fold> kfold;
 
         switch (partition_config.validation_type) {
-            case KFOLD:
-                kfold = std::make_unique<k_fold_build>(partition_config,
-                                                       partition_config.filename);
-                break;
-            case KFOLD_IMPORT:
-                kfold = std::make_unique<k_fold_import>(partition_config, exp,
-                                                        partition_config.filename);
-                break;
-            case ONCE:
-                kfold = std::make_unique<k_fold_once>(partition_config,
-                                                      partition_config.filename);
-                break;
-                // case TRAIN_TEST_SPLIT:
-                // kfold.reset(new k_fold_traintest(partition_config,
-                // 				 partition_config.filename,
-                // 				 partition_config.testname));
-            case TRAIN_TEST_SPLIT:
-                abort();
-                break;
+        case KFOLD:
+            kfold = std::make_unique<k_fold_build>(partition_config, partition_config.filename);
+            break;
+        case KFOLD_IMPORT:
+            kfold = std::make_unique<k_fold_import>(partition_config, exp, partition_config.filename);
+            break;
+        case ONCE:
+            kfold = std::make_unique<k_fold_once>(partition_config, partition_config.filename);
+            break;
+            // case TRAIN_TEST_SPLIT:
+            // kfold.reset(new k_fold_traintest(partition_config,
+            // 				 partition_config.filename,
+            // 				 partition_config.testname));
+        case TRAIN_TEST_SPLIT:
+            abort();
+            break;
         }
 
         timer t_all;
@@ -98,18 +95,15 @@ int main(int argn, char *argv[]) {
             G_maj->set_partition_count(partition_config.k);
 
             std::cout << "graph -"
-                      << " min: " << G_min->number_of_nodes()
-                      << " maj: " << G_maj->number_of_nodes() << std::endl;
+                      << " min: " << G_min->number_of_nodes() << " maj: " << G_maj->number_of_nodes() << std::endl;
 
             std::cout << "val -"
-                      << " min: " << kfold->getMinValData()->size()
-                      << " maj: " << kfold->getMajValData()->size() << std::endl;
+                      << " min: " << kfold->getMinValData()->size() << " maj: " << kfold->getMajValData()->size()
+                      << std::endl;
 
             std::cout << "test -"
-                      << " min: " << kfold->getMinTestData()->size()
-                      << " maj: " << kfold->getMajTestData()->size() << std::endl;
-
-
+                      << " min: " << kfold->getMinTestData()->size() << " maj: " << kfold->getMajTestData()->size()
+                      << std::endl;
 
             // ------------- COARSENING -----------------
 
@@ -133,15 +127,13 @@ int main(int argn, char *argv[]) {
             results.setFloat("HIERARCHY_MIN_SIZE", min_hierarchy.size());
             results.setFloat("HIERARCHY_MAJ_SIZE", maj_hierarchy.size());
 
-
             int init_level = std::max(min_hierarchy.size(), maj_hierarchy.size());
             if (partition_config.export_graph) {
                 std::ostringstream initial_out_graph;
-                initial_out_graph << partition_config.filename << "_graph_"
-                                  << partition_config.matching_type << "_" << init_level << ".gdf";
+                initial_out_graph << partition_config.filename << "_graph_" << partition_config.matching_type << "_"
+                                  << init_level << ".gdf";
                 std::cout << "write " << initial_out_graph.str() << std::endl;
-                graph_io::writeGraphGDF(*min_hierarchy.get_coarsest(),
-                                        *maj_hierarchy.get_coarsest(),
+                graph_io::writeGraphGDF(*min_hierarchy.get_coarsest(), *maj_hierarchy.get_coarsest(),
                                         initial_out_graph.str());
             }
 
@@ -158,26 +150,20 @@ int main(int argn, char *argv[]) {
 
             bayesopt::BOptState state;
             switch (partition_config.refinement_type) {
-                case UD:
-                    initial_result = ud_refinement<SVM_MODEL>::train_ud(init_solver,
-                                                                        *kfold->getMinValData(),
-                                                                        *kfold->getMajValData());
-                    break;
-                case BAYES:
-                    initial_result = bayes_refinement<SVM_MODEL>::train_bayes(init_solver,
-                                                                              *kfold->getMinValData(),
-                                                                              *kfold->getMajValData(),
-                                                                              state,
-                                                                              partition_config.bayes_init,
-                                                                              partition_config.seed);
-                    break;
-                case FIX:
-                    initial_result = fix_refinement<SVM_MODEL>::train_fix(init_solver,
-                                                                          *kfold->getMinValData(),
-                                                                          *kfold->getMajValData(),
-                                                                          partition_config.fix_C,
-                                                                          partition_config.fix_gamma);
-                    break;
+            case UD:
+                initial_result =
+                    ud_refinement<SVM_MODEL>::train_ud(init_solver, *kfold->getMinValData(), *kfold->getMajValData());
+                break;
+            case BAYES:
+                initial_result = bayes_refinement<SVM_MODEL>::train_bayes(
+                    init_solver, *kfold->getMinValData(), *kfold->getMajValData(), state, partition_config.bayes_init,
+                    partition_config.seed);
+                break;
+            case FIX:
+                initial_result =
+                    fix_refinement<SVM_MODEL>::train_fix(init_solver, *kfold->getMinValData(), *kfold->getMajValData(),
+                                                         partition_config.fix_C, partition_config.fix_gamma);
+                break;
             }
 
             auto init_train_time = t.elapsed();
@@ -205,25 +191,18 @@ int main(int argn, char *argv[]) {
 
             std::unique_ptr<svm_refinement<SVM_MODEL>> refinement;
             switch (partition_config.refinement_type) {
-                case UD:
-                    refinement = std::make_unique<ud_refinement<SVM_MODEL>>(min_hierarchy,
-                                                                            maj_hierarchy,
-                                                                            initial_result,
-                                                                            partition_config);
-                    break;
-                case BAYES:
-                    refinement = std::make_unique<bayes_refinement<SVM_MODEL>>(min_hierarchy,
-                                                                               maj_hierarchy,
-                                                                               initial_result,
-                                                                               partition_config,
-                                                                               state);
-                    break;
-                case FIX:
-                    refinement = std::make_unique<fix_refinement<SVM_MODEL>>(min_hierarchy,
-                                                                             maj_hierarchy,
-                                                                             initial_result,
-                                                                             partition_config);
-                    break;
+            case UD:
+                refinement = std::make_unique<ud_refinement<SVM_MODEL>>(min_hierarchy, maj_hierarchy, initial_result,
+                                                                        partition_config);
+                break;
+            case BAYES:
+                refinement = std::make_unique<bayes_refinement<SVM_MODEL>>(min_hierarchy, maj_hierarchy, initial_result,
+                                                                           partition_config, state);
+                break;
+            case FIX:
+                refinement = std::make_unique<fix_refinement<SVM_MODEL>>(min_hierarchy, maj_hierarchy, initial_result,
+                                                                         partition_config);
+                break;
             }
 
             std::vector<std::pair<svm_summary<SVM_MODEL>, svm_instance>> best_results;
@@ -232,11 +211,10 @@ int main(int argn, char *argv[]) {
             while (!refinement->is_done()) {
                 timer t_ref;
 
-                auto current_result = refinement->step(*kfold->getMinValData(),
-                                                       *kfold->getMajValData());
+                auto current_result = refinement->step(*kfold->getMinValData(), *kfold->getMajValData());
 
-                std::cout << "refinement at level " << refinement->get_level()
-                          << " took " << t_ref.elapsed() << std::endl;
+                std::cout << "refinement at level " << refinement->get_level() << " took " << t_ref.elapsed()
+                          << std::endl;
 
                 best_results.push_back(std::make_pair(current_result.best(), current_result.instance));
 
@@ -245,7 +223,6 @@ int main(int argn, char *argv[]) {
                 fmt_gm << "LEVEL" << refinement->get_level() << "_GM";
                 results.setFloat(fmt_ac.str(), current_result.best().Acc);
                 results.setFloat(fmt_gm.str(), current_result.best().Gmean);
-
 
                 if (partition_config.export_graph) {
                     std::ostringstream out_graph;
@@ -263,8 +240,9 @@ int main(int argn, char *argv[]) {
                 solver.set_C(current_result.best().C);
                 solver.set_gamma(current_result.best().gamma);
                 solver.train();
-                svm_summary final_test_summary = solver.build_summary(*kfold->getMinTestData(), *kfold->getMajTestData());
-                final_test_summary.print();
+                svm_summary final_test_summary =
+                solver.build_summary(*kfold->getMinTestData(),
+                *kfold->getMajTestData()); final_test_summary.print();
 
                 fmt_ac << "_TEST";
                 fmt_gm << "_TEST";
@@ -312,8 +290,7 @@ int main(int argn, char *argv[]) {
 
             auto time_iteration = time_all - kfold_io_time - init_test_time;
 
-            std::cout << "iteration time: " << std::setprecision(4) << std::fixed
-                      << time_iteration << std::endl;
+            std::cout << "iteration time: " << std::setprecision(4) << std::fixed << time_iteration << std::endl;
 
             results.setFloat("TIME", time_iteration);
 

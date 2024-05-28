@@ -1,5 +1,5 @@
 /******************************************************************************
- * graph_io.h 
+ * graph_io.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -23,19 +23,19 @@
 #ifndef GRAPHIO_H_
 #define GRAPHIO_H_
 
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <ostream>
-#include <cstdio>
-#include <cstdlib>
 #include <vector>
 
-#include "definitions.h"
 #include "data_structure/graph_access.h"
+#include "definitions.h"
 
 class graph_io {
-public:
+  public:
     static int writeGraphGDF(const graph_access &G_min, const graph_access &G_maj, const std::string &filename);
 
     static int readFeatures(graph_access &G, const std::vector<FeatureVec> &data);

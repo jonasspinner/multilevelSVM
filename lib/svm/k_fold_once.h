@@ -5,12 +5,12 @@
 #include "partition/partition_config.h"
 
 class k_fold_once : public k_fold_build {
-public:
+  public:
     k_fold_once(const PartitionConfig &config, const std::string &basename);
 
     ~k_fold_once() override = default;
 
-protected:
+  protected:
     void next_intern(double &io_time) override;
 };
 

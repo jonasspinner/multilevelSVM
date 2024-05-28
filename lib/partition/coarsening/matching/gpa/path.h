@@ -1,5 +1,5 @@
 /******************************************************************************
- * path.h 
+ * path.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -26,7 +26,7 @@
 #include "definitions.h"
 
 class path {
-public:
+  public:
     path() = default;
 
     constexpr explicit path(const NodeID &v) : head(v), tail(v), length(0), active(true) {}
@@ -45,63 +45,43 @@ public:
 
     [[nodiscard]] EdgeID get_length() const;
 
-    //returns weather the path is a cycle or not.
+    // returns weather the path is a cycle or not.
     [[nodiscard]] bool is_cycle() const;
 
     [[nodiscard]] bool is_active() const;
 
     void set_active(bool active);
 
-private:
-    //Last vertex of the path. Cycles have head == tail
+  private:
+    // Last vertex of the path. Cycles have head == tail
     NodeID head{UNDEFINED_NODE};
 
-    //First vertex of the path. Cycles have head == tail
+    // First vertex of the path. Cycles have head == tail
     NodeID tail{UNDEFINED_NODE};
 
-    //Number of edges in the graph
+    // Number of edges in the graph
     EdgeID length{0};
 
     // True iff the parth is still in use. False iff it has been removed.
     bool active{false};
-
 };
 
-inline NodeID path::get_tail() const {
-    return tail;
-}
+inline NodeID path::get_tail() const { return tail; }
 
-inline void path::set_tail(const NodeID &v) {
-    tail = v;
-}
+inline void path::set_tail(const NodeID &v) { tail = v; }
 
-inline NodeID path::get_head() const {
-    return head;
-}
+inline NodeID path::get_head() const { return head; }
 
-inline void path::set_head(const NodeID &v) {
-    head = v;
-}
+inline void path::set_head(const NodeID &v) { head = v; }
 
-inline EdgeID path::get_length() const {
-    return length;
-}
+inline EdgeID path::get_length() const { return length; }
 
-inline void path::set_length(const EdgeID &len) {
-    length = len;
-}
+inline void path::set_length(const EdgeID &len) { length = len; }
 
-inline bool path::is_cycle() const {
-    return (head == tail) and (length > 0);
-}
+inline bool path::is_cycle() const { return (head == tail) and (length > 0); }
 
-inline bool path::is_active() const {
-    return active;
-}
+inline bool path::is_active() const { return active; }
 
-inline void path::set_active(const bool act) {
-    active = act;
-}
-
+inline void path::set_active(const bool act) { active = act; }
 
 #endif /* end of include guard: PATH_X5LQS3DT */

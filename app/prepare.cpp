@@ -1,29 +1,26 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <functional>
-#include <cctype>
 #include <argtable2.h>
-#include "tools/timer.h"
+
+#include <cctype>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+
 #include "definitions.h"
+#include "tools/timer.h"
 
 typedef std::vector<FeatureVec> MyMat;
 
-
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
-        return !std::isspace(ch);
-    }));
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) { return !std::isspace(ch); }));
 }
 
 // trim from end (in place)
 static inline void rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) { return !std::isspace(ch); }).base(), s.end());
 }
 
 // trim from both ends (in place)
@@ -50,16 +47,14 @@ static inline std::string trim_copy(std::string s) {
     return s;
 }
 
-enum NORMALIZE_METHOD {
-    NONE, LINEAR, GAUSS_NORM
-};
+enum NORMALIZE_METHOD { NONE, LINEAR, GAUSS_NORM };
 
 struct config {
     int nn_num = 10;
     int label_col = 0;
     std::string label_min = "1";
-    //indicates whether to normalize or scale to [0,1] or neither
-    //scaling can preserve null entries
+    // indicates whether to normalize or scale to [0,1] or neither
+    // scaling can preserve null entries
     NORMALIZE_METHOD norm = GAUSS_NORM;
     // read libsvm data instead of csv
     bool libsvm = false;
@@ -120,16 +115,16 @@ int main(int argc, char *argv[]) {
     t.restart();
 
     switch (conf.norm) {
-        case GAUSS_NORM:
-            normalize(data);
-            std::cout << "normalization time " << t.elapsed() << std::endl;
-            break;
-        case LINEAR:
-            scale(data);
-            std::cout << "scale time " << t.elapsed() << std::endl;
-            break;
-        case NONE:
-            break;
+    case GAUSS_NORM:
+        normalize(data);
+        std::cout << "normalization time " << t.elapsed() << std::endl;
+        break;
+    case LINEAR:
+        scale(data);
+        std::cout << "scale time " << t.elapsed() << std::endl;
+        break;
+    case NONE:
+        break;
     }
 
     MyMat min_data;
@@ -141,8 +136,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "splitting time " << t.elapsed() << std::endl;
 
-    std::cout << "nodes - min " << min_data.size()
-              << " maj " << maj_data.size() << std::endl;
+    std::cout << "nodes - min " << min_data.size() << " maj " << maj_data.size() << std::endl;
 
     write_features(min_data, conf.outputfile + "_min_data");
     write_features(maj_data, conf.outputfile + "_maj_data");
@@ -175,24 +169,29 @@ int parse_args(int argc, char *argv[], config &conf) {
     // Setup argtable parameters.
     struct arg_end *end = arg_end(100);
     struct arg_lit *help = arg_lit0("h", "help", "Print help.");
-    struct arg_int *nearest_neighbors = arg_int0(nullptr, "nn", nullptr,
-                                                 "Number of nearest neighbors to compute. (default 10)");
-    struct arg_int *label_column = arg_int0(nullptr, "label_col", nullptr,
-                                            "column in which the labels are written (starting at 0)");
+    struct arg_int *nearest_neighbors =
+        arg_int0(nullptr, "nn", nullptr, "Number of nearest neighbors to compute. (default 10)");
+    struct arg_int *label_column =
+        arg_int0(nullptr, "label_col", nullptr, "column in which the labels are written (starting at 0)");
     struct arg_str *label_minority = arg_str0(nullptr, "minority", nullptr,
-                                              "label/class of the minority class for binary classifications (default \"1\")");
+                                              "label/class of the minority class for binary classifications "
+                                              "(default \"1\")");
     struct arg_lit *p_csv = arg_lit0("c", nullptr,
-                                     "export the csv where the categorical attributes where converted to binary");
+                                     "export the csv where the categorical "
+                                     "attributes where converted to binary");
     struct arg_lit *scale = arg_lit0(nullptr, "scale", "don't normalize just scale to [0,1]");
     struct arg_lit *no_scale = arg_lit0(nullptr, "no_scale", "neither normalize nor scale to [0,1]");
     struct arg_str *file_format = arg_str0(nullptr, "file_format", "[csv|libsvm]",
-                                           "The format of the input file (default behavior is csv if the file ends with \".csv\")");
+                                           "The format of the input file (default behavior is csv if the "
+                                           "file ends with \".csv\")");
     struct arg_str *filename = arg_strn(nullptr, nullptr, "FILE", 1, 1, "Path to csv file to process.");
     struct arg_str *filename_output = arg_str0("o", "output_filename", "OUTPUT",
-                                               "Specify the name of the output file. \"path[_{label_min}]_{min,maj}_{graph,data}\" will be used as output. default: FILE without extension");
+                                               "Specify the name of the output file. "
+                                               "\"path[_{label_min}]_{min,maj}_{graph,data}\" will be used "
+                                               "as output. default: FILE without extension");
 
-    void *argtable[] = {help, nearest_neighbors, label_column, label_minority, scale, no_scale, p_csv, file_format,
-                        filename, filename_output, end};
+    void *argtable[] = {help,  nearest_neighbors, label_column, label_minority,  scale, no_scale,
+                        p_csv, file_format,       filename,     filename_output, end};
 
     // Parse arguments.
     int nerrors = arg_parse(argc, argv, argtable);
@@ -266,11 +265,7 @@ int parse_args(int argc, char *argv[], config &conf) {
 
 void read_csv(const std::string &filename, MyMat &data, std::vector<int> &labels, int label_col,
               const std::string &label_min) {
-    enum COL_TYP {
-        LABEL,
-        NUMERICAL,
-        CATEGORICAL
-    };
+    enum COL_TYP { LABEL, NUMERICAL, CATEGORICAL };
 
     std::vector<std::vector<std::string>> col_categorical_value;
     std::vector<COL_TYP> col_typs;
@@ -286,7 +281,6 @@ void read_csv(const std::string &filename, MyMat &data, std::vector<int> &labels
         // ignore comments
         if (line[0] == '#')
             continue;
-
 
         if (first) {
             // scan over the first entry to get column information
@@ -312,43 +306,43 @@ void read_csv(const std::string &filename, MyMat &data, std::vector<int> &labels
         size_t col = 0;
         for (std::string item; getline(sep, item, ',');) {
             switch (col_typs[col]) {
-                case LABEL: {
-                    if (item == label_min) {
-                        labels.push_back(1);
-                    } else {
-                        labels.push_back(-1);
-                    }
-                    // int label = stoi(item);
-                    // labels.push_back(label);
-                    break;
+            case LABEL: {
+                if (item == label_min) {
+                    labels.push_back(1);
+                } else {
+                    labels.push_back(-1);
                 }
+                // int label = stoi(item);
+                // labels.push_back(label);
+                break;
+            }
 
-                case NUMERICAL: {
-                    trim(item);
-                    if (item == "?" || item == "na") {
-                        data.back().push_back(-1);
-                    }
-                    FeatureData val = stod(item);
-                    data.back().push_back(val);
-                    break;
+            case NUMERICAL: {
+                trim(item);
+                if (item == "?" || item == "na") {
+                    data.back().push_back(-1);
                 }
+                FeatureData val = stod(item);
+                data.back().push_back(val);
+                break;
+            }
 
-                case CATEGORICAL: {
-                    // convert categorical attributes to integers
-                    int cat = -1;
-                    for (size_t i = 0; i < col_categorical_value[col].size(); i++) {
-                        if (col_categorical_value[col][i] == item) {
-                            cat = i;
-                            break;
-                        }
+            case CATEGORICAL: {
+                // convert categorical attributes to integers
+                int cat = -1;
+                for (size_t i = 0; i < col_categorical_value[col].size(); i++) {
+                    if (col_categorical_value[col][i] == item) {
+                        cat = i;
+                        break;
                     }
-                    if (cat == -1) {
-                        cat = col_categorical_value[col].size();
-                        col_categorical_value[col].push_back(item);
-                    }
-                    data.back().push_back(cat);
-                    break;
                 }
+                if (cat == -1) {
+                    cat = col_categorical_value[col].size();
+                    col_categorical_value[col].push_back(item);
+                }
+                data.back().push_back(cat);
+                break;
+            }
             }
             col++;
         }
@@ -358,12 +352,11 @@ void read_csv(const std::string &filename, MyMat &data, std::vector<int> &labels
         if (col_typs[col] != CATEGORICAL)
             continue;
         std::cout << "Categorical values for col " << col << std::endl;
-        for (const std::string &v: col_categorical_value[col]) {
+        for (const std::string &v : col_categorical_value[col]) {
             std::cout << v << ",";
         }
         std::cout << std::endl;
     }
-
 
     // convert categorical attributes to binary
     for (size_t row = 0; row < data.size(); row++) {
@@ -408,12 +401,11 @@ void read_libsvm(const std::string &filename, MyMat &data, std::vector<int> &lab
             }
 
             data.back().push_back(value);
-
         }
         feature_size = std::max(data.back().size(), feature_size);
     }
 
-    for (auto &&row: data) {
+    for (auto &&row : data) {
         if (row.size() < feature_size)
             row.resize(feature_size);
     }
@@ -455,7 +447,7 @@ void normalize(MyMat &data) {
     }
 
     for (size_t j = 0; j < cols; j++) {
-        mean[j] /= (FeatureData) rows;
+        mean[j] /= (FeatureData)rows;
     }
 
     for (size_t i = 0; i < rows; i++) {
@@ -465,7 +457,7 @@ void normalize(MyMat &data) {
     }
 
     for (size_t j = 0; j < cols; j++) {
-        stds[j] = sqrt(variance[j] / (FeatureData) (rows - 1));
+        stds[j] = sqrt(variance[j] / (FeatureData)(rows - 1));
     }
 
     for (size_t i = 0; i < rows; i++) {
@@ -530,16 +522,17 @@ void write_metis(const std::vector<std::vector<Edge>> &edges, const std::string 
     std::ofstream file;
     file.open(filename);
 
-    // edges is NOT the number of edges in the unidirectional graph but an upper boundary
+    // edges is NOT the number of edges in the unidirectional graph but an upper
+    // boundary
     file << nodes << " " << num_edges << " 1" << std::endl;
 
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < nn; ++j) {
             int target = edges[i][j].target;
             float weight = edges[i][j].weight;
-            if (target == i) //exclude self loops
+            if (target == i) // exclude self loops
                 continue;
-            file << target + 1 << " " << (int) weight << " ";
+            file << target + 1 << " " << (int)weight << " ";
         }
         file << std::endl;
     }

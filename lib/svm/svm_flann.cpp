@@ -1,8 +1,7 @@
 #include "svm_flann.h"
 
-#include <flann/flann.hpp>
 #include "definitions.h"
-
+#include <flann/flann.hpp>
 
 void svm_flann::run_flann(const std::vector<FeatureVec> &data, std::vector<std::vector<Edge>> &graph, int num_nn) {
     size_t rows = data.size();
@@ -33,11 +32,11 @@ void svm_flann::run_flann(const std::vector<FeatureVec> &data, std::vector<std::
         graph.emplace_back();
         graph.back().reserve(num_nn);
 
-        for (size_t j = 0; j < (size_t) num_nn + 1; ++j) {
+        for (size_t j = 0; j < (size_t)num_nn + 1; ++j) {
             int target = indices[i][j];
             float weight = 1 / distances[i][j];
 
-            if (target == i) //exclude self loops
+            if (target == i) // exclude self loops
                 continue;
 
             Edge edge{};

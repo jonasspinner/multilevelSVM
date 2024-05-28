@@ -1,7 +1,6 @@
 #include "svm_instance.h"
 #include "svm_convert.h"
 
-
 void svm_instance::read_problem(const svm_data &min_data, const svm_data &maj_data) {
     this->num_min = min_data.size();
     this->num_maj = maj_data.size();
@@ -35,7 +34,7 @@ void svm_instance::allocate_prob(NodeID total_size) {
 }
 
 void svm_instance::add_to_problem(const svm_data &data, int label) {
-    for (const auto &node: data) {
+    for (const auto &node : data) {
         this->labels->push_back(label);
 
         this->nodes->push_back(node);
@@ -44,7 +43,7 @@ void svm_instance::add_to_problem(const svm_data &data, int label) {
 }
 
 void svm_instance::add_to_problem(const graph_access &G, int label) {
-    for (auto node: G.nodes()) {
+    for (auto node : G.nodes()) {
         this->labels->push_back(label);
 
         const FeatureVec &vec = G.getFeatureVec(node);
@@ -54,18 +53,10 @@ void svm_instance::add_to_problem(const graph_access &G, int label) {
     }
 }
 
-size_t svm_instance::size() const {
-    return this->labels->size();
-}
+size_t svm_instance::size() const { return this->labels->size(); }
 
-double *svm_instance::label_data() {
-    return this->labels->data();
-}
+double *svm_instance::label_data() { return this->labels->data(); }
 
-svm_node **svm_instance::node_data() {
-    return this->nodes_meta->data();
-}
+svm_node **svm_instance::node_data() { return this->nodes_meta->data(); }
 
-DataSet::node2d svm_instance::node_data_thunder() {
-    return svm_convert::svmdata_to_dataset(*this->nodes);
-}
+DataSet::node2d svm_instance::node_data_thunder() { return svm_convert::svmdata_to_dataset(*this->nodes); }

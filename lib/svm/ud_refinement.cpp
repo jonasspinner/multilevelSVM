@@ -1,21 +1,18 @@
-#include <thundersvm/model/svc.h>
 #include "svm/ud_refinement.h"
+#include <thundersvm/model/svc.h>
 
 #include "svm/param_search.h"
-#include "svm/svm_solver_factory.h"
 #include "svm/svm_instance.h"
+#include "svm/svm_solver_factory.h"
 
-template<class T>
-ud_refinement<T>::ud_refinement(graph_hierarchy &min_hierarchy,
-                                graph_hierarchy &maj_hierarchy,
-                                const svm_result<T> &initial_result,
-                                PartitionConfig conf)
-        : svm_refinement<T>(min_hierarchy, maj_hierarchy, initial_result, conf) {
+template <class T>
+ud_refinement<T>::ud_refinement(graph_hierarchy &min_hierarchy, graph_hierarchy &maj_hierarchy,
+                                const svm_result<T> &initial_result, PartitionConfig conf)
+    : svm_refinement<T>(min_hierarchy, maj_hierarchy, initial_result, conf) {
     this->inherit_ud = conf.inherit_ud;
 }
 
-template<class T>
-svm_result<T> ud_refinement<T>::step(const svm_data &min_sample, const svm_data &maj_sample) {
+template <class T> svm_result<T> ud_refinement<T>::step(const svm_data &min_sample, const svm_data &maj_sample) {
     std::cout << "UD refinement at level " << this->get_level() << std::endl;
 
     std::vector<NodeID> sv_min = this->result.best().SV_min;
@@ -23,9 +20,7 @@ svm_result<T> ud_refinement<T>::step(const svm_data &min_sample, const svm_data 
     this->uncoarse(sv_min, sv_maj);
 
     std::cout << "current level nodes"
-              << " min " << this->uncoarsed_data_min.size()
-              << " maj " << this->uncoarsed_data_maj.size()
-              << std::endl;
+              << " min " << this->uncoarsed_data_min.size() << " maj " << this->uncoarsed_data_maj.size() << std::endl;
 
     svm_instance instance;
     instance.read_problem(this->uncoarsed_data_min, this->uncoarsed_data_maj);
@@ -33,10 +28,8 @@ svm_result<T> ud_refinement<T>::step(const svm_data &min_sample, const svm_data 
 
     if (this->uncoarsed_data_min.size() + this->uncoarsed_data_maj.size() < this->num_skip_ms) {
         if (this->training_inherit) {
-            this->result = train_refinement(*solver, min_sample, maj_sample,
-                                            this->inherit_ud,
-                                            this->result.best().C_log,
-                                            this->result.best().gamma_log);
+            this->result = train_refinement(*solver, min_sample, maj_sample, this->inherit_ud,
+                                            this->result.best().C_log, this->result.best().gamma_log);
         } else {
             // uncoarsend just a single class so to parameter training again
             this->result = train_ud(*solver, min_sample, maj_sample);
@@ -61,9 +54,9 @@ svm_result<T> ud_refinement<T>::step(const svm_data &min_sample, const svm_data 
     return this->result;
 }
 
-template<class T>
-svm_result<T>
-ud_refinement<T>::train_ud(svm_solver<T> &solver, const svm_data &min_sample, const svm_data &maj_sample) {
+template <class T>
+svm_result<T> ud_refinement<T>::train_ud(svm_solver<T> &solver, const svm_data &min_sample,
+                                         const svm_data &maj_sample) {
     svm_result<T> result(solver.get_instance());
     std::vector<svm_param> params;
 
@@ -96,11 +89,10 @@ ud_refinement<T>::train_ud(svm_solver<T> &solver, const svm_data &min_sample, co
     return second_res;
 }
 
-template<class T>
-svm_result<T> ud_refinement<T>::train_refinement(svm_solver<T> &solver,
-                                                 const svm_data &min_sample,
-                                                 const svm_data &maj_sample,
-                                                 bool inherit_ud, float param_c, float param_g) {
+template <class T>
+svm_result<T> ud_refinement<T>::train_refinement(svm_solver<T> &solver, const svm_data &min_sample,
+                                                 const svm_data &maj_sample, bool inherit_ud, float param_c,
+                                                 float param_g) {
     svm_result<T> result(solver.get_instance());
     std::vector<svm_param> params;
     if (!inherit_ud) {
@@ -123,7 +115,6 @@ svm_result<T> ud_refinement<T>::train_refinement(svm_solver<T> &solver,
         params.emplace_back(param_c, param_g);
     }
 
-
     svm_result<T> second_res = solver.train_range(params, min_sample, maj_sample);
     second_res.add(result);
     svm_summary<T> best = second_res.best();
@@ -139,9 +130,6 @@ svm_result<T> ud_refinement<T>::train_refinement(svm_solver<T> &solver,
     return second_res;
 }
 
+template class ud_refinement<svm_model>;
 
-template
-class ud_refinement<svm_model>;
-
-template
-class ud_refinement<SVC>;
+template class ud_refinement<SVC>;

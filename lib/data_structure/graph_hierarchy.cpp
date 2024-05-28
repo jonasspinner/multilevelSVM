@@ -22,9 +22,8 @@
 
 #include "graph_hierarchy.h"
 
-
 graph_hierarchy::~graph_hierarchy() {
-    for (auto &m_to_delete_mapping: m_to_delete_mappings) {
+    for (auto &m_to_delete_mapping : m_to_delete_mappings) {
         delete m_to_delete_mapping;
     }
 
@@ -61,10 +60,10 @@ graph_access *graph_hierarchy::pop_finer_and_project() {
 
     ASSERT_EQ(m_the_graph_hierarchy.size(), m_the_mappings.size());
 
-    //perform projection
+    // perform projection
     graph_access &fRef = *finer;
     graph_access &cRef = *m_current_coarser_graph;
-    for (auto n: fRef.nodes()) {
+    for (auto n : fRef.nodes()) {
         NodeID coarser_node = (*coarse_mapping)[n];
         PartitionID coarser_partition_id = cRef.getPartitionIndex(coarser_node);
         fRef.setPartitionIndex(n, coarser_partition_id);
@@ -77,13 +76,9 @@ graph_access *graph_hierarchy::pop_finer_and_project() {
     return finer;
 }
 
-CoarseMapping *graph_hierarchy::get_mapping_of_current_finer() {
-    return m_current_coarse_mapping;
-}
+CoarseMapping *graph_hierarchy::get_mapping_of_current_finer() { return m_current_coarse_mapping; }
 
-graph_access *graph_hierarchy::get_coarsest() {
-    return m_coarsest_graph;
-}
+graph_access *graph_hierarchy::get_coarsest() { return m_coarsest_graph; }
 
 graph_access *graph_hierarchy::pop_coarsest() {
     graph_access *current_coarsest = m_the_graph_hierarchy.top();
@@ -97,8 +92,7 @@ bool graph_hierarchy::isEmpty() const {
 }
 
 unsigned int graph_hierarchy::size() const {
-    if (!m_the_graph_hierarchy.empty() &&
-        m_the_graph_hierarchy.top() == m_coarsest_graph) {
+    if (!m_the_graph_hierarchy.empty() && m_the_graph_hierarchy.top() == m_coarsest_graph) {
         return m_the_graph_hierarchy.size() - 1;
     }
     return m_the_graph_hierarchy.size();

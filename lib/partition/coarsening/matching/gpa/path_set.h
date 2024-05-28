@@ -1,5 +1,5 @@
 /******************************************************************************
- * path_set.h 
+ * path_set.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -29,11 +29,10 @@
 #include "tools/macros_assertions.h"
 
 class path_set {
-public:
-
+  public:
     path_set(graph_access *G, const PartitionConfig *config);
 
-    //returns the path that v lies on iff v is an endpoint
+    // returns the path that v lies on iff v is an endpoint
     [[nodiscard]] const path &get_path(const NodeID &v) const;
 
     // add the edge with given id to the path set if it is applicable
@@ -41,26 +40,25 @@ public:
     bool add_if_applicable(const NodeID &source, const EdgeID &e);
 
     //**********
-    //Navigation
+    // Navigation
     //**********
 
-    //returns the if of vertex next to v on the path
+    // returns the if of vertex next to v on the path
     [[nodiscard]] NodeID next_vertex(const NodeID &v) const;
 
-    //returns the if of vertex previous to v on the path
+    // returns the if of vertex previous to v on the path
     [[nodiscard]] NodeID prev_vertex(const NodeID &v) const;
 
-    //returns the id of the edge to the next vertex on the path
+    // returns the id of the edge to the next vertex on the path
     [[nodiscard]] EdgeID edge_to_next(const NodeID &v) const;
 
-    //returns the id of the edge to the previous vertex on the path
+    // returns the id of the edge to the previous vertex on the path
     [[nodiscard]] EdgeID edge_to_prev(const NodeID &v) const;
 
-private:
+  private:
     graph_access *pG;
 
     const PartitionConfig *config;
-
 
     // Number of Paths
     PathID m_no_of_paths;
@@ -74,7 +72,6 @@ private:
     // for every vertex v, next[v] is the id of the vertex that is next on its path.
     // for the head v of a path, next[v] == v
     std::vector<NodeID> m_next;
-
 
     // for every vertex v, prev[v] is the id of the vertex that is previouson its path.
     // for the tail v of a path, prev[v] == v
@@ -90,11 +87,8 @@ private:
     // if prev[v] == v the prev_edge[v] = UNDEFINED_EDGE
     std::vector<EdgeID> m_prev_edge;
 
-    [[nodiscard]] inline bool is_endpoint(const NodeID &v) const {
-        return (m_next[v] == v or m_prev[v] == v);
-    }
+    [[nodiscard]] inline bool is_endpoint(const NodeID &v) const { return (m_next[v] == v or m_prev[v] == v); }
 };
-
 
 inline const path &path_set::get_path(const NodeID &v) const {
     PathID path_id = m_vertex_to_path[v];
@@ -102,21 +96,13 @@ inline const path &path_set::get_path(const NodeID &v) const {
     return m_paths[path_id];
 }
 
-inline NodeID path_set::next_vertex(const NodeID &v) const {
-    return m_next[v];
-}
+inline NodeID path_set::next_vertex(const NodeID &v) const { return m_next[v]; }
 
-inline NodeID path_set::prev_vertex(const NodeID &v) const {
-    return m_prev[v];
-}
+inline NodeID path_set::prev_vertex(const NodeID &v) const { return m_prev[v]; }
 
-inline EdgeID path_set::edge_to_next(const NodeID &v) const {
-    return m_next_edge[v];
-}
+inline EdgeID path_set::edge_to_next(const NodeID &v) const { return m_next_edge[v]; }
 
-inline EdgeID path_set::edge_to_prev(const NodeID &v) const {
-    return m_prev_edge[v];
-}
+inline EdgeID path_set::edge_to_prev(const NodeID &v) const { return m_prev_edge[v]; }
 
 inline bool path_set::add_if_applicable(const NodeID &source, const EdgeID &e) {
     graph_access &G = *pG;
@@ -166,8 +152,8 @@ inline bool path_set::add_if_applicable(const NodeID &source, const EdgeID &e) {
             source_path.set_tail(target_path.get_head());
         }
 
-        //update the double linked list so that we can navigate through the paths later
-        //first handle the source node
+        // update the double linked list so that we can navigate through the paths later
+        // first handle the source node
         if (m_next[source] == source) {
             ASSERT_TRUE(edge_to_next(source) == UNDEFINED_EDGE);
             m_next[source] = target;
@@ -178,7 +164,7 @@ inline bool path_set::add_if_applicable(const NodeID &source, const EdgeID &e) {
             m_prev_edge[source] = e;
         }
 
-        //then handle the target node
+        // then handle the target node
         if (m_next[target] == target) {
             ASSERT_TRUE(edge_to_next(target) == UNDEFINED_EDGE);
             m_next[target] = source;
@@ -194,10 +180,10 @@ inline bool path_set::add_if_applicable(const NodeID &source, const EdgeID &e) {
         return true;
     } else if (sourcePathID == targetPathID && source_path.get_length() % 2 == 1) {
 
-        //first we update the path data structure
+        // first we update the path data structure
         source_path.set_length(source_path.get_length() + 1);
 
-        //close the cycle by updateing the doubly linked list
+        // close the cycle by updateing the doubly linked list
         if (m_next[source_path.get_head()] == source_path.get_head()) {
             m_next[source_path.get_head()] = source_path.get_tail();
             m_next_edge[source_path.get_head()] = e;
@@ -219,6 +205,5 @@ inline bool path_set::add_if_applicable(const NodeID &source, const EdgeID &e) {
     }
     return false;
 }
-
 
 #endif /* end of include guard: PATH_SET_80E9CQT1 */

@@ -1,16 +1,11 @@
-#include <memory>
 #include "simple_clustering.h"
+#include <memory>
 
 #include "algorithms/jarnik_prim.h"
 #include "data_structure/graph_access.h"
 
-
-void simple_clustering::match(const PartitionConfig &config,
-                              graph_access &G,
-                              Matching &,
-                              CoarseMapping &coarse_mapping,
-                              NodeID &no_of_coarse_vertices,
-                              NodePermutationMap &permutation) {
+void simple_clustering::match(const PartitionConfig &config, graph_access &G, Matching &, CoarseMapping &coarse_mapping,
+                              NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) {
     permutation.resize(G.number_of_nodes());
     coarse_mapping.resize(G.number_of_nodes(), std::numeric_limits<NodeID>::max());
 
@@ -24,7 +19,7 @@ void simple_clustering::match(const PartitionConfig &config,
     visit_children(root);
 
     // unvisited nodes are single coarse nodes
-    for (auto &coarseID: coarse_mapping) {
+    for (auto &coarseID : coarse_mapping) {
         if (coarseID == std::numeric_limits<NodeID>::max()) {
             coarseID = ++cur_cluster;
         }
@@ -44,9 +39,6 @@ void simple_clustering::visit_children(NodeID cur_node) {
     (*coarse_mapping)[cur_node] = cur_cluster;
     cur_cluster_nodes++;
 
-    forall_out_edges ((*tree), e, cur_node)
-            {
-                visit_children(tree->getEdgeTarget(e));
-            }
+    forall_out_edges((*tree), e, cur_node) { visit_children(tree->getEdgeTarget(e)); }
     endfor
 }

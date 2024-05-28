@@ -1,5 +1,5 @@
 /******************************************************************************
- * matching.h 
+ * matching.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -27,17 +27,13 @@
 #include "partition/partition_config.h"
 
 class matching {
-public:
+  public:
     matching() = default;
 
     virtual ~matching() = default;
 
-    virtual void match(const PartitionConfig &partition_config,
-                       graph_access &G,
-                       Matching &_matching,
-                       CoarseMapping &mapping,
-                       NodeID &no_of_coarse_vertices,
-                       NodePermutationMap &permutation) = 0;
+    virtual void match(const PartitionConfig &partition_config, graph_access &G, Matching &_matching,
+                       CoarseMapping &mapping, NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) = 0;
 };
 
 #endif /* end of include guard: MATCHING_QL4RUO3D */

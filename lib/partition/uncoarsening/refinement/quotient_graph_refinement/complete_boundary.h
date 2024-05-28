@@ -29,8 +29,8 @@
 
 #include "boundary_lookup.h"
 #include "data_structure/graph_access.h"
-#include "partition/uncoarsening/refinement/quotient_graph_refinement/partial_boundary.h"
 #include "partition/partition_config.h"
+#include "partition/uncoarsening/refinement/quotient_graph_refinement/partial_boundary.h"
 
 struct block_informations {
     NodeWeight block_weight;
@@ -40,7 +40,7 @@ struct block_informations {
 typedef std::vector<boundary_pair> QuotientGraphEdges;
 
 class complete_boundary {
-public:
+  public:
     explicit complete_boundary(graph_access *G);
 
     virtual ~complete_boundary() = default;
@@ -57,11 +57,11 @@ public:
 
     inline void getUnderlyingQuotientGraph(graph_access &Q_bar);
 
-private:
-    //updates lazy values that the access functions need
+  private:
+    // updates lazy values that the access functions need
     inline void update_lazy_values(boundary_pair *pair);
 
-    //lazy members to avoid hashtable loop ups
+    // lazy members to avoid hashtable loop ups
     PartialBoundary *m_pb_lhs_lazy{nullptr};
     PartialBoundary *m_pb_rhs_lazy{nullptr};
     PartitionID m_lazy_lhs{};
@@ -70,12 +70,12 @@ private:
     hash_boundary_pair m_hbp;
 
     graph_access *m_graph_ref;
-    //implicit quotient graph structure
+    // implicit quotient graph structure
     //
     block_pairs m_pairs;
     std::vector<block_informations> m_block_infos;
 
-    //explicit quotient graph structure / may be outdated!
+    // explicit quotient graph structure / may be outdated!
     graph_access Q;
     std::vector<NodeID> m_singletons;
 
@@ -83,14 +83,13 @@ private:
     ///////// Data Structure Invariants
     //////////////////////////////////////////////////////////////
 #ifndef NDEBUG
-public:
+  public:
     [[maybe_unused]] bool assert_bnodes_in_boundaries();
 
     [[maybe_unused]] bool assert_boundaries_are_bnodes();
 
 #endif
 };
-
 
 inline void complete_boundary::build() {
     graph_access &G = *m_graph_ref;
@@ -100,7 +99,7 @@ inline void complete_boundary::build() {
         m_block_infos[block].block_no_nodes = 0;
     }
 
-    for (auto n: G.nodes()) {
+    for (auto n : G.nodes()) {
         PartitionID source_partition = G.getPartitionIndex(n);
         m_block_infos[source_partition].block_weight += G.getNodeWeight(n);
         m_block_infos[source_partition].block_no_nodes += 1;
@@ -109,34 +108,32 @@ inline void complete_boundary::build() {
             m_singletons.push_back(n);
         }
 
-        forall_out_edges(G, e, n)
-                {
-                    NodeID targetID = G.getEdgeTarget(e);
-                    PartitionID target_partition = G.getPartitionIndex(targetID);
-                    bool is_cut_edge = (source_partition != target_partition);
+        forall_out_edges(G, e, n) {
+            NodeID targetID = G.getEdgeTarget(e);
+            PartitionID target_partition = G.getPartitionIndex(targetID);
+            bool is_cut_edge = (source_partition != target_partition);
 
-                    if (is_cut_edge) {
-                        boundary_pair bp{};
-                        bp.k = m_graph_ref->get_partition_count();
-                        bp.lhs = source_partition;
-                        bp.rhs = target_partition;
-                        update_lazy_values(&bp);
-                        m_pairs[bp].edge_cut += G.getEdgeWeight(e);
-                        insert(n, source_partition, &bp);
-                    }
-                }
+            if (is_cut_edge) {
+                boundary_pair bp{};
+                bp.k = m_graph_ref->get_partition_count();
+                bp.lhs = source_partition;
+                bp.rhs = target_partition;
+                update_lazy_values(&bp);
+                m_pairs[bp].edge_cut += G.getEdgeWeight(e);
+                insert(n, source_partition, &bp);
+            }
+        }
         endfor
     }
-    for (auto &[_, value]: m_pairs) {
+    for (auto &[_, value] : m_pairs) {
         value.edge_cut /= 2;
     }
-
 }
 
 inline void complete_boundary::insert(NodeID node, PartitionID insert_node_into, boundary_pair *pair) {
     update_lazy_values(pair);
-    ASSERT_TRUE((m_lazy_lhs == pair->lhs && m_lazy_rhs == pair->rhs)
-                || (m_lazy_lhs == pair->rhs && m_lazy_rhs == pair->lhs));
+    ASSERT_TRUE((m_lazy_lhs == pair->lhs && m_lazy_rhs == pair->rhs) ||
+                (m_lazy_lhs == pair->rhs && m_lazy_rhs == pair->lhs));
 
     if (insert_node_into == m_lazy_lhs) {
         ASSERT_EQ(m_graph_ref->getPartitionIndex(node), m_lazy_lhs);
@@ -168,8 +165,8 @@ inline NodeID complete_boundary::size(PartitionID partition, boundary_pair *pair
 }
 
 inline void complete_boundary::getQuotientGraphEdges(QuotientGraphEdges &qgraph_edges) {
-    //the quotient graph is stored implicitly in the pairs hashtable
-    for (const auto &[key, _]: m_pairs) {
+    // the quotient graph is stored implicitly in the pairs hashtable
+    for (const auto &[key, _] : m_pairs) {
         qgraph_edges.push_back(key);
     }
 }
@@ -198,13 +195,12 @@ inline void complete_boundary::update_lazy_values(boundary_pair *pair) {
 inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
     auto *graphref = new basicGraph;
 
-
     Q_bar.graphref.reset(graphref);
 
     std::vector<std::vector<std::pair<PartitionID, EdgeWeight>>> building_tool;
     building_tool.resize(m_block_infos.size());
 
-    for (const auto &[cur_pair, _]: m_pairs) {
+    for (const auto &[cur_pair, _] : m_pairs) {
         std::pair<PartitionID, EdgeWeight> qedge_lhs;
         qedge_lhs.first = cur_pair.rhs;
         qedge_lhs.second = m_pairs[cur_pair].edge_cut;
@@ -222,7 +218,7 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
         NodeID node = Q_bar.new_node();
         Q_bar.setNodeWeight(node, m_block_infos[p].block_weight);
 
-        for (auto &j: building_tool[p]) {
+        for (auto &j : building_tool[p]) {
             EdgeID e = Q_bar.new_edge(node, j.first);
             Q_bar.setEdgeWeight(e, j.second);
         }
@@ -231,7 +227,6 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
     Q_bar.finish_construction();
 }
 
-
 #ifndef NDEBUG
 
 [[maybe_unused]] inline bool complete_boundary::assert_bnodes_in_boundaries() {
@@ -239,7 +234,8 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
 
     for (PartitionID lhs = 0; lhs < k; lhs++) {
         for (PartitionID rhs = 0; rhs < k; rhs++) {
-            if (rhs == lhs || lhs > rhs) continue;
+            if (rhs == lhs || lhs > rhs)
+                continue;
 
             boundary_pair bp{};
             bp.k = m_graph_ref->get_partition_count();
@@ -254,7 +250,7 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
             NodeID rhs_no_nodes = 0;
 
             EdgeWeight edge_cut = 0;
-            for (auto n: G.nodes()) {
+            for (auto n : G.nodes()) {
                 PartitionID source_partition = G.getPartitionIndex(n);
                 if (source_partition == lhs) {
                     lhs_part_weight += G.getNodeWeight(n);
@@ -264,19 +260,17 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
                     rhs_no_nodes++;
                 }
 
-                forall_out_edges(G, e, n)
-                        {
-                            NodeID targetID = G.getEdgeTarget(e);
-                            PartitionID target_partition = G.getPartitionIndex(targetID);
-                            bool is_cut_edge = (source_partition == lhs && target_partition == rhs)
-                                               || (source_partition == rhs && target_partition == lhs);
+                forall_out_edges(G, e, n) {
+                    NodeID targetID = G.getEdgeTarget(e);
+                    PartitionID target_partition = G.getPartitionIndex(targetID);
+                    bool is_cut_edge = (source_partition == lhs && target_partition == rhs) ||
+                                       (source_partition == rhs && target_partition == lhs);
 
-                            if (is_cut_edge) {
-                                edge_cut += G.getEdgeWeight(e);
-                                ASSERT_TRUE(contains(n, source_partition, &bp));
-                            }
-
-                        }
+                    if (is_cut_edge) {
+                        edge_cut += G.getEdgeWeight(e);
+                        ASSERT_TRUE(contains(n, source_partition, &bp));
+                    }
+                }
                 endfor
             }
 
@@ -293,31 +287,28 @@ inline void complete_boundary::getUnderlyingQuotientGraph(graph_access &Q_bar) {
 
 [[maybe_unused]] inline bool complete_boundary::assert_boundaries_are_bnodes() {
     graph_access &G = *m_graph_ref;
-    for (auto n: G.nodes()) {
+    for (auto n : G.nodes()) {
         PartitionID partition = G.getPartitionIndex(n);
-        forall_out_edges(G, e, n)
-                {
-                    NodeID target = G.getEdgeTarget(e);
-                    PartitionID targets_partition = G.getPartitionIndex(target);
+        forall_out_edges(G, e, n) {
+            NodeID target = G.getEdgeTarget(e);
+            PartitionID targets_partition = G.getPartitionIndex(target);
 
-                    if (partition != targets_partition) {
-                        boundary_pair bp{};
-                        bp.k = G.get_partition_count();
-                        bp.lhs = partition;
-                        bp.rhs = targets_partition;
+            if (partition != targets_partition) {
+                boundary_pair bp{};
+                bp.k = G.get_partition_count();
+                bp.lhs = partition;
+                bp.rhs = targets_partition;
 
-                        ASSERT_TRUE(contains(n, partition, &bp));
-                        ASSERT_TRUE(contains(target, targets_partition, &bp));
-
-                    }
-                }
+                ASSERT_TRUE(contains(n, partition, &bp));
+                ASSERT_TRUE(contains(target, targets_partition, &bp));
+            }
+        }
         endfor
-
     }
 
     QuotientGraphEdges qgraph_edges;
     getQuotientGraphEdges(qgraph_edges);
-    for (auto &pair: qgraph_edges) {
+    for (auto &pair : qgraph_edges) {
         ASSERT_NEQ(pair.lhs, pair.rhs);
     }
 

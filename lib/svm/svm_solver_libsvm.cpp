@@ -2,8 +2,8 @@
 #include <utility>
 
 #include "svm/param_search.h"
-#include "svm/svm_solver_libsvm.h"
 #include "svm/svm_convert.h"
+#include "svm/svm_solver_libsvm.h"
 
 void svm_solver_libsvm::train() {
     svm_problem prob{};
@@ -20,14 +20,12 @@ void svm_solver_libsvm::train() {
 
     svm_model *trained_model = svm_train(&prob, &(this->param));
 
-    this->model = std::shared_ptr<svm_model>
-            (trained_model, [](svm_model *m) { svm_free_and_destroy_model(&m); });
+    this->model = std::shared_ptr<svm_model>(trained_model, [](svm_model *m) { svm_free_and_destroy_model(&m); });
 }
 
 int svm_solver_libsvm::predict(const std::vector<svm_node> &nodes) {
     return svm_predict(this->model.get(), nodes.data());
 }
-
 
 void svm_solver_libsvm::export_to_file(const std::string &path) {
     int ret = svm_save_model(path.c_str(), this->model.get());

@@ -28,12 +28,8 @@
 #include "tools/macros_assertions.h"
 #include "tools/random_functions.h"
 
-
-void gpa_matching::match(const PartitionConfig &partition_config,
-                         graph_access &G,
-                         Matching &edge_matching,
-                         CoarseMapping &coarse_mapping,
-                         NodeID &no_of_coarse_vertices,
+void gpa_matching::match(const PartitionConfig &partition_config, graph_access &G, Matching &edge_matching,
+                         CoarseMapping &coarse_mapping, NodeID &no_of_coarse_vertices,
                          NodePermutationMap &permutation) {
     PRINT(std::cout << "matching using gpa" << std::endl);
     permutation.resize(G.number_of_nodes());
@@ -46,7 +42,7 @@ void gpa_matching::match(const PartitionConfig &partition_config,
 
     init(G, partition_config, permutation, edge_matching, edge_permutation, sources);
 
-    //permutation of the edges for random tie breaking
+    // permutation of the edges for random tie breaking
     if (partition_config.edge_rating_tiebreaking) {
         random_functions::permutate_vector_good(edge_permutation, false);
     }
@@ -56,18 +52,19 @@ void gpa_matching::match(const PartitionConfig &partition_config,
 
     path_set pathset(&G, &partition_config);
 
-    //grow the paths
-    for (auto e: G.edges()) {
+    // grow the paths
+    for (auto e : G.edges()) {
         EdgeID curEdge = edge_permutation[e];
         NodeID source = sources[curEdge];
         NodeID target = G.getEdgeTarget(curEdge);
-        if (target < source) continue; // get rid of double edges
+        if (target < source)
+            continue; // get rid of double edges
 
         if (G.getEdgeRating(curEdge) == 0.0) {
             continue;
         }
 
-        //max vertex weight constraint
+        // max vertex weight constraint
         if (G.getNodeWeight(source) + G.getNodeWeight(target) > partition_config.max_vertex_weight) {
             continue;
         }
@@ -86,7 +83,7 @@ void gpa_matching::match(const PartitionConfig &partition_config,
     // all matched pairs are now in edge_matching
     // now construct the coarsemapping
     no_of_coarse_vertices = 0;
-    for (auto n: G.nodes()) {
+    for (auto n : G.nodes()) {
         if (G.getPartitionIndex(n) != G.getPartitionIndex(edge_matching[n])) {
             // v cycle... they shouldnt be contraced
             edge_matching[n] = n;
@@ -99,7 +96,6 @@ void gpa_matching::match(const PartitionConfig &partition_config,
             }
         }
 
-
         if (n < edge_matching[n]) {
             coarse_mapping[n] = no_of_coarse_vertices;
             coarse_mapping[edge_matching[n]] = no_of_coarse_vertices;
@@ -108,48 +104,37 @@ void gpa_matching::match(const PartitionConfig &partition_config,
             coarse_mapping[n] = no_of_coarse_vertices;
             no_of_coarse_vertices++;
         }
-
     }
 }
 
-void gpa_matching::init(graph_access &G,
-                        const PartitionConfig &partition_config,
-                        NodePermutationMap &permutation,
-                        Matching &edge_matching,
-                        std::vector<EdgeID> &edge_permutation,
-                        std::vector<NodeID> &sources) {
+void gpa_matching::init(graph_access &G, const PartitionConfig &partition_config, NodePermutationMap &permutation,
+                        Matching &edge_matching, std::vector<EdgeID> &edge_permutation, std::vector<NodeID> &sources) {
 
-    for (auto n: G.nodes()) {
+    for (auto n : G.nodes()) {
         permutation[n] = n;
         edge_matching[n] = n;
 
-        forall_out_edges(G, e, n)
-                {
-                    sources[e] = n;
-                    edge_permutation.push_back(e);
+        forall_out_edges(G, e, n) {
+            sources[e] = n;
+            edge_permutation.push_back(e);
 
-                    if (partition_config.edge_rating == WEIGHT) {
-                        // in that case we need to copy it
-                        G.setEdgeRating(e, G.getEdgeWeight(e));
-                    }
-
-                }
+            if (partition_config.edge_rating == WEIGHT) {
+                // in that case we need to copy it
+                G.setEdgeRating(e, G.getEdgeWeight(e));
+            }
+        }
         endfor
     }
-
-
 }
 
-void gpa_matching::extract_paths_apply_matching(graph_access &G,
-                                                std::vector<NodeID> &sources,
-                                                Matching &edge_matching,
+void gpa_matching::extract_paths_apply_matching(graph_access &G, std::vector<NodeID> &sources, Matching &edge_matching,
                                                 path_set &pathset) {
     // extract the paths in the path set into lists of edges.
     // then, apply the dynamic programming max weight function to them. Apply
     // the matched edges.
     EdgeRatingType matching_rating, second_matching_rating;
 
-    for (auto n: G.nodes()) {
+    for (auto n : G.nodes()) {
         const path &p = pathset.get_path(n);
 
         if (not p.is_active()) {
@@ -184,10 +169,10 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
             unpacked_cycle.push_back(last);
 
             if (matching_rating > second_matching_rating) {
-                //apply first matching
+                // apply first matching
                 apply_matching(G, a_matching, sources, edge_matching);
             } else {
-                //apply second matching
+                // apply second matching
                 apply_matching(G, a_second_matching, sources, edge_matching);
             }
         } else {
@@ -198,7 +183,7 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
             std::vector<EdgeID> unpacked_path;
 
             if (p.get_length() == 1) {
-                //match them directly
+                // match them directly
                 EdgeID e;
                 if (pathset.next_vertex(p.get_tail()) == p.get_head()) {
                     e = pathset.edge_to_next(p.get_tail());
@@ -216,38 +201,32 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G,
                 continue;
             }
             unpack_path(p, pathset, unpacked_path);
-            //dump_unpacked_path(G, unpacked_path, sources);
+            // dump_unpacked_path(G, unpacked_path, sources);
 
             EdgeRatingType final_rating = 0;
             maximum_weight_matching(G, unpacked_path, a_matching, final_rating);
 
-            //apply matched edges
+            // apply matched edges
             apply_matching(G, a_matching, sources, edge_matching);
         }
     }
 }
 
-
-void gpa_matching::apply_matching(graph_access &G,
-                                  std::vector<EdgeID> &matched_edges,
-                                  std::vector<NodeID> &sources,
+void gpa_matching::apply_matching(graph_access &G, std::vector<EdgeID> &matched_edges, std::vector<NodeID> &sources,
                                   Matching &edge_matching) {
 
-    //apply matched edges
-    for (unsigned int e: matched_edges) {
+    // apply matched edges
+    for (unsigned int e : matched_edges) {
         NodeID source = sources[e];
         NodeID target = G.getEdgeTarget(e);
 
         edge_matching[source] = target;
         edge_matching[target] = source;
     }
-
 }
 
-template<typename VectorOrDeque>
-void gpa_matching::unpack_path(const path &p,
-                               const path_set &pathset,
-                               VectorOrDeque &unpacked_path) {
+template <typename VectorOrDeque>
+void gpa_matching::unpack_path(const path &p, const path_set &pathset, VectorOrDeque &unpacked_path) {
 
     NodeID head = p.get_head();
     NodeID prev = p.get_tail();
@@ -255,7 +234,7 @@ void gpa_matching::unpack_path(const path &p,
     NodeID current = prev;
 
     if (prev == head) {
-        //special case: the given path is a cycle
+        // special case: the given path is a cycle
         current = pathset.next_vertex(prev);
         unpacked_path.push_back(pathset.edge_to_next(prev));
     }
@@ -273,11 +252,9 @@ void gpa_matching::unpack_path(const path &p,
     }
 }
 
-template<typename VectorOrDeque>
-void gpa_matching::maximum_weight_matching(graph_access &G,
-                                           VectorOrDeque &unpacked_path,
-                                           std::vector<EdgeID> &matched_edges,
-                                           EdgeRatingType &final_rating) {
+template <typename VectorOrDeque>
+void gpa_matching::maximum_weight_matching(graph_access &G, VectorOrDeque &unpacked_path,
+                                           std::vector<EdgeID> &matched_edges, EdgeRatingType &final_rating) {
 
     unsigned k = unpacked_path.size();
     if (k == 1) {
@@ -295,7 +272,7 @@ void gpa_matching::maximum_weight_matching(graph_access &G,
     if (ratings[0] < ratings[1]) {
         decision[1] = true;
     }
-    //build up the decision vector
+    // build up the decision vector
     for (EdgeID i = 2; i < k; i++) {
         ASSERT_TRUE(unpacked_path[i] < G.number_of_edges());
         EdgeRatingType curRating = G.getEdgeRating(unpacked_path[i]);
@@ -313,7 +290,7 @@ void gpa_matching::maximum_weight_matching(graph_access &G,
     } else {
         final_rating = ratings[k - 2];
     }
-    //construct optimal solution
+    // construct optimal solution
     for (int i = k - 1; i >= 0;) {
         if (decision[i]) {
             matched_edges.push_back(unpacked_path[i]);

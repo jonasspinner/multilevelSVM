@@ -4,12 +4,12 @@
 #include <memory>
 #include <thundersvm/dataset.h>
 
-#include "definitions.h"
 #include "data_structure/graph_access.h"
+#include "definitions.h"
 #include "svm_definitions.h"
 
 class svm_instance {
-public:
+  public:
     svm_instance() = default;
 
     void read_problem(const svm_data &min_data, const svm_data &maj_data);
@@ -30,7 +30,7 @@ public:
 
     std::shared_ptr<std::vector<double>> labels;
 
-private:
+  private:
     void allocate_prob(NodeID total_size);
 
     void add_to_problem(const svm_data &data, int label);
@@ -40,6 +40,5 @@ private:
     std::shared_ptr<svm_data> nodes;
     std::shared_ptr<std::vector<svm_node *>> nodes_meta;
 };
-
 
 #endif /* SVM_INSTANCE_H */

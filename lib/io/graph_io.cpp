@@ -1,5 +1,5 @@
 /******************************************************************************
- * graph_io.cpp 
+ * graph_io.cpp
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -20,10 +20,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
+#include "graph_io.h"
 #include <sstream>
 #include <unordered_set>
-#include "graph_io.h"
-
 
 int graph_io::writeGraphGDF(const graph_access &G_min, const graph_access &G_maj, const std::string &filename) {
     std::ofstream f(filename.c_str());
@@ -37,38 +36,33 @@ int graph_io::writeGraphGDF(const graph_access &G_min, const graph_access &G_maj
     f << std::endl;
 
     // NODES
-    for (auto node: G_min.nodes()) {
+    for (auto node : G_min.nodes()) {
         f << node << ",-1," << G_min.getPartitionIndex(node) << "," << G_min.getNodeWeight(node);
-        for (auto &feature: G_min.getFeatureVec(node)) {
+        for (auto &feature : G_min.getFeatureVec(node)) {
             f << "," << feature;
         }
         f << std::endl;
     }
 
-    for (auto node: G_maj.nodes()) {
+    for (auto node : G_maj.nodes()) {
         f << node + min_nodes << ",1," << G_maj.getPartitionIndex(node) << "," << G_maj.getNodeWeight(node);
-        for (auto &feature: G_maj.getFeatureVec(node)) {
+        for (auto &feature : G_maj.getFeatureVec(node)) {
             f << "," << feature;
         }
         f << std::endl;
     }
-
 
     f << "edgedef>from VARCHAR,to VARCHAR" << std::endl;
 
     // EDGES
-    for (auto node: G_min.nodes()) {
-        forall_out_edges(G_min, e, node)
-                {
-                    f << node << "," << G_min.getEdgeTarget(e) << std::endl;
-                }
+    for (auto node : G_min.nodes()) {
+        forall_out_edges(G_min, e, node) { f << node << "," << G_min.getEdgeTarget(e) << std::endl; }
         endfor
     }
-    for (auto node: G_maj.nodes()) {
-        forall_out_edges(G_maj, e, node)
-                {
-                    f << node + min_nodes << "," << G_maj.getEdgeTarget(e) + min_nodes << std::endl;
-                }
+    for (auto node : G_maj.nodes()) {
+        forall_out_edges(G_maj, e, node) {
+            f << node + min_nodes << "," << G_maj.getEdgeTarget(e) + min_nodes << std::endl;
+        }
         endfor
     }
     f.close();
@@ -76,7 +70,7 @@ int graph_io::writeGraphGDF(const graph_access &G_min, const graph_access &G_maj
 }
 
 int graph_io::readFeatures(graph_access &G, const std::vector<FeatureVec> &data) {
-    for (auto node: G.nodes()) {
+    for (auto node : G.nodes()) {
         G.setFeatureVec(node, data[node]);
     }
     return 0;
@@ -85,12 +79,12 @@ int graph_io::readFeatures(graph_access &G, const std::vector<FeatureVec> &data)
 int graph_io::readGraphFromVec(graph_access &G, const std::vector<std::vector<Edge>> &data, EdgeID num_edges) {
     G.start_construction(data.size(), num_edges);
 
-    for (auto &nodeData: data) {
+    for (auto &nodeData : data) {
         NodeID node = G.new_node();
         G.setPartitionIndex(node, 0);
         G.setNodeWeight(node, 1);
 
-        for (auto &edge: nodeData) {
+        for (auto &edge : nodeData) {
             EdgeID e = G.new_edge(node, edge.target);
             G.setEdgeWeight(e, edge.weight);
         }
@@ -114,7 +108,6 @@ EdgeID graph_io::makeEdgesBidirectional(std::vector<std::vector<Edge>> &data) {
         }
     }
 
-
     for (NodeID from = 0; from < data.size(); ++from) {
         for (EdgeID edge = 0; edge < data[from].size(); ++edge) {
             Edge e = data[from][edge];
@@ -128,7 +121,7 @@ EdgeID graph_io::makeEdgesBidirectional(std::vector<std::vector<Edge>> &data) {
         }
     }
 
-    for (auto &nodeData: data) {
+    for (auto &nodeData : data) {
         post += nodeData.size();
     }
 

@@ -1,19 +1,18 @@
 #ifndef SVM_SOLVER_H
 #define SVM_SOLVER_H
 
-#include <vector>
-#include <utility>
 #include <memory>
 #include <svm.h>
+#include <utility>
+#include <vector>
 
-#include "svm_definitions.h"
 #include "data_structure/graph_access.h"
-#include "svm_summary.h"
+#include "svm_definitions.h"
 #include "svm_result.h"
+#include "svm_summary.h"
 
-template<class T>
-class svm_solver {
-public:
+template <class T> class svm_solver {
+  public:
     svm_solver() = default;
 
     explicit svm_solver(svm_instance instance);
@@ -22,13 +21,10 @@ public:
 
     virtual void train() = 0;
 
-    svm_result<T> train_range(const std::vector<svm_param> &params,
-                              const svm_data &min_sample,
+    svm_result<T> train_range(const std::vector<svm_param> &params, const svm_data &min_sample,
                               const svm_data &maj_sample);
 
-    svm_summary<T> train_single(svm_param,
-                                const svm_data &min_sample,
-                                const svm_data &maj_sample);
+    svm_summary<T> train_single(svm_param, const svm_data &min_sample, const svm_data &maj_sample);
 
     virtual std::vector<int> predict_batch(const svm_data &data);
 
@@ -48,7 +44,7 @@ public:
 
     const svm_instance &get_instance();
 
-protected:
+  protected:
     svm_parameter param{};
     svm_instance instance{};
     std::shared_ptr<T> model;

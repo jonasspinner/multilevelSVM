@@ -1,5 +1,5 @@
 /******************************************************************************
- * partial_boundary.h 
+ * partial_boundary.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -23,31 +23,26 @@
 #ifndef PARTIAL_BOUNDARY_963CRO9F_
 #define PARTIAL_BOUNDARY_963CRO9F_
 
-#include <unordered_map>
 #include "definitions.h"
+#include <unordered_map>
 
 struct compare_nodes_contains {
-    bool operator()(const NodeID lhs, const NodeID rhs) const {
-        return (lhs == rhs);
-    }
+    bool operator()(const NodeID lhs, const NodeID rhs) const { return (lhs == rhs); }
 };
-
 
 struct is_boundary {
     bool contains{false};
 };
 
-
 struct hash_boundary_nodes {
-    size_t operator()(const NodeID idx) const {
-        return idx;
-    }
+    size_t operator()(const NodeID idx) const { return idx; }
 };
 
-typedef std::unordered_map<const NodeID, is_boundary, hash_boundary_nodes, compare_nodes_contains> is_boundary_node_hashtable;
+typedef std::unordered_map<const NodeID, is_boundary, hash_boundary_nodes, compare_nodes_contains>
+    is_boundary_node_hashtable;
 
 class PartialBoundary {
-public:
+  public:
     [[nodiscard]] bool contains(NodeID node) const { return internal_boundary.find(node) != internal_boundary.end(); }
 
     void insert(NodeID node) { internal_boundary[node].contains = true; }

@@ -1,5 +1,5 @@
 /******************************************************************************
- * stop_rules.h 
+ * stop_rules.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -29,15 +29,15 @@
 #include <iostream>
 
 class simple_fixed_stop_rule {
-public:
+  public:
     explicit simple_fixed_stop_rule(PartitionConfig &config) : num_stop(config.fix_num_vert_stop) {}
 
     [[nodiscard]] bool stop(NodeID no_of_finer_vertices, NodeID no_of_coarser_vertices) const {
-        double contraction_rate = no_of_finer_vertices / (double) no_of_coarser_vertices;
+        double contraction_rate = no_of_finer_vertices / (double)no_of_coarser_vertices;
         return contraction_rate >= 1.05 && no_of_coarser_vertices >= num_stop;
     }
 
-private:
+  private:
     NodeID num_stop;
 };
 

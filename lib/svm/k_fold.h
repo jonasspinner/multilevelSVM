@@ -1,19 +1,18 @@
 #ifndef KFOLD_H
 #define KFOLD_H
 
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
-#include "definitions.h"
 #include "data_structure/graph_access.h"
+#include "definitions.h"
 #include "partition/partition_config.h"
 #include "svm.h"
 #include "svm/svm_definitions.h"
 
-
 class k_fold {
-public:
+  public:
     explicit k_fold(const PartitionConfig &conf);
 
     virtual ~k_fold() = default;
@@ -34,7 +33,7 @@ public:
 
     [[nodiscard]] int getIteration() const;
 
-protected:
+  protected:
     /// do kfold stuff in here
     virtual void next_intern(double &io_time) = 0;
 

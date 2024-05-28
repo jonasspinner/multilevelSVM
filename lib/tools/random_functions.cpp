@@ -1,5 +1,5 @@
 /******************************************************************************
- * random_functions.cpp 
+ * random_functions.cpp
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -24,4 +24,3 @@
 
 MersenneTwister random_functions::m_mt;
 int random_functions::m_seed = 0;
-

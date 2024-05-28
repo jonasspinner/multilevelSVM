@@ -1,15 +1,14 @@
 #ifndef SVM_SUMMARY_H
 #define SVM_SUMMARY_H
 
-#include <vector>
-#include <memory>
-#include <svm.h>
 #include "definitions.h"
 #include "svm_instance.h"
+#include <memory>
+#include <svm.h>
+#include <vector>
 
-template<class T>
-class svm_summary {
-public:
+template <class T> class svm_summary {
+  public:
     svm_summary(NodeID tp, NodeID tn, NodeID fp, NodeID fn);
 
     void print() const;
@@ -20,9 +19,7 @@ public:
 
     [[nodiscard]] NodeID num_SV_maj() const;
 
-    bool operator>(const svm_summary &other) const {
-        return (this->Gmean > other.Gmean);
-    }
+    bool operator>(const svm_summary &other) const { return (this->Gmean > other.Gmean); }
 
     float eval(const svm_instance &instance);
 
@@ -51,22 +48,18 @@ public:
 };
 
 struct summary_cmp_better_gmean {
-    template<class T>
-    static bool comp(const svm_summary<T> &a, const svm_summary<T> &b) {
-        return a.Gmean > b.Gmean;
-    }
+    template <class T> static bool comp(const svm_summary<T> &a, const svm_summary<T> &b) { return a.Gmean > b.Gmean; }
 };
 
 struct summary_cmp_better_gmean_sv {
-    template<class T>
-    static bool comp(const svm_summary<T> &a, const svm_summary<T> &b) {
+    template <class T> static bool comp(const svm_summary<T> &a, const svm_summary<T> &b) {
         float filter_range = 0.02;
-        if ((a.Gmean - b.Gmean) > filter_range)         //a has completely better gmean than b
+        if ((a.Gmean - b.Gmean) > filter_range) // a has completely better gmean than b
             return true;
         else {
-            if ((b.Gmean - a.Gmean) > filter_range)     //b has completely better gmean than a
+            if ((b.Gmean - a.Gmean) > filter_range) // b has completely better gmean than a
                 return false;
-            else {                                                    //similar gmean
+            else { // similar gmean
                 // a has less nSV than b which is better
                 return (a.SV_min.size() + a.SV_maj.size() < b.SV_min.size() + b.SV_maj.size());
             }

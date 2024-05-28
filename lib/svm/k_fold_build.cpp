@@ -6,9 +6,7 @@
 #include "tools/random_functions.h"
 #include "tools/timer.h"
 
-
-k_fold_build::k_fold_build(const PartitionConfig &config, const std::string &filename)
-        : k_fold(config) {
+k_fold_build::k_fold_build(const PartitionConfig &config, const std::string &filename) : k_fold(config) {
     this->num_nn = config.num_nn;
     this->bidirectional = config.bidirectional;
     this->sample_percent = config.sample_percent;
@@ -27,11 +25,9 @@ void k_fold_build::readData(const std::string &filename) {
     std::cout << "io time: " << t.elapsed() << std::endl;
 
     std::cout << "full graph -"
-              << " min: " << this->min_features.size()
-              << " maj: " << this->maj_features.size()
+              << " min: " << this->min_features.size() << " maj: " << this->maj_features.size()
               << " features: " << this->min_features[0].size() << std::endl;
 }
-
 
 void k_fold_build::next_intern(double &_io_time) {
     this->cur_min_train.clear();
@@ -45,8 +41,7 @@ void k_fold_build::next_intern(double &_io_time) {
     calculate_kfold_class(this->maj_features, this->cur_maj_graph, this->cur_maj_val, this->cur_maj_test);
 }
 
-void k_fold_build::calculate_kfold_class(const std::vector<FeatureVec> &features_full,
-                                         graph_access &target_graph,
+void k_fold_build::calculate_kfold_class(const std::vector<FeatureVec> &features_full, graph_access &target_graph,
                                          std::vector<std::vector<svm_node>> &target_val,
                                          std::vector<std::vector<svm_node>> &target_test) {
     NodeID nodes = features_full.size();
@@ -71,8 +66,7 @@ void k_fold_build::calculate_kfold_class(const std::vector<FeatureVec> &features
         feature_subset.erase(feature_subset.begin() + std::min(val_start, test_start),
                              feature_subset.begin() + std::max(val_end, test_end));
     } else {
-        feature_subset.erase(feature_subset.begin() + test_start,
-                             feature_subset.begin() + test_end);
+        feature_subset.erase(feature_subset.begin() + test_start, feature_subset.begin() + test_end);
     }
 
     // apply sampling
@@ -94,15 +88,12 @@ void k_fold_build::calculate_kfold_class(const std::vector<FeatureVec> &features
 
     // build validation set
     std::vector<FeatureVec> val_subset = std::vector<FeatureVec>();
-    val_subset.insert(val_subset.end(),
-                      features_full.begin() + val_start,
-                      features_full.begin() + val_end);
+    val_subset.insert(val_subset.end(), features_full.begin() + val_start, features_full.begin() + val_end);
 
     target_val.reserve(val_size);
-    for (const FeatureVec &f: val_subset) {
+    for (const FeatureVec &f : val_subset) {
         // apply sampling
-        if (this->sample_percent < 1 &&
-            random_functions::next() > this->sample_percent) {
+        if (this->sample_percent < 1 && random_functions::next() > this->sample_percent) {
             continue;
         }
         target_val.push_back(svm_convert::feature_to_node(f));
@@ -110,12 +101,10 @@ void k_fold_build::calculate_kfold_class(const std::vector<FeatureVec> &features
 
     // build test set
     std::vector<FeatureVec> test_subset = std::vector<FeatureVec>();
-    test_subset.insert(test_subset.end(),
-                       features_full.begin() + test_start,
-                       features_full.begin() + test_end);
+    test_subset.insert(test_subset.end(), features_full.begin() + test_start, features_full.begin() + test_end);
 
     target_test.reserve(test_size);
-    for (const FeatureVec &f: test_subset) {
+    for (const FeatureVec &f : test_subset) {
         target_test.push_back(svm_convert::feature_to_node(f));
     }
 }

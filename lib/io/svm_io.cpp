@@ -1,8 +1,8 @@
 #include "svm_io.h"
 
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 #include "svm/svm_convert.h"
 
@@ -36,7 +36,6 @@ void svm_io::readFeaturesLines(const std::string &filename, std::vector<FeatureV
         data.push_back(vec);
     }
 }
-
 
 void svm_io::readTestSplit(const std::string &filename, std::vector<svm_feature> &min_test_data,
                            std::vector<svm_feature> &maj_test_data) {

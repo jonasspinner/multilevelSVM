@@ -2,9 +2,8 @@
 
 #include "param_search.h"
 
-
-std::vector<svm_param> param_search::around(float c_center, float c_radius, float c_step,
-                                            float g_center, float g_radius, float g_step) {
+std::vector<svm_param> param_search::around(float c_center, float c_radius, float c_step, float g_center,
+                                            float g_radius, float g_step) {
     float c_min = c_center - c_radius;
     float c_max = c_center + c_radius;
     float g_min = g_center - g_radius;
@@ -12,15 +11,15 @@ std::vector<svm_param> param_search::around(float c_center, float c_radius, floa
     return grid(c_min, c_max, c_step, g_min, g_max, g_step);
 }
 
-std::vector<svm_param> param_search::grid(float c_from, float c_to, float c_step,
-                                          float g_from, float g_to, float g_step) {
-    std::vector<std::pair<float, float> > seq;
+std::vector<svm_param> param_search::grid(float c_from, float c_to, float c_step, float g_from, float g_to,
+                                          float g_step) {
+    std::vector<std::pair<float, float>> seq;
 
     std::vector<float> seq_c = range(c_from, c_to, c_step);
     std::vector<float> seq_g = range(g_from, g_to, g_step);
 
-    for (auto &&c: seq_c) {
-        for (auto &&g: seq_g) {
+    for (auto &&c : seq_c) {
+        for (auto &&g : seq_g) {
             seq.emplace_back(c, g);
         }
     }
@@ -28,11 +27,11 @@ std::vector<svm_param> param_search::grid(float c_from, float c_to, float c_step
     return seq;
 }
 
-std::vector<std::pair<float, float>> param_search::ud(float c_from, float c_to, float g_from, float g_to,
-                                                      bool step1, bool inherit, float param_c, float param_g) {
-    std::vector<std::pair<float, float> > seq;
+std::vector<std::pair<float, float>> param_search::ud(float c_from, float c_to, float g_from, float g_to, bool step1,
+                                                      bool inherit, float param_c, float param_g) {
+    std::vector<std::pair<float, float>> seq;
 
-    //TODO make this configurable
+    // TODO make this configurable
     int pattern = step1 ? 9 : 5;
     int stage = step1 ? 1 : 2;
 
@@ -60,10 +59,8 @@ std::vector<std::pair<float, float>> param_search::ud(float c_from, float c_to, 
     double g_min = pow(lg_base, g_from);
 
     for (int i = 0; i < pattern; i++) {
-        double c = (((param_search::UDTable[pattern][i][0] - 1) * c_len) / (pattern - 1))
-                   + cen_c;
-        double g = (((param_search::UDTable[pattern][i][1] - 1) * g_len) / (pattern - 1))
-                   + cen_g;
+        double c = (((param_search::UDTable[pattern][i][0] - 1) * c_len) / (pattern - 1)) + cen_c;
+        double g = (((param_search::UDTable[pattern][i][1] - 1) * g_len) / (pattern - 1)) + cen_g;
 
         // scale params to range
         c = pow(lg_base, c);

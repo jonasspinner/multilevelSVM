@@ -1,5 +1,5 @@
 /******************************************************************************
- * coarsening.h 
+ * coarsening.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -28,7 +28,7 @@
 #include "partition/partition_config.h"
 
 class coarsening {
-public:
+  public:
     static void perform_coarsening(const PartitionConfig &config, graph_access &G, graph_hierarchy &hierarchy);
 };
 

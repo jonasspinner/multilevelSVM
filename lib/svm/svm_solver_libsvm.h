@@ -1,16 +1,16 @@
 #ifndef SVM_SOLVER_LIBSVM_H
 #define SVM_SOLVER_LIBSVM_H
 
-#include <utility>
 #include <svm.h>
+#include <utility>
 
 #include "svm_solver.h"
 
 class svm_solver_libsvm : public svm_solver<svm_model> {
-public:
-    svm_solver_libsvm() : svm_solver<svm_model>() {};
+  public:
+    svm_solver_libsvm() : svm_solver<svm_model>(){};
 
-    explicit svm_solver_libsvm(svm_instance instance) : svm_solver<svm_model>(std::move(instance)) {};
+    explicit svm_solver_libsvm(svm_instance instance) : svm_solver<svm_model>(std::move(instance)){};
 
     void train() override;
 

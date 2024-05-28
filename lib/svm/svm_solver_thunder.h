@@ -1,16 +1,16 @@
 #ifndef SVM_SOLVER_THUNDER_H
 #define SVM_SOLVER_THUNDER_H
 
-#include <utility>
 #include <thundersvm/model/svc.h>
+#include <utility>
 
 #include "svm_solver.h"
 
 class svm_solver_thunder : public svm_solver<SVC> {
-public:
-    svm_solver_thunder() : svm_solver<SVC>() {};
+  public:
+    svm_solver_thunder() : svm_solver<SVC>(){};
 
-    explicit svm_solver_thunder(svm_instance instance) : svm_solver<SVC>(std::move(instance)) {};
+    explicit svm_solver_thunder(svm_instance instance) : svm_solver<SVC>(std::move(instance)){};
 
     ~svm_solver_thunder() override = default;
 

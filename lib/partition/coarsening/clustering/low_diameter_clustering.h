@@ -4,26 +4,20 @@
 #include "definitions.h"
 #include "partition/coarsening/matching/matching.h"
 
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 class low_diameter_clustering : public matching {
-public:
+  public:
     low_diameter_clustering() = default;
 
     ~low_diameter_clustering() override = default;
 
-    void match(const PartitionConfig &config,
-               graph_access &G,
-               Matching &,
-               CoarseMapping &coarse_mapping,
-               NodeID &no_of_coarse_vertices,
-               NodePermutationMap &permutation) override;
+    void match(const PartitionConfig &config, graph_access &G, Matching &, CoarseMapping &coarse_mapping,
+               NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
 
-private:
-    static void remap_cluster_ids(const graph_access &G,
-                                  CoarseMapping &coarse_mapping,
-                                  NodeID &no_of_coarse_vertices,
+  private:
+    static void remap_cluster_ids(const graph_access &G, CoarseMapping &coarse_mapping, NodeID &no_of_coarse_vertices,
                                   const std::vector<std::pair<EdgeWeight, NodeID>> &C);
 };
 

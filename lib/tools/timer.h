@@ -1,5 +1,5 @@
 /******************************************************************************
- * timer.h 
+ * timer.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -23,23 +23,22 @@
 #ifndef TIMER_9KPDEP
 #define TIMER_9KPDEP
 
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 class timer {
-public:
+  public:
     timer() : m_start(timestamp()) {}
 
     void restart() { m_start = timestamp(); }
 
     [[nodiscard]] double elapsed() const { return timestamp() - m_start; }
 
-private:
-
+  private:
     /** Returns a timestamp ('now') in seconds (incl. a fractional part). */
     static inline double timestamp() {
-        struct timeval tp{};
+        struct timeval tp {};
         gettimeofday(&tp, nullptr);
         return double(tp.tv_sec) + tp.tv_usec / 1000000.;
     }

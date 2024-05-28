@@ -6,9 +6,7 @@
 #include "tools/random_functions.h"
 #include "tools/timer.h"
 
-
-k_fold_import::k_fold_import(const PartitionConfig &config, int num_exp, const std::string &basename)
-        : k_fold(config) {
+k_fold_import::k_fold_import(const PartitionConfig &config, int num_exp, const std::string &basename) : k_fold(config) {
     this->num_exp = num_exp;
     this->basename = basename;
     this->num_nn = config.num_nn;
@@ -35,7 +33,7 @@ void k_fold_import::next_intern(double &io_time) {
     io_time += read_class(min_train_name, this->cur_min_graph, this->cur_min_val);
     io_time += read_class(maj_train_name, this->cur_maj_graph, this->cur_maj_val);
 
-    //read test
+    // read test
     std::cout << "reading " << test_name << std::endl;
 
     timer t;
@@ -43,13 +41,11 @@ void k_fold_import::next_intern(double &io_time) {
     io_time += t.elapsed();
 }
 
-double k_fold_import::read_class(const std::string &filename,
-                                 graph_access &target_graph,
+double k_fold_import::read_class(const std::string &filename, graph_access &target_graph,
                                  std::vector<std::vector<svm_node>> &target_val) {
     double time = 0;
     timer t;
     std::cout << "reading " << filename << std::endl;
-
 
     std::vector<FeatureVec> features_full;
     svm_io::readFeaturesLines(filename, features_full);
@@ -60,8 +56,7 @@ double k_fold_import::read_class(const std::string &filename,
     std::vector<FeatureVec> feature_subset(features_full);
 
     if (this->validation_seperate) {
-        feature_subset.erase(feature_subset.end() - val_size,
-                             feature_subset.end());
+        feature_subset.erase(feature_subset.end() - val_size, feature_subset.end());
     }
 
     // apply sampling
@@ -82,12 +77,10 @@ double k_fold_import::read_class(const std::string &filename,
 
     // build validation set
     std::vector<FeatureVec> val_subset = std::vector<FeatureVec>();
-    val_subset.insert(val_subset.end(),
-                      features_full.end() - val_size,
-                      features_full.end());
+    val_subset.insert(val_subset.end(), features_full.end() - val_size, features_full.end());
 
     target_val.reserve(val_size);
-    for (const FeatureVec &f: val_subset) {
+    for (const FeatureVec &f : val_subset) {
         // apply sampling
         if (random_functions::next() > this->sample_percent) {
             continue;
@@ -97,4 +90,3 @@ double k_fold_import::read_class(const std::string &filename,
 
     return time;
 }
-

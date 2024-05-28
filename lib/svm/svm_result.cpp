@@ -1,39 +1,28 @@
 #include <algorithm>
 #include <utility>
 
-#include <thundersvm/model/svc.h>
 #include "svm_result.h"
+#include <thundersvm/model/svc.h>
 
-template<class T>
-svm_result<T>::svm_result(svm_instance instance)
-        : instance(std::move(instance)) {
-}
+template <class T> svm_result<T>::svm_result(svm_instance instance) : instance(std::move(instance)) {}
 
-template<class T>
+template <class T>
 svm_result<T>::svm_result(const std::vector<svm_summary<T>> &summaries, svm_instance instance)
-        : summaries(summaries), instance(std::move(instance)) {
+    : summaries(summaries), instance(std::move(instance)) {
 
     this->sort_summaries();
 }
 
-template<class T>
-svm_summary<T> svm_result<T>::best() {
-    return summaries[0];
-}
+template <class T> svm_summary<T> svm_result<T>::best() { return summaries[0]; }
 
-template<class T>
-void svm_result<T>::add(const svm_result<T> &result) {
-    this->add(result.summaries);
-}
+template <class T> void svm_result<T>::add(const svm_result<T> &result) { this->add(result.summaries); }
 
-template<class T>
-void svm_result<T>::add(const std::vector<svm_summary<T>> &to_add) {
+template <class T> void svm_result<T>::add(const std::vector<svm_summary<T>> &to_add) {
     this->summaries.insert(this->summaries.end(), to_add.begin(), to_add.end());
     this->sort_summaries();
 }
 
-template<class T>
-void svm_result<T>::sort_summaries() {
+template <class T> void svm_result<T>::sort_summaries() {
     // insertion_sort
 
     for (size_t i = 0; i < this->summaries.size(); i++) {
@@ -46,7 +35,7 @@ void svm_result<T>::sort_summaries() {
     }
 }
 
-template<class T>
+template <class T>
 size_t svm_result<T>::get_best_index(const std::vector<std::pair<svm_summary<T>, svm_instance>> &vec) {
     size_t best_index = 0;
 
@@ -58,8 +47,6 @@ size_t svm_result<T>::get_best_index(const std::vector<std::pair<svm_summary<T>,
     return best_index;
 }
 
-template
-class svm_result<svm_model>;
+template class svm_result<svm_model>;
 
-template
-class svm_result<SVC>;
+template class svm_result<SVC>;

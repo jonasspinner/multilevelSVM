@@ -1,9 +1,8 @@
 #include <functional>
 #include <memory>
 
-#include "svm/svm_solver_thunder.h"
 #include "svm/svm_convert.h"
-
+#include "svm/svm_solver_thunder.h"
 
 void svm_solver_thunder::train() {
     this->model = std::make_shared<SVC>();
@@ -21,7 +20,7 @@ void svm_solver_thunder::train() {
     param.weight_label = this->param.weight_label;
     param.weight = this->param.weight;
     param.probability = this->param.probability;
-    param.max_mem_size = this->param.cache_size * (1 << 20); //MB to Byte
+    param.max_mem_size = this->param.cache_size * (1 << 20); // MB to Byte
     // param.max_mem_size = -1; // no limit
 
     DataSet::node2d nodes = instance.node_data_thunder();
@@ -29,17 +28,16 @@ void svm_solver_thunder::train() {
     model->train(dataset, param);
 }
 
-
 std::vector<int> svm_solver_thunder::predict_batch(const svm_data &data) {
     DataSet::node2d dataset = svm_convert::svmdata_to_dataset(data);
-    //TODO don't use fixed batch size
-    std::vector<double> dRes = this->model->predict(dataset, -1); //define batch size
+    // TODO don't use fixed batch size
+    std::vector<double> dRes = this->model->predict(dataset, -1); // define batch size
     std::vector<int> iRes(dRes.begin(), dRes.end());
     return iRes;
 }
 
 int svm_solver_thunder::predict(const std::vector<svm_node> &nodes) {
-    //TODO doesn't work but predict_batch is used anyway
+    // TODO doesn't work but predict_batch is used anyway
     exit(1);
     DataSet::node2d dataset(1);
     dataset[0].reserve(nodes.size());
@@ -51,17 +49,14 @@ int svm_solver_thunder::predict(const std::vector<svm_node> &nodes) {
     return static_cast<int>(res);
 }
 
-
-void svm_solver_thunder::export_to_file(const string &path) {
-    this->model->save_to_file(path);
-}
+void svm_solver_thunder::export_to_file(const string &path) { this->model->save_to_file(path); }
 
 std::pair<std::vector<NodeID>, std::vector<NodeID>> svm_solver_thunder::get_SV() {
     const std::vector<int> SV_ind = this->model->get_sv_ind();
     std::vector<NodeID> SV_min;
     std::vector<NodeID> SV_maj;
 
-    for (int index: SV_ind) {
+    for (int index : SV_ind) {
         if (index < instance.num_min) {
             SV_min.push_back(index);
         } else {

@@ -1,14 +1,14 @@
 #ifndef SVM_CONVERT_H
 #define SVM_CONVERT_H
 
-#include <vector>
-#include <svm.h>
-#include <thundersvm/dataset.h>
 #include "data_structure/graph_access.h"
 #include "svm_definitions.h"
+#include <svm.h>
+#include <thundersvm/dataset.h>
+#include <vector>
 
 class svm_convert {
-public:
+  public:
     static constexpr FeatureData EPS = 0.000001f;
 
     static svm_feature feature_to_node(const FeatureVec &vec);

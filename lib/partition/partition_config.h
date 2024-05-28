@@ -29,7 +29,6 @@
 struct PartitionConfig {
     PartitionConfig() = default;
 
-
     //============================================================
     //=======================MATCHING=============================
     //============================================================
@@ -65,7 +64,8 @@ struct PartitionConfig {
     //============PAR_PSEUDOMH / MH =========
     //=======================================
 
-    bool combine = false; // in this case the second index is filled and edges between both partitions are not contracted
+    bool combine =
+        false; // in this case the second index is filled and edges between both partitions are not contracted
     //=======================================
     //===============MISC====================
     //=======================================
@@ -145,7 +145,7 @@ struct PartitionConfig {
 
     int num_nn = 10;
 
-    //KASVM REFINEMENT
+    // KASVM REFINEMENT
 
     RefinementType refinement_type = UD;
 

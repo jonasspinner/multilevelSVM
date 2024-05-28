@@ -40,8 +40,7 @@ struct coarseningEdge {
     EdgeRatingType rating{};
 };
 
-template<class T>
-class Range {
+template <class T> class Range {
     T m_begin;
     T m_end;
 
@@ -50,7 +49,7 @@ class Range {
 
         friend class Range;
 
-    public:
+      public:
         T operator*() const { return m_value; }
 
         const Iterator &operator++() {
@@ -68,11 +67,11 @@ class Range {
 
         bool operator!=(const Iterator &other) const { return m_value != other.m_value; }
 
-    protected:
+      protected:
         explicit Iterator(T value) : m_value(value) {}
     };
 
-public:
+  public:
     Range(T begin, T end) : m_begin(begin), m_end(end) {}
 
     [[nodiscard]] Iterator begin() const { return Iterator{m_begin}; }
@@ -82,12 +81,12 @@ public:
 
 class graph_access;
 
-//construction etc. is encapsulated in basicGraph / access to properties etc. is encapsulated in graph_access
+// construction etc. is encapsulated in basicGraph / access to properties etc. is encapsulated in graph_access
 class basicGraph {
     friend class graph_access;
 
-private:
-    //methods only to be used by friend class
+  private:
+    // methods only to be used by friend class
     [[nodiscard]] EdgeID number_of_edges() const { return m_edges.size(); }
 
     [[nodiscard]] NodeID number_of_nodes() const { return m_nodes.size() - 1; }
@@ -96,13 +95,9 @@ private:
 
     [[nodiscard]] Range<NodeID> nodes() const { return Range<NodeID>{0, number_of_nodes()}; }
 
-    inline EdgeID get_first_edge(const NodeID &node) {
-        return m_nodes[node].firstEdge;
-    }
+    inline EdgeID get_first_edge(const NodeID &node) { return m_nodes[node].firstEdge; }
 
-    inline EdgeID get_first_invalid_edge(const NodeID &node) {
-        return m_nodes[node + 1].firstEdge;
-    }
+    inline EdgeID get_first_invalid_edge(const NodeID &node) { return m_nodes[node + 1].firstEdge; }
 
     // construction of the graph
     void start_construction(NodeID n, EdgeID m) {
@@ -111,7 +106,7 @@ private:
         current_edge = 0;
         m_last_source = -1;
 
-        //resizes property arrays
+        // resizes property arrays
         m_nodes.resize(n + 1);
         m_refinement_node_props.resize(n + 1);
         m_edges.resize(m);
@@ -131,9 +126,9 @@ private:
         ASSERT_TRUE(source + 1 < m_nodes.size());
         m_nodes[source + 1].firstEdge = current_edge;
 
-        //fill isolated sources at the end
-        if ((NodeID) (m_last_source + 1) < source) {
-            for (NodeID i = source; i > (NodeID) (m_last_source + 1); i--) {
+        // fill isolated sources at the end
+        if ((NodeID)(m_last_source + 1) < source) {
+            for (NodeID i = source; i > (NodeID)(m_last_source + 1); i--) {
                 m_nodes[i].firstEdge = m_nodes[m_last_source + 1].firstEdge;
             }
         }
@@ -156,10 +151,10 @@ private:
 
         m_building_graph = false;
 
-        //fill isolated sources at the end
-        if ((unsigned int) (m_last_source) != current_node - 1) {
-            //in that case at least the last node was an isolated node
-            for (NodeID i = current_node; i > (unsigned int) (m_last_source + 1); i--) {
+        // fill isolated sources at the end
+        if ((unsigned int)(m_last_source) != current_node - 1) {
+            // in that case at least the last node was an isolated node
+            for (NodeID i = current_node; i > (unsigned int)(m_last_source + 1); i--) {
                 m_nodes[i].firstEdge = m_nodes[m_last_source + 1].firstEdge;
             }
         }
@@ -176,21 +171,24 @@ private:
     // construction properties
     bool m_building_graph{false};
     NodeID m_last_source{};
-    NodeID current_node{}; //current node that is constructed
-    EdgeID current_edge{}; //current edge that is constructed
+    NodeID current_node{}; // current node that is constructed
+    EdgeID current_edge{}; // current edge that is constructed
 };
 
-//macros - graph access
-#define forall_out_edges(G, e, n) { for(EdgeID e = G.get_first_edge(n), end = G.get_first_invalid_edge(n); e < end; ++e) {
-#define endfor }}
-
+// macros - graph access
+#define forall_out_edges(G, e, n)                                                                                      \
+    {                                                                                                                  \
+        for (EdgeID e = G.get_first_edge(n), end = G.get_first_invalid_edge(n); e < end; ++e) {
+#define endfor                                                                                                         \
+    }                                                                                                                  \
+    }
 
 class complete_boundary;
 
 class graph_access {
     friend class complete_boundary;
 
-public:
+  public:
     graph_access() : graphref(std::make_unique<basicGraph>()) {}
 
     /* ============================================================= */
@@ -235,7 +233,7 @@ public:
 
     void setFeatureVec(NodeID node, const FeatureVec &vec);
 
-    //to be called if combine in meta heuristic is used
+    // to be called if combine in meta heuristic is used
     void resizeSecondPartitionIndex(unsigned no_nodes);
 
     [[nodiscard]] NodeWeight getNodeWeight(NodeID node) const;
@@ -258,41 +256,27 @@ public:
 
     void copy(graph_access &G_bar);
 
-private:
+  private:
     std::unique_ptr<basicGraph> graphref;
     unsigned int m_partition_count{};
     std::vector<PartitionID> m_second_partition_index;
 };
 
 /* graph build methods */
-inline void graph_access::start_construction(NodeID nodes, EdgeID edges) {
-    graphref->start_construction(nodes, edges);
-}
+inline void graph_access::start_construction(NodeID nodes, EdgeID edges) { graphref->start_construction(nodes, edges); }
 
-inline NodeID graph_access::new_node() {
-    return graphref->new_node();
-}
+inline NodeID graph_access::new_node() { return graphref->new_node(); }
 
-inline EdgeID graph_access::new_edge(NodeID source, NodeID target) {
-    return graphref->new_edge(source, target);
-}
+inline EdgeID graph_access::new_edge(NodeID source, NodeID target) { return graphref->new_edge(source, target); }
 
-inline void graph_access::finish_construction() {
-    graphref->finish_construction();
-}
+inline void graph_access::finish_construction() { graphref->finish_construction(); }
 
 /* graph access methods */
-inline NodeID graph_access::number_of_nodes() const {
-    return graphref->number_of_nodes();
-}
+inline NodeID graph_access::number_of_nodes() const { return graphref->number_of_nodes(); }
 
-inline EdgeID graph_access::number_of_edges() const {
-    return graphref->number_of_edges();
-}
+inline EdgeID graph_access::number_of_edges() const { return graphref->number_of_edges(); }
 
-inline void graph_access::resizeSecondPartitionIndex(unsigned no_nodes) {
-    m_second_partition_index.resize(no_nodes);
-}
+inline void graph_access::resizeSecondPartitionIndex(unsigned no_nodes) { m_second_partition_index.resize(no_nodes); }
 
 inline EdgeID graph_access::get_first_edge(NodeID node) const {
 #ifdef NDEBUG
@@ -302,13 +286,9 @@ inline EdgeID graph_access::get_first_edge(NodeID node) const {
 #endif
 }
 
-inline EdgeID graph_access::get_first_invalid_edge(NodeID node) const {
-    return graphref->m_nodes[node + 1].firstEdge;
-}
+inline EdgeID graph_access::get_first_invalid_edge(NodeID node) const { return graphref->m_nodes[node + 1].firstEdge; }
 
-inline PartitionID graph_access::get_partition_count() const {
-    return m_partition_count;
-}
+inline PartitionID graph_access::get_partition_count() const { return m_partition_count; }
 
 inline PartitionID graph_access::getSecondPartitionIndex(NodeID node) const {
 #ifdef NDEBUG
@@ -357,7 +337,6 @@ inline void graph_access::setFeatureVec(NodeID node, const FeatureVec &vec) {
     graphref->m_refinement_node_props.at(node).featureVector = vec;
 #endif
 }
-
 
 inline NodeWeight graph_access::getNodeWeight(NodeID node) const {
 #ifdef NDEBUG
@@ -427,23 +406,20 @@ inline EdgeWeight graph_access::getWeightedNodeDegree(NodeID node) const {
     return degree;
 }
 
-inline void graph_access::set_partition_count(PartitionID count) {
-    m_partition_count = count;
-}
+inline void graph_access::set_partition_count(PartitionID count) { m_partition_count = count; }
 
 inline void graph_access::copy(graph_access &G_bar) {
     G_bar.start_construction(number_of_nodes(), number_of_edges());
 
     basicGraph &ref = *graphref;
-    for (auto node: ref.nodes()) {
+    for (auto node : ref.nodes()) {
         NodeID shadow_node = G_bar.new_node();
         G_bar.setNodeWeight(shadow_node, getNodeWeight(node));
-        forall_out_edges(ref, e, node)
-                {
-                    NodeID target = getEdgeTarget(e);
-                    EdgeID shadow_edge = G_bar.new_edge(shadow_node, target);
-                    G_bar.setEdgeWeight(shadow_edge, getEdgeWeight(e));
-                }
+        forall_out_edges(ref, e, node) {
+            NodeID target = getEdgeTarget(e);
+            EdgeID shadow_edge = G_bar.new_edge(shadow_node, target);
+            G_bar.setEdgeWeight(shadow_edge, getEdgeWeight(e));
+        }
         endfor
     }
 

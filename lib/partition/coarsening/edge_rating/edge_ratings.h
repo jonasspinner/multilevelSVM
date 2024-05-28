@@ -1,5 +1,5 @@
 /******************************************************************************
- * edge_ratings.h 
+ * edge_ratings.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -27,8 +27,8 @@
 #include "partition/partition_config.h"
 
 class edge_ratings {
-public:
-    constexpr explicit edge_ratings(const PartitionConfig &_partition_config) : partition_config(_partition_config) {};
+  public:
+    constexpr explicit edge_ratings(const PartitionConfig &_partition_config) : partition_config(_partition_config){};
 
     void rate(graph_access &G, unsigned level) const;
 
@@ -68,9 +68,8 @@ public:
 
     static void rate_separator_r8(graph_access &G);
 
-private:
+  private:
     const PartitionConfig &partition_config;
 };
-
 
 #endif /* end of include guard: EDGE_RATING_FUNCTIONS_FUCW7H6Y */

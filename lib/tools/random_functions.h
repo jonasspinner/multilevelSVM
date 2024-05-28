@@ -33,17 +33,16 @@
 typedef std::mt19937 MersenneTwister;
 
 class random_functions {
-public:
-
-    template<typename sometype>
-    static void permutate_vector_fast(std::vector<sometype> &vec, bool init) {
+  public:
+    template <typename sometype> static void permutate_vector_fast(std::vector<sometype> &vec, bool init) {
         if (init) {
             for (unsigned int i = 0; i < vec.size(); i++) {
                 vec[i] = i;
             }
         }
 
-        if (vec.size() < 10) return;
+        if (vec.size() < 10)
+            return;
 
         int distance = 20;
         std::uniform_int_distribution<unsigned int> A(0, distance);
@@ -58,11 +57,10 @@ public:
         }
     }
 
-    template<typename sometype>
-    static void permutate_vector_good(std::vector<sometype> &vec, bool init) {
+    template <typename sometype> static void permutate_vector_good(std::vector<sometype> &vec, bool init) {
         if (init) {
             for (unsigned int i = 0; i < vec.size(); i++) {
-                vec[i] = (sometype) i;
+                vec[i] = (sometype)i;
             }
         }
 
@@ -81,13 +79,12 @@ public:
             std::swap(vec[posA + 1], vec[posB + 1]);
             std::swap(vec[posA + 2], vec[posB + 2]);
             std::swap(vec[posA + 3], vec[posB + 3]);
-
         }
     }
 
-    template<typename sometype>
-    static void permutate_vector_good_small(std::vector<sometype> &vec) {
-        if (vec.size() < 2) return;
+    template <typename sometype> static void permutate_vector_good_small(std::vector<sometype> &vec) {
+        if (vec.size() < 2)
+            return;
         unsigned int size = vec.size();
         std::uniform_int_distribution<unsigned int> A(0, size - 1);
         std::uniform_int_distribution<unsigned int> B(0, size - 1);
@@ -99,10 +96,8 @@ public:
         }
     }
 
-    template<typename sometype>
-    static void permutate_entries(const PartitionConfig &partition_config,
-                                  std::vector<sometype> &vec,
-                                  bool init) {
+    template <typename sometype>
+    static void permutate_entries(const PartitionConfig &partition_config, std::vector<sometype> &vec, bool init) {
         if (init) {
             for (unsigned int i = 0; i < vec.size(); i++) {
                 vec[i] = i;
@@ -110,25 +105,23 @@ public:
         }
 
         switch (partition_config.permutation_quality) {
-            case PERMUTATION_QUALITY_NONE:
-                break;
-            case PERMUTATION_QUALITY_FAST:
-                permutate_vector_fast(vec, false);
-                break;
-            case PERMUTATION_QUALITY_GOOD:
-                permutate_vector_good(vec, false);
-                break;
+        case PERMUTATION_QUALITY_NONE:
+            break;
+        case PERMUTATION_QUALITY_FAST:
+            permutate_vector_fast(vec, false);
+            break;
+        case PERMUTATION_QUALITY_GOOD:
+            permutate_vector_good(vec, false);
+            break;
         }
-
     }
 
     static bool nextBool() {
         std::uniform_int_distribution<unsigned int> A(0, 1);
-        return (bool) A(m_mt);
+        return (bool)A(m_mt);
     }
 
-
-    //including lb and rb
+    // including lb and rb
     static unsigned nextInt(unsigned int lb, unsigned int rb) {
         std::uniform_int_distribution<unsigned int> A(lb, rb);
         return A(m_mt);
@@ -155,7 +148,7 @@ public:
         m_mt.seed(m_seed);
     }
 
-private:
+  private:
     static int m_seed;
     static MersenneTwister m_mt;
 };

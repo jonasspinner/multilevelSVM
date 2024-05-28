@@ -1,26 +1,26 @@
-#include <iostream>
-#include <iomanip>
-#include <cmath>
 #include <chrono>
-#include <thread>
-#include <mutex>
+#include <cmath>
 #include <condition_variable>
+#include <iomanip>
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 #include "data_structure/graph_access.h"
+#include "parse_parameters.h"
 #include "partition/partition_config.h"
-#include "svm/svm_solver_thunder.h"
-#include "svm/svm_convert.h"
+#include "svm/bayes_refinement.h"
+#include "svm/fix_refinement.h"
 #include "svm/k_fold.h"
 #include "svm/k_fold_build.h"
 #include "svm/k_fold_import.h"
 #include "svm/k_fold_once.h"
-#include "svm/ud_refinement.h"
-#include "svm/bayes_refinement.h"
-#include "svm/fix_refinement.h"
-#include "svm/svm_result.h"
 #include "svm/results.h"
+#include "svm/svm_convert.h"
+#include "svm/svm_result.h"
+#include "svm/svm_solver_thunder.h"
+#include "svm/ud_refinement.h"
 #include "tools/timer.h"
-#include "parse_parameters.h"
 
 void print_null(const char *s) {}
 
@@ -39,17 +39,14 @@ void kfold_instance(PartitionConfig &partition_config, std::unique_ptr<k_fold> &
     G_maj->set_partition_count(partition_config.k);
 
     std::cout << "graph -"
-              << " min: " << G_min->number_of_nodes()
-              << " maj: " << G_maj->number_of_nodes() << std::endl;
+              << " min: " << G_min->number_of_nodes() << " maj: " << G_maj->number_of_nodes() << std::endl;
 
     std::cout << "val -"
-              << " min: " << kfold->getMinValData()->size()
-              << " maj: " << kfold->getMajValData()->size() << std::endl;
+              << " min: " << kfold->getMinValData()->size() << " maj: " << kfold->getMajValData()->size() << std::endl;
 
     std::cout << "test -"
-              << " min: " << kfold->getMinTestData()->size()
-              << " maj: " << kfold->getMajTestData()->size() << std::endl;
-
+              << " min: " << kfold->getMinTestData()->size() << " maj: " << kfold->getMajTestData()->size()
+              << std::endl;
 
     // ------------- TRAINING -----------------
 
@@ -63,26 +60,17 @@ void kfold_instance(PartitionConfig &partition_config, std::unique_ptr<k_fold> &
     svm_result<SVM_MODEL> result(instance);
     bayesopt::BOptState state;
     switch (partition_config.refinement_type) {
-        case UD:
-            result = ud_refinement<SVM_MODEL>::train_ud(solver,
-                                                        *kfold->getMinValData(),
-                                                        *kfold->getMajValData());
-            break;
-        case BAYES:
-            result = bayes_refinement<SVM_MODEL>::train_bayes(solver,
-                                                              *kfold->getMinValData(),
-                                                              *kfold->getMajValData(),
-                                                              state,
-                                                              10,
-                                                              partition_config.seed);
-            break;
-        case FIX:
-            result = fix_refinement<SVM_MODEL>::train_fix(solver,
-                                                          *kfold->getMinValData(),
-                                                          *kfold->getMajValData(),
-                                                          partition_config.fix_C,
-                                                          partition_config.fix_gamma);
-            break;
+    case UD:
+        result = ud_refinement<SVM_MODEL>::train_ud(solver, *kfold->getMinValData(), *kfold->getMajValData());
+        break;
+    case BAYES:
+        result = bayes_refinement<SVM_MODEL>::train_bayes(solver, *kfold->getMinValData(), *kfold->getMajValData(),
+                                                          state, 10, partition_config.seed);
+        break;
+    case FIX:
+        result = fix_refinement<SVM_MODEL>::train_fix(solver, *kfold->getMinValData(), *kfold->getMajValData(),
+                                                      partition_config.fix_C, partition_config.fix_gamma);
+        break;
     }
 
     auto train_time = t.elapsed();
@@ -97,7 +85,6 @@ void kfold_instance(PartitionConfig &partition_config, std::unique_ptr<k_fold> &
     results.setFloat("F1", summary.F1);
 
     t.restart();
-
 
     // ------------- TEST -----------------
 
@@ -115,9 +102,10 @@ void kfold_instance(PartitionConfig &partition_config, std::unique_ptr<k_fold> &
     results.setFloat("F1_TEST", summary_test.F1);
 }
 
-// from https://stackoverflow.com/questions/40550730/how-to-implement-timeout-for-function-in-c
-void
-kfold_timeout(int timeout_secs, PartitionConfig &partition_config, std::unique_ptr<k_fold> &kfold, results &results) {
+// from
+// https://stackoverflow.com/questions/40550730/how-to-implement-timeout-for-function-in-c
+void kfold_timeout(int timeout_secs, PartitionConfig &partition_config, std::unique_ptr<k_fold> &kfold,
+                   results &results) {
     std::mutex m;
     std::condition_variable cv;
 
@@ -160,22 +148,19 @@ int main(int argn, char *argv[]) {
         std::unique_ptr<k_fold> kfold;
 
         switch (partition_config.validation_type) {
-            case KFOLD:
-                kfold = std::make_unique<k_fold_build>(partition_config,
-                                                       partition_config.filename);
-                break;
-            case KFOLD_IMPORT:
-                kfold = std::make_unique<k_fold_import>(partition_config, exp,
-                                                        partition_config.filename);
-                break;
-            case ONCE:
-                kfold = std::make_unique<k_fold_once>(partition_config,
-                                                      partition_config.filename);
-                break;
-                // case TRAIN_TEST_SPLIT:
-                // kfold.reset(new k_fold_traintest(partition_config,
-                // 				 partition_config.filename,
-                // 				 partition_config.testname));
+        case KFOLD:
+            kfold = std::make_unique<k_fold_build>(partition_config, partition_config.filename);
+            break;
+        case KFOLD_IMPORT:
+            kfold = std::make_unique<k_fold_import>(partition_config, exp, partition_config.filename);
+            break;
+        case ONCE:
+            kfold = std::make_unique<k_fold_once>(partition_config, partition_config.filename);
+            break;
+            // case TRAIN_TEST_SPLIT:
+            // kfold.reset(new k_fold_traintest(partition_config,
+            // 				 partition_config.filename,
+            // 				 partition_config.testname));
         }
 
         timer t_all;
@@ -190,13 +175,11 @@ int main(int argn, char *argv[]) {
 
             try {
                 if (partition_config.timeout > 0) {
-                    kfold_timeout(partition_config.timeout,
-                                  partition_config, kfold, results);
+                    kfold_timeout(partition_config.timeout, partition_config, kfold, results);
                 } else {
                     kfold_instance(partition_config, kfold, results);
                 }
-            }
-            catch (std::runtime_error &e) {
+            } catch (std::runtime_error &e) {
                 std::cout << e.what() << std::endl;
                 std::cout << "kfold timeout reached... quitting" << std::endl;
                 exit(123);
@@ -205,8 +188,7 @@ int main(int argn, char *argv[]) {
             auto time_all = t_all.elapsed();
             auto time_iteration = time_all - kfold_io_time;
 
-            std::cout << "iteration time: " << std::setprecision(4) << std::fixed
-                      << time_iteration << std::endl;
+            std::cout << "iteration time: " << std::setprecision(4) << std::fixed << time_iteration << std::endl;
             results.setFloat("TIME", time_iteration);
 
             kfold_io_time = 0;

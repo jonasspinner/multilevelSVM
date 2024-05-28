@@ -1,5 +1,5 @@
 /******************************************************************************
- * boundary_lookup.h 
+ * boundary_lookup.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -26,16 +26,14 @@
 #include <unordered_map>
 
 #include "definitions.h"
-#include <climits>
 #include "partial_boundary.h"
-
+#include <climits>
 
 struct boundary_pair {
     PartitionID k;
     PartitionID lhs;
     PartitionID rhs;
 };
-
 
 struct compare_boundary_pair {
     bool operator()(const boundary_pair pair_a, const boundary_pair pair_b) const {
@@ -64,8 +62,7 @@ struct hash_boundary_pair {
     }
 };
 
-typedef std::unordered_map<const boundary_pair, data_boundary_pair, hash_boundary_pair, compare_boundary_pair> block_pairs;
-
+typedef std::unordered_map<const boundary_pair, data_boundary_pair, hash_boundary_pair, compare_boundary_pair>
+    block_pairs;
 
 #endif /* end of include guard: BOUNDARY_LOOKUP_2JMSKBSI */
-

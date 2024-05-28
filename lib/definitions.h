@@ -27,21 +27,23 @@
 #include <queue>
 #include <vector>
 
-#include <climits>
 #include "tools/macros_assertions.h"
+#include <climits>
 #include <cstdio>
 
 // allows us to disable most of the output during partitioning
 #ifdef KAFFPAOUTPUT
 #define PRINT(x) x
 #else
-#define PRINT(x) do {} while (false);
+#define PRINT(x)                                                                                                       \
+    do {                                                                                                               \
+    } while (false);
 #endif
 
 /**********************************************
  * Constants
  * ********************************************/
-//Types needed for the graph ds
+// Types needed for the graph ds
 typedef unsigned int NodeID;
 typedef double EdgeRatingType;
 typedef unsigned int EdgeID;
@@ -72,14 +74,14 @@ struct source_target_pair {
     NodeID target;
 };
 
-//matching array has size (no_of_nodes), so for entry in this table we get the matched neighbor
+// matching array has size (no_of_nodes), so for entry in this table we get the matched neighbor
 typedef std::vector<NodeID> CoarseMapping;
 typedef std::vector<NodeID> Matching;
 typedef std::vector<NodeID> NodePermutationMap;
 
 typedef double ImbalanceType;
 
-//Coarsening
+// Coarsening
 typedef enum {
     EXPANSIONSTAR,
     EXPANSIONSTAR2,
@@ -101,11 +103,7 @@ typedef enum {
     SEPARATOR_R8
 } EdgeRating;
 
-typedef enum {
-    PERMUTATION_QUALITY_NONE,
-    PERMUTATION_QUALITY_FAST,
-    PERMUTATION_QUALITY_GOOD
-} PermutationQuality;
+typedef enum { PERMUTATION_QUALITY_NONE, PERMUTATION_QUALITY_FAST, PERMUTATION_QUALITY_GOOD } PermutationQuality;
 
 typedef enum {
     MATCHING_RANDOM,
@@ -116,26 +114,12 @@ typedef enum {
     LOW_DIAMETER
 } MatchingType;
 
-typedef enum {
-    STOP_RULE_SIMPLE_FIXED
-} StopRule;
+typedef enum { STOP_RULE_SIMPLE_FIXED } StopRule;
 
-typedef enum {
-    RANDOM_NODEORDERING,
-    DEGREE_NODEORDERING
-} NodeOrderingType;
+typedef enum { RANDOM_NODEORDERING, DEGREE_NODEORDERING } NodeOrderingType;
 
-typedef enum {
-    KFOLD,
-    KFOLD_IMPORT,
-    TRAIN_TEST_SPLIT,
-    ONCE
-} ValidationType;
+typedef enum { KFOLD, KFOLD_IMPORT, TRAIN_TEST_SPLIT, ONCE } ValidationType;
 
-typedef enum {
-    UD,
-    BAYES,
-    FIX
-} RefinementType;
+typedef enum { UD, BAYES, FIX } RefinementType;
 
 #endif

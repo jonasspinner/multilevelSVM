@@ -20,24 +20,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-#include <algorithm>
 #include "contraction.h"
 #include "partition/uncoarsening/refinement/quotient_graph_refinement/complete_boundary.h"
 #include "tools/macros_assertions.h"
 #include "tools/timer.h"
+#include <algorithm>
 
 // for documentation see technical reports of christian schulz
-void contraction::contract(const PartitionConfig &partition_config,
-                           graph_access &G,
-                           graph_access &coarser,
-                           const Matching &edge_matching,
-                           const CoarseMapping &coarse_mapping,
-                           const NodeID &no_of_coarse_vertices,
-                           const NodePermutationMap &permutation) {
+void contraction::contract(const PartitionConfig &partition_config, graph_access &G, graph_access &coarser,
+                           const Matching &edge_matching, const CoarseMapping &coarse_mapping,
+                           const NodeID &no_of_coarse_vertices, const NodePermutationMap &permutation) {
 
-    if (partition_config.matching_type == LP_CLUSTERING
-        || partition_config.matching_type == SIMPLE_CLUSTERING
-        || partition_config.matching_type == LOW_DIAMETER) {
+    if (partition_config.matching_type == LP_CLUSTERING || partition_config.matching_type == SIMPLE_CLUSTERING ||
+        partition_config.matching_type == LOW_DIAMETER) {
         return contract_clustering(partition_config, G, coarser, edge_matching, coarse_mapping, no_of_coarse_vertices,
                                    permutation);
     }
@@ -47,22 +42,22 @@ void contraction::contract(const PartitionConfig &partition_config,
     }
 
     std::vector<NodeID> new_edge_targets(G.number_of_edges());
-    for (auto e: G.edges()) {
+    for (auto e : G.edges()) {
         new_edge_targets[e] = coarse_mapping[G.getEdgeTarget(e)];
     }
 
     std::vector<EdgeID> edge_positions(no_of_coarse_vertices, UNDEFINED_EDGE);
 
-    //we dont know the number of edges jet, so we use the old number for
-    //construction of the coarser graph and then resize the field according
-    //to the number of edges we really got
+    // we dont know the number of edges jet, so we use the old number for
+    // construction of the coarser graph and then resize the field according
+    // to the number of edges we really got
     coarser.start_construction(no_of_coarse_vertices, G.number_of_edges());
 
     NodeID cur_no_vertices = 0;
 
-    for (auto n: G.nodes()) {
+    for (auto n : G.nodes()) {
         NodeID node = permutation[n];
-        //we look only at the coarser nodes
+        // we look only at the coarser nodes
         if (coarse_mapping[node] != cur_no_vertices)
             continue;
 
@@ -75,23 +70,20 @@ void contraction::contract(const PartitionConfig &partition_config,
         }
 
         // do something with all outgoing edges (in auxillary graph)
-        forall_out_edges(G, e, node)
-                {
-                    visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
-                }
+        forall_out_edges(G, e, node) { visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets); }
         endfor
 
-        //this node was really matched
-        NodeID matched_neighbor = edge_matching[node];
+            // this node was really matched
+            NodeID matched_neighbor = edge_matching[node];
         if (node != matched_neighbor) {
             NodeWeight node_weight = G.getNodeWeight(node);
             NodeWeight neighbor_weight = G.getNodeWeight(matched_neighbor);
 
-            //update weight of coarser node
+            // update weight of coarser node
             NodeWeight new_coarse_weight = node_weight + neighbor_weight;
             coarser.setNodeWeight(coarseNode, new_coarse_weight);
 
-            //update feature vector weighted
+            // update feature vector weighted
             FeatureVec v1 = G.getFeatureVec(node);
             FeatureVec v2 = G.getFeatureVec(matched_neighbor);
 
@@ -99,42 +91,34 @@ void contraction::contract(const PartitionConfig &partition_config,
 
             coarser.setFeatureVec(coarseNode, new_feature_vec);
 
-            forall_out_edges(G, e, matched_neighbor)
-                    {
-                        visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
-                    }
+            forall_out_edges(G, e, matched_neighbor) {
+                visit_edge(G, coarser, edge_positions, coarseNode, e, new_edge_targets);
+            }
             endfor
         }
-        forall_out_edges(coarser, e, coarseNode)
-                {
-                    edge_positions[coarser.getEdgeTarget(e)] = UNDEFINED_EDGE;
-                }
+        forall_out_edges(coarser, e, coarseNode) { edge_positions[coarser.getEdgeTarget(e)] = UNDEFINED_EDGE; }
         endfor
 
-        cur_no_vertices++;
+            cur_no_vertices++;
     }
 
     ASSERT_RANGE_EQ(edge_positions, 0, edge_positions.size(), UNDEFINED_EDGE);
     ASSERT_EQ(no_of_coarse_vertices, cur_no_vertices);
 
-    //this also resizes the edge fields ...
+    // this also resizes the edge fields ...
     coarser.finish_construction();
 }
 
-void contraction::contract_clustering(const PartitionConfig &partition_config,
-                                      graph_access &G,
-                                      graph_access &coarser,
-                                      const Matching &,
-                                      const CoarseMapping &coarse_mapping,
-                                      const NodeID &no_of_coarse_vertices,
-                                      const NodePermutationMap &) {
+void contraction::contract_clustering(const PartitionConfig &partition_config, graph_access &G, graph_access &coarser,
+                                      const Matching &, const CoarseMapping &coarse_mapping,
+                                      const NodeID &no_of_coarse_vertices, const NodePermutationMap &) {
 
     if (partition_config.combine) {
         coarser.resizeSecondPartitionIndex(no_of_coarse_vertices);
     }
 
     auto k = G.get_partition_count();
-    for (auto node: G.nodes()) {
+    for (auto node : G.nodes()) {
         G.setPartitionIndex(node, coarse_mapping[node]);
     }
 
@@ -151,36 +135,31 @@ void contraction::contract_clustering(const PartitionConfig &partition_config,
     auto num_features = G.getFeatureVec(0).size();
     std::vector<FeatureVec> combined_feature_vecs(no_of_coarse_vertices, FeatureVec(num_features, 0));
 
-    for (auto node: G.nodes()) {
+    for (auto node : G.nodes()) {
         NodeID coarsed_node = coarse_mapping[node];
         coarser.setPartitionIndex(coarsed_node, G.getPartitionIndex(node));
 
-        addWeightedToVec(combined_feature_vecs[coarsed_node],
-                         G.getFeatureVec(node),
-                         G.getNodeWeight(node));
+        addWeightedToVec(combined_feature_vecs[coarsed_node], G.getFeatureVec(node), G.getNodeWeight(node));
         block_size[coarsed_node] += G.getNodeWeight(node);
 
         if (partition_config.combine) {
             coarser.setSecondPartitionIndex(coarse_mapping[node], G.getSecondPartitionIndex(node));
         }
-
     }
 
-    for (auto node: coarser.nodes()) {
+    for (auto node : coarser.nodes()) {
         divideVec(combined_feature_vecs[node], block_size[node]);
         coarser.setFeatureVec(node, combined_feature_vecs[node]);
     }
 
     timer t;
 
-    //calculate edge weights based on the distance of the feature vec
-    for (auto node: coarser.nodes()) {
-        forall_out_edges(coarser, e, node)
-                {
-                    NodeID target = coarser.getEdgeTarget(e);
-                    EdgeWeight newWeight =
-                            1 / calcFeatureDist(coarser.getFeatureVec(node), coarser.getFeatureVec(target));
-                    coarser.setEdgeWeight(e, newWeight);
+    // calculate edge weights based on the distance of the feature vec
+    for (auto node : coarser.nodes()) {
+        forall_out_edges(coarser, e, node) {
+            NodeID target = coarser.getEdgeTarget(e);
+            EdgeWeight newWeight = 1 / calcFeatureDist(coarser.getFeatureVec(node), coarser.getFeatureVec(target));
+            coarser.setEdgeWeight(e, newWeight);
             endfor
         }
     }
@@ -188,21 +167,20 @@ void contraction::contract_clustering(const PartitionConfig &partition_config,
     std::cout << "calc new weights took " << t.elapsed() << std::endl;
 }
 
-FeatureVec contraction::combineFeatureVec(const FeatureVec &vec1, NodeWeight weight1,
-                                          const FeatureVec &vec2, NodeWeight weight2) {
+FeatureVec contraction::combineFeatureVec(const FeatureVec &vec1, NodeWeight weight1, const FeatureVec &vec2,
+                                          NodeWeight weight2) {
     size_t features = vec1.size();
     FeatureVec combined_features(features);
 
     for (size_t i = 0; i < features; ++i) {
-        combined_features[i] = (weight1 * vec1[i] + weight2 * vec2[i])
-                               / ((float) (weight1 + weight2));
+        combined_features[i] = (weight1 * vec1[i] + weight2 * vec2[i]) / ((float)(weight1 + weight2));
     }
 
     return combined_features;
 }
 
 void contraction::divideVec(FeatureVec &vec, NodeWeight weights) {
-    for (double &f: vec) {
+    for (double &f : vec) {
         f /= weights;
     }
 }

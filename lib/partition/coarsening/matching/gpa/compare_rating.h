@@ -1,5 +1,5 @@
 /******************************************************************************
- * compare_rating.h 
+ * compare_rating.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -27,16 +27,15 @@
 #include "definitions.h"
 
 class compare_rating : public std::binary_function<EdgeRatingType, EdgeRatingType, bool> {
-public:
-    constexpr explicit compare_rating(graph_access *pG) : G(pG) {};
+  public:
+    constexpr explicit compare_rating(graph_access *pG) : G(pG){};
 
     bool operator()(const EdgeRatingType left, const EdgeRatingType right) {
         return G->getEdgeRating(left) > G->getEdgeRating(right);
     }
 
-private:
+  private:
     graph_access *G;
 };
-
 
 #endif /* end of include guard: COMPARE_RATING_750FUZ7Z */

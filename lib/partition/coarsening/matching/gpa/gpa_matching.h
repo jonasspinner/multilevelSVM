@@ -1,5 +1,5 @@
 /******************************************************************************
- * gpa_matching.h 
+ * gpa_matching.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -28,47 +28,30 @@
 #include "path_set.h"
 
 class gpa_matching : public matching {
-public:
+  public:
     gpa_matching() = default;
 
     ~gpa_matching() override = default;
 
-    void match(const PartitionConfig &config,
-               graph_access &G,
-               Matching &_matching,
-               CoarseMapping &coarse_mapping,
-               NodeID &no_of_coarse_vertices,
-               NodePermutationMap &permutation) override;
+    void match(const PartitionConfig &config, graph_access &G, Matching &_matching, CoarseMapping &coarse_mapping,
+               NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
 
-private:
-    static void init(graph_access &G,
-                     const PartitionConfig &partition_config,
-                     NodePermutationMap &permutation,
-                     Matching &edge_matching,
-                     std::vector<EdgeID> &edge_permutation,
-                     std::vector<NodeID> &sources);
+  private:
+    static void init(graph_access &G, const PartitionConfig &partition_config, NodePermutationMap &permutation,
+                     Matching &edge_matching, std::vector<EdgeID> &edge_permutation, std::vector<NodeID> &sources);
 
-    static void extract_paths_apply_matching(graph_access &G,
-                                             std::vector<NodeID> &sources,
-                                             Matching &edge_matching,
+    static void extract_paths_apply_matching(graph_access &G, std::vector<NodeID> &sources, Matching &edge_matching,
                                              path_set &pathset);
 
-    template<typename VectorOrDeque>
-    static void unpack_path(const path &the_path,
-                            const path_set &pathset,
-                            VectorOrDeque &a_path);
+    template <typename VectorOrDeque>
+    static void unpack_path(const path &the_path, const path_set &pathset, VectorOrDeque &a_path);
 
-    template<typename VectorOrDeque>
-    static void maximum_weight_matching(graph_access &G,
-                                        VectorOrDeque &unpacked_path,
-                                        std::vector<EdgeID> &matched_edges,
-                                        EdgeRatingType &final_rating);
+    template <typename VectorOrDeque>
+    static void maximum_weight_matching(graph_access &G, VectorOrDeque &unpacked_path,
+                                        std::vector<EdgeID> &matched_edges, EdgeRatingType &final_rating);
 
-    static void apply_matching(graph_access &G,
-                               std::vector<EdgeID> &matched_edges,
-                               std::vector<NodeID> &sources,
+    static void apply_matching(graph_access &G, std::vector<EdgeID> &matched_edges, std::vector<NodeID> &sources,
                                Matching &edge_matching);
 };
-
 
 #endif /* end of include guard: GPA_MATCHING_NXLQ0SIT */

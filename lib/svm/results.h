@@ -1,13 +1,13 @@
 #ifndef RESULTS_H
 #define RESULTS_H
 
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class results {
-public:
-    results() : cur_iteration(-1) {};
+  public:
+    results() : cur_iteration(-1){};
 
     void next();
 
@@ -17,12 +17,11 @@ public:
 
     void print();
 
-private:
+  private:
     int cur_iteration;
     std::unordered_map<std::string, std::vector<float>> floats;
     std::unordered_map<std::string, std::vector<std::string>> strings;
     std::vector<std::string> tag_order;
 };
-
 
 #endif /* RESULTS_H */

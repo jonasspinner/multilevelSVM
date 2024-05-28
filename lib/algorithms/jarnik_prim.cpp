@@ -3,10 +3,9 @@
 #include <queue>
 #include <utility>
 
-#include "definitions.h"
 #include "data_structure/graph_access.h"
+#include "definitions.h"
 #include "tools/random_functions.h"
-
 
 struct JPEdge {
     EdgeID id;
@@ -17,9 +16,7 @@ struct JPEdge {
     JPEdge(EdgeID i, NodeID f, NodeID t, EdgeWeight w) : id(i), from(f), to(t), weight(w) {}
 };
 
-bool operator<(const JPEdge &lhs, const JPEdge &rhs) {
-    return lhs.weight < rhs.weight;
-}
+bool operator<(const JPEdge &lhs, const JPEdge &rhs) { return lhs.weight < rhs.weight; }
 
 std::pair<std::unique_ptr<graph_access>, NodeID> jarnik_prim::spanning_tree(const graph_access &G) {
     NodeID size = G.number_of_nodes();
@@ -33,14 +30,13 @@ std::pair<std::unique_ptr<graph_access>, NodeID> jarnik_prim::spanning_tree(cons
     NodeID start_id = random_functions::nextInt(0, size - 1);
 
     // put start_id edges in priority queue
-    forall_out_edges (G, e, start_id)
-            {
-                assert((EdgeWeight) ((NodeID) G.getEdgeWeight(e)) == G.getEdgeWeight(e));
-                pq.emplace(e, start_id, G.getEdgeTarget(e), G.getEdgeWeight(e));
-            }
+    forall_out_edges(G, e, start_id) {
+        assert((EdgeWeight)((NodeID)G.getEdgeWeight(e)) == G.getEdgeWeight(e));
+        pq.emplace(e, start_id, G.getEdgeTarget(e), G.getEdgeWeight(e));
+    }
     endfor
 
-    parent[start_id] = start_id;
+        parent[start_id] = start_id;
 
     while (!pq.empty()) {
         JPEdge cur_edge = pq.top();
@@ -51,24 +47,24 @@ std::pair<std::unique_ptr<graph_access>, NodeID> jarnik_prim::spanning_tree(cons
             continue;
         }
 
-        forall_out_edges (G, e, cur_node)
-                {
-                    NodeID target = G.getEdgeTarget(e);
-                    // add node only if not already in the spanning tree
-                    if (parent[target] != std::numeric_limits<NodeID>::max()) {
-                        continue;
-                    }
-                    pq.emplace(e, cur_node, target, G.getEdgeWeight(e));
-                }
+        forall_out_edges(G, e, cur_node) {
+            NodeID target = G.getEdgeTarget(e);
+            // add node only if not already in the spanning tree
+            if (parent[target] != std::numeric_limits<NodeID>::max()) {
+                continue;
+            }
+            pq.emplace(e, cur_node, target, G.getEdgeWeight(e));
+        }
         endfor
 
-        parent[cur_node] = cur_edge.from;
+            parent[cur_node] = cur_edge.from;
     }
 
     std::vector<std::vector<NodeID>> children = std::vector<std::vector<NodeID>>(size);
 
     for (size_t i = 0; i < size; ++i) {
-        if (i == start_id) continue;
+        if (i == start_id)
+            continue;
         if (parent[i] == std::numeric_limits<NodeID>::max()) {
             continue;
         }
@@ -81,7 +77,7 @@ std::pair<std::unique_ptr<graph_access>, NodeID> jarnik_prim::spanning_tree(cons
     for (size_t current_node = 0; current_node < size; ++current_node) {
         tree->new_node();
 
-        for (auto c: children[current_node]) {
+        for (auto c : children[current_node]) {
             tree->new_edge(current_node, c);
         }
     }

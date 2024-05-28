@@ -28,7 +28,7 @@
 #include "graph_access.h"
 
 class graph_hierarchy {
-public:
+  public:
     graph_hierarchy() = default;
 
     ~graph_hierarchy();
@@ -45,8 +45,8 @@ public:
 
     [[nodiscard]] unsigned int size() const;
 
-private:
-    //private functions
+  private:
+    // private functions
     graph_access *pop_coarsest();
 
     std::stack<graph_access *> m_the_graph_hierarchy;
@@ -58,6 +58,5 @@ private:
     graph_access *m_finest_graph{nullptr};
     CoarseMapping *m_current_coarse_mapping{nullptr};
 };
-
 
 #endif /* end of include guard: GRAPH_HIERARCHY_UMHG74CO */

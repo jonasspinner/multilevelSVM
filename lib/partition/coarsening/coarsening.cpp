@@ -21,8 +21,8 @@
  *****************************************************************************/
 
 #include <limits>
-#include <sstream>
 #include <memory>
+#include <sstream>
 
 #include "coarsening.h"
 #include "coarsening_configurator.h"
@@ -32,8 +32,8 @@
 #include "edge_rating/edge_ratings.h"
 #include "stop_rules/stop_rules.h"
 
-void
-coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_access &G, graph_hierarchy &hierarchy) {
+void coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_access &G,
+                                    graph_hierarchy &hierarchy) {
 
     NodeID no_of_coarser_vertices = G.number_of_nodes();
     NodeID no_of_finer_vertices = std::numeric_limits<NodeID>::max();
@@ -63,18 +63,16 @@ coarsening::perform_coarsening(const PartitionConfig &partition_config, graph_ac
         coarsening_configurator::configure_coarsening(copy_of_partition_config, &edge_matcher, level);
         rating.rate(*finer, level);
 
-        edge_matcher->match(copy_of_partition_config, *finer,
-                            edge_matching, *coarse_mapping,
-                            no_of_coarser_vertices, permutation);
+        edge_matcher->match(copy_of_partition_config, *finer, edge_matching, *coarse_mapping, no_of_coarser_vertices,
+                            permutation);
 
-        contraction::contract(copy_of_partition_config, *finer, *coarser,
-                              edge_matching, *coarse_mapping,
+        contraction::contract(copy_of_partition_config, *finer, *coarser, edge_matching, *coarse_mapping,
                               no_of_coarser_vertices, permutation);
 
         hierarchy.push_back(finer, coarse_mapping);
 
-        std::cout << "no of coarser vertices " << no_of_coarser_vertices
-                  << " and no of edges " << coarser->number_of_edges() << std::endl;
+        std::cout << "no of coarser vertices " << no_of_coarser_vertices << " and no of edges "
+                  << coarser->number_of_edges() << std::endl;
 
         finer = coarser;
 

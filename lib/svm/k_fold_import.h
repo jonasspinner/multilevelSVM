@@ -5,16 +5,15 @@
 #include "partition/partition_config.h"
 
 class k_fold_import : public k_fold {
-public:
+  public:
     k_fold_import(const PartitionConfig &config, int num_exp, const std::string &basename);
 
     ~k_fold_import() override = default;
 
-protected:
+  protected:
     void next_intern(double &io_time) override;
 
-    double read_class(const std::string &filename,
-                      graph_access &target_graph,
+    double read_class(const std::string &filename, graph_access &target_graph,
                       std::vector<std::vector<svm_node>> &target_val);
 
     std::string basename;

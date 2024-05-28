@@ -1,5 +1,5 @@
 /******************************************************************************
- * complete_boundary.cpp 
+ * complete_boundary.cpp
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *

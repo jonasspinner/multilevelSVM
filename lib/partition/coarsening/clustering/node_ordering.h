@@ -1,5 +1,5 @@
 /******************************************************************************
- * node_ordering.h 
+ * node_ordering.h
  *
  * Source of KaHIP -- Karlsruhe High Quality Partitioning.
  *
@@ -20,41 +20,37 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
-
 #ifndef NODE_ORDERING_HM1YMLB1
 #define NODE_ORDERING_HM1YMLB1
 
 #include <algorithm>
 
-#include "definitions.h"
 #include "data_structure/graph_access.h"
+#include "definitions.h"
 #include "partition/partition_config.h"
 #include "tools/random_functions.h"
 
 class node_ordering {
-public:
+  public:
     static void order_nodes(const PartitionConfig &config, graph_access &G, std::vector<NodeID> &ordered_nodes) {
-        for (auto node: G.nodes()) {
+        for (auto node : G.nodes()) {
             ordered_nodes[node] = node;
         }
 
         switch (config.node_ordering) {
-            case DEGREE_NODEORDERING:
-                order_nodes_degree(G, ordered_nodes);
-                break;
-            default:
-                throw std::invalid_argument("only DEGREE_NODEORDERING is supported by order_nodes");
+        case DEGREE_NODEORDERING:
+            order_nodes_degree(G, ordered_nodes);
+            break;
+        default:
+            throw std::invalid_argument("only DEGREE_NODEORDERING is supported by order_nodes");
         }
     }
 
     static void order_nodes_degree(graph_access &G, std::vector<NodeID> &ordered_nodes) {
-        std::sort(ordered_nodes.begin(), ordered_nodes.end(),
-                  [&](const NodeID &lhs, const NodeID &rhs) -> bool {
-                      return (G.getNodeDegree(lhs) < G.getNodeDegree(rhs));
-                  });
+        std::sort(ordered_nodes.begin(), ordered_nodes.end(), [&](const NodeID &lhs, const NodeID &rhs) -> bool {
+            return (G.getNodeDegree(lhs) < G.getNodeDegree(rhs));
+        });
     }
-
 };
-
 
 #endif /* end of include guard: NODE_ORDERING_HM1YMLB1 */

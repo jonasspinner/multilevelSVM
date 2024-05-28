@@ -1,9 +1,8 @@
 #include <svm.h>
-
-#include "partition/partition_config.h"
-#include "parse_parameters.h"
-
 #include <thundersvm/util/log.h>
+
+#include "parse_parameters.h"
+#include "partition/partition_config.h"
 
 void print_null(const char *s) {}
 

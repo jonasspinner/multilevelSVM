@@ -4,12 +4,11 @@
 #include <vector>
 
 #include "definitions.h"
-#include "svm_summary.h"
 #include "svm_instance.h"
+#include "svm_summary.h"
 
-template<class T>
-class svm_result {
-public:
+template <class T> class svm_result {
+  public:
     explicit svm_result(svm_instance instance);
 
     svm_result(const std::vector<svm_summary<T>> &summaries, svm_instance instance);
@@ -27,6 +26,5 @@ public:
 
     static size_t get_best_index(const std::vector<std::pair<svm_summary<T>, svm_instance>> &vec);
 };
-
 
 #endif /* SVM_RESULT_H */
