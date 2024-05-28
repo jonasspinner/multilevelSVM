@@ -1,0 +1,51 @@
+name: CI pipeline
+
+on:
+  push:
+    branches: [ "refactor" ]
+  pull_request:
+    branches: [ "refactor" ]
+
+env:
+  BUILD_TYPE: Release
+  BUILD_DIR_GCC: ${{github.workspace}}/build/gcc
+  BUILD_DIR_CLANG: ${{github.workspace}}/build/clang
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt install -y clang clang-tidy clang-format cppcheck ninja-build
+
+      - name: Print tools versions
+        run: |
+          g++ --version
+          clang++ --version
+          cmake --version
+          echo "Ninja" $(ninja --version)
+          cppcheck --version
+
+      - name: Build under GCC
+        run: |
+          cmake -B ${{env.BUILD_DIR_GCC}} -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++
+          ninja -C ${{env.BUILD_DIR_GCC}}
+
+      - name: Build under Clang
+        run: |
+          cmake -B ${{env.BUILD_DIR_CLANG}} -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=clang++
+          ninja -C ${{env.BUILD_DIR_CLANG}}
+
+      - name: Run Clang-Format check
+        run: ninja -C ${{env.BUILD_DIR_GCC}} clang-format-check
+
+      - name: Run Clang-Tidy check
+        run: ninja -C ${{env.BUILD_DIR_GCC}} clang-tidy-check
+
+      - name: Run Run-Clang-Tidy check
+        run: ninja -C ${{env.BUILD_DIR_GCC}} run-clang-tidy-check
+
+      - name: Run Cppcheck check
+        run: ninja -C ${{env.BUILD_DIR_GCC}} cppcheck-check
