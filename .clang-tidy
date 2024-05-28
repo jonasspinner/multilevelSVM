@@ -1,0 +1,6 @@
+---
+Checks: 'modernize-*'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+FormatStyle: file
+...

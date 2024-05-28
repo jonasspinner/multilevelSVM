@@ -4,6 +4,14 @@ project(multilevelSVM)
 set(CMAKE_CXX_STANDARD 17)
 
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+include(cmake/collect-sources.cmake)
+include(cmake/clang-format.cmake)
+include(cmake/clang-tidy.cmake)
+include(cmake/cppcheck.cmake)
+
+
 ### thundersvm
 set(USE_CUDA OFF CACHE BOOL "" FORCE)
 set(USE_EIGEN ON CACHE BOOL "" FORCE)
