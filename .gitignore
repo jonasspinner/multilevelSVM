@@ -14,3 +14,8 @@ parallel/parallel_src/optimized_nooutput
 examples
 data
 compile_commands.json
+
+cmake-build-*
+build
+*.model
+.idea
