@@ -28,10 +28,8 @@
 
 void edge_ratings::rate(graph_access &G, unsigned level) const {
     // rate the edges
-    if (level == 0 && partition_config.first_level_random_matching) {
-        return;
-    } else if (partition_config.matching_type == MATCHING_RANDOM_GPA &&
-               level < partition_config.aggressive_random_levels) {
+    if ((level == 0 && partition_config.first_level_random_matching) ||
+        (partition_config.matching_type == MATCHING_RANDOM_GPA && level < partition_config.aggressive_random_levels)) {
         return;
     }
     if (level == 0 && partition_config.rate_first_level_inner_outer &&
@@ -101,7 +99,7 @@ void edge_ratings::compute_algdist(graph_access &G, std::vector<float> &dist) {
     for (unsigned R = 0; R < 3; R++) {
         std::vector<float> prev(G.number_of_nodes(), 0);
         for (auto node : G.nodes()) {
-            prev[node] = random_functions::nextDouble(-0.5, 0.5);
+            prev[node] = static_cast<float>(random_functions::nextDouble(-0.5, 0.5));
         }
 
         std::vector<float> next(G.number_of_nodes(), 0);
@@ -113,11 +111,11 @@ void edge_ratings::compute_algdist(graph_access &G, std::vector<float> &dist) {
 
                 forall_out_edges(G, e, node) {
                     NodeID target = G.getEdgeTarget(e);
-                    next[node] += prev[target] * G.getEdgeWeight(e);
+                    next[node] += prev[target] * static_cast<float>(G.getEdgeWeight(e));
                 }
                 endfor
 
-                    float wdegree = G.getWeightedNodeDegree(node);
+                    double wdegree = G.getWeightedNodeDegree(node);
                 if (wdegree > 0) {
                     next[node] /= (float)wdegree;
                 }
@@ -132,7 +130,7 @@ void edge_ratings::compute_algdist(graph_access &G, std::vector<float> &dist) {
             forall_out_edges(G, e, node) {
                 NodeID target = G.getEdgeTarget(e);
                 // dist[e] = max(dist[e],fabs(prev[node] - prev[target]));
-                dist[e] += fabs(prev[node] - prev[target]) / 7.0;
+                dist[e] += std::abs(prev[node] - prev[target]) / 7.0f;
             }
             endfor
         }
@@ -156,7 +154,8 @@ void edge_ratings::rate_expansion_star_2_algdist(graph_access &G) {
             NodeWeight targetWeight = G.getNodeWeight(targetNode);
             EdgeWeight edgeWeight = G.getEdgeWeight(e);
 
-            EdgeRatingType rating = 1.0 * edgeWeight * edgeWeight / (targetWeight * sourceWeight * dist[e]);
+            EdgeRatingType rating =
+                1.0 * edgeWeight * edgeWeight / (static_cast<EdgeRatingType>(targetWeight) * sourceWeight * dist[e]);
             G.setEdgeRating(e, rating);
         }
         endfor

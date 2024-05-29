@@ -57,7 +57,7 @@ std::pair<std::vector<NodeID>, std::vector<NodeID>> svm_solver_thunder::get_SV()
     std::vector<NodeID> SV_maj;
 
     for (int index : SV_ind) {
-        if (index < instance.num_min) {
+        if (index < static_cast<int>(instance.num_min)) {
             SV_min.push_back(index);
         } else {
             SV_maj.push_back(index - instance.num_min);

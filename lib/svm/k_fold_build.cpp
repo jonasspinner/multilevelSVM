@@ -29,7 +29,7 @@ void k_fold_build::readData(const std::string &filename) {
               << " features: " << this->min_features[0].size() << std::endl;
 }
 
-void k_fold_build::next_intern(double &_io_time) {
+void k_fold_build::next_intern(double &) {
     this->cur_min_train.clear();
     this->cur_maj_train.clear();
     this->cur_min_val.clear();

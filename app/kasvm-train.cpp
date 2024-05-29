@@ -26,7 +26,7 @@
 #include "svm/ud_refinement.h"
 #include "tools/timer.h"
 
-void print_null(const char *_s) {}
+void print_null(const char *) {}
 
 #ifndef SVM_SOLVER
 #define SVM_SOLVER svm_solver_thunder

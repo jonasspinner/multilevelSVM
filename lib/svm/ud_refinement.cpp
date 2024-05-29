@@ -26,7 +26,7 @@ template <class T> svm_result<T> ud_refinement<T>::step(const svm_data &min_samp
     instance.read_problem(this->uncoarsed_data_min, this->uncoarsed_data_maj);
     std::unique_ptr<svm_solver<T>> solver = svm_solver_factory::create<T>(instance);
 
-    if (this->uncoarsed_data_min.size() + this->uncoarsed_data_maj.size() < this->num_skip_ms) {
+    if (this->uncoarsed_data_min.size() + this->uncoarsed_data_maj.size() < static_cast<size_t>(this->num_skip_ms)) {
         if (this->training_inherit) {
             this->result = train_refinement(*solver, min_sample, maj_sample, this->inherit_ud,
                                             this->result.best().C_log, this->result.best().gamma_log);

@@ -44,7 +44,7 @@ class gpa_matching : public matching {
                                              path_set &pathset);
 
     template <typename VectorOrDeque>
-    static void unpack_path(const path &the_path, const path_set &pathset, VectorOrDeque &a_path);
+    static void unpack_path(const path &p, const path_set &pathset, VectorOrDeque &unpacked_path);
 
     template <typename VectorOrDeque>
     static void maximum_weight_matching(graph_access &G, VectorOrDeque &unpacked_path,

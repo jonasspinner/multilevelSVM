@@ -102,23 +102,25 @@ void size_constraint_label_propagation::ensemble_clusterings(const PartitionConf
 
             no_of_coarse_vertices = cur_no_blocks;
         }
-        new_cf = random_functions::nextInt(10, 30);
+        new_cf = static_cast<int>(random_functions::nextInt(10, 30));
     }
 
     create_coarsemapping(G, ensemble_cluster, coarse_mapping);
 }
 
 void size_constraint_label_propagation::label_propagation(const PartitionConfig &partition_config, graph_access &G,
-                                                          std::vector<NodeWeight> &cluster_id, NodeID &no_of_blocks) {
+                                                          std::vector<NodeWeight> &cluster_id,
+                                                          NodeID &number_of_blocks) {
     NodeWeight block_upperbound =
         ceil(partition_config.upper_bound_partition / (double)partition_config.cluster_coarsening_factor);
 
-    label_propagation(partition_config, G, block_upperbound, cluster_id, no_of_blocks);
+    label_propagation(partition_config, G, block_upperbound, cluster_id, number_of_blocks);
 }
 
 void size_constraint_label_propagation::label_propagation(const PartitionConfig &partition_config, graph_access &G,
                                                           const NodeWeight &block_upperbound,
-                                                          std::vector<NodeWeight> &cluster_id, NodeID &no_of_blocks) {
+                                                          std::vector<NodeWeight> &cluster_id,
+                                                          NodeID &number_of_blocks) {
     // coarse_mapping stores cluster id and the mapping (it is identical)
     std::vector<PartitionID> hash_map(G.number_of_nodes(), 0);
     std::vector<NodeID> permutation(G.number_of_nodes());
@@ -141,7 +143,7 @@ void size_constraint_label_propagation::label_propagation(const PartitionConfig 
 
             forall_out_edges(G, e, node) {
                 NodeID target = G.getEdgeTarget(e);
-                hash_map[cluster_id[target]] += G.getEdgeWeight(e);
+                hash_map[cluster_id[target]] += static_cast<PartitionID>(G.getEdgeWeight(e));
             }
             endfor
 
@@ -176,7 +178,7 @@ void size_constraint_label_propagation::label_propagation(const PartitionConfig 
         }
     }
 
-    remap_cluster_ids(G, cluster_id, no_of_blocks);
+    remap_cluster_ids(G, cluster_id, number_of_blocks);
 }
 
 void size_constraint_label_propagation::create_coarsemapping(graph_access &G, std::vector<NodeWeight> &cluster_id,

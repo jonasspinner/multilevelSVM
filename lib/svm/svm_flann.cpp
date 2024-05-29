@@ -34,9 +34,9 @@ void svm_flann::run_flann(const std::vector<FeatureVec> &data, std::vector<std::
 
         for (size_t j = 0; j < (size_t)num_nn + 1; ++j) {
             int target = indices[i][j];
-            float weight = 1 / distances[i][j];
+            double weight = 1.0 / distances[i][j];
 
-            if (target == i) // exclude self loops
+            if (target == static_cast<int>(i)) // exclude self loops
                 continue;
 
             Edge edge{};

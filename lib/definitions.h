@@ -37,7 +37,7 @@
 #else
 #define PRINT(x)                                                                                                       \
     do {                                                                                                               \
-    } while (false);
+    } while (false)
 #endif
 
 /**********************************************

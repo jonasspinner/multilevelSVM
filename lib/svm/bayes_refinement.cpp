@@ -66,7 +66,7 @@ template <class T> class SolverOptimization : public ContinuousModel {
         return summary.eval(solver.get_instance());
     }
 
-    bool checkReachability(const boost::numeric::ublas::vector<double> &query) override { return true; }
+    bool checkReachability(const boost::numeric::ublas::vector<double> &) override { return true; }
 
     svm_solver<T> &solver;
     const svm_data &min_sample;

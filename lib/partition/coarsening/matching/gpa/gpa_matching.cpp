@@ -291,7 +291,7 @@ void gpa_matching::maximum_weight_matching(graph_access &G, VectorOrDeque &unpac
         final_rating = ratings[k - 2];
     }
     // construct optimal solution
-    for (int i = k - 1; i >= 0;) {
+    for (int i = static_cast<int>(k) - 1; i >= 0;) {
         if (decision[i]) {
             matched_edges.push_back(unpacked_path[i]);
             i -= 2;

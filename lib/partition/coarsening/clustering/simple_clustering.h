@@ -14,13 +14,6 @@ class simple_clustering : public matching {
                NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
 
   private:
-    void visit_children(NodeID cur_node);
-
-    std::unique_ptr<graph_access> tree;
-    CoarseMapping *coarse_mapping{};
-    NodeID cur_cluster = 0;
-    NodeID cur_cluster_nodes = 0;
-    NodeID max_cluster_nodes{};
 };
 
 #endif /* SIMPLE_CLUSTERING_H */
