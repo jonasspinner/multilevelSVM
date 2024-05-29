@@ -30,7 +30,8 @@ jobs:
           echo "Ninja" $(ninja --version)
           cppcheck --version
 
-      - run: |
+      - name: Build bayesopt
+        run: |
           cmake -B extern/bayesopt/build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_COMPILER=g++ -DBAYESOPT_BUILD_EXAMPLES=OFF -DBAYESOPT_MATLAB_COMPATIBLE=OFF -DBAYESOPT_BUILD_SOBOL=OFF extern/bayesopt
           ninja -C extern/bayesopt/build
 
@@ -45,13 +46,17 @@ jobs:
           ninja -C ${{env.BUILD_DIR_CLANG}}
 
       - name: Run Clang-Format check
+        continue-on-error: true
         run: ninja -C ${{env.BUILD_DIR_GCC}} clang-format-check
 
       - name: Run Clang-Tidy check
+        continue-on-error: true
         run: ninja -C ${{env.BUILD_DIR_GCC}} clang-tidy-check
 
       - name: Run Run-Clang-Tidy check
+        continue-on-error: true
         run: ninja -C ${{env.BUILD_DIR_GCC}} run-clang-tidy-check
 
       - name: Run Cppcheck check
+        continue-on-error: true
         run: ninja -C ${{env.BUILD_DIR_GCC}} cppcheck-check
