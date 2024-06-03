@@ -46,7 +46,6 @@ jobs:
           ninja -C ${{env.BUILD_DIR_CLANG}}
 
       - name: Run Clang-Format check
-        continue-on-error: true
         run: ninja -C ${{env.BUILD_DIR_GCC}} clang-format-check
 
       - name: Run Clang-Tidy check

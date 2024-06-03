@@ -23,13 +23,13 @@ find_program(RUN_CLANG_TIDY run-clang-tidy)
 if(NOT RUN_CLANG_TIDY)
     message(STATUS "Run-Clang-Tidy was not found, check and fix (parallel) targets are inaccessible")
 else()
-    add_custom_target(run-clang-tidy-check COMMAND ${RUN_CLANG_TIDY} -p=${CMAKE_CURRENT_BINARY_DIR} # -use-color
+    add_custom_target(run-clang-tidy-check COMMAND ${RUN_CLANG_TIDY} -p=${CMAKE_CURRENT_BINARY_DIR} ${ALL_SOURCES} # -use-color
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         USES_TERMINAL
         COMMENT "Checking code with run-clang-tidy (parallel)"
     )
 
-    add_custom_target(run-clang-tidy-fix COMMAND ${RUN_CLANG_TIDY} -p=${CMAKE_CURRENT_BINARY_DIR} -format -fix # -use-color
+    add_custom_target(run-clang-tidy-fix COMMAND ${RUN_CLANG_TIDY} -p=${CMAKE_CURRENT_BINARY_DIR} -format -fix ${ALL_SOURCES} # -use-color
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         USES_TERMINAL
         COMMENT "Checking code and applying automatic fixes with run-clang-tidy (parallel)"
