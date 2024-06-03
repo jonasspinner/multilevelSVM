@@ -37,6 +37,8 @@ include_directories(SYSTEM extern/libsvm-3.22/include)
 ### flann
 include_directories(SYSTEM extern/flann-1.8.4/include)
 
+find_package(OpenMP REQUIRED)
+
 ### multilevelsvm
 include_directories(lib)
 
@@ -55,6 +57,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     #add_compile_options(-Wmisleading-indentation -Wformat=2 -Wno-comment)
 endif ()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 add_compile_definitions(KAFFPAOUTPUT)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native -DNDEBUG -Wno-unused-parameter -funroll-loops")
 
@@ -109,16 +112,16 @@ add_compile_definitions(SVM_SOLVER=svm_solver_libsvm SVM_MODEL=svm_model)
 
 
 add_executable(kasvm app/kasvm-train.cpp)
-target_link_libraries(kasvm PRIVATE kasvm_library ${BAYESOPT} ${NLOPT} ${ARGTABLE2} thundersvm gomp)
+target_link_libraries(kasvm PRIVATE kasvm_library ${BAYESOPT} ${NLOPT} ${ARGTABLE2} thundersvm OpenMP::OpenMP_CXX)
 
 
 add_executable(kasvm_predict app/kasvm-predict.cpp)
-target_link_libraries(kasvm_predict PRIVATE kasvm_library ${BAYESOPT} ${NLOPT} ${ARGTABLE2} thundersvm gomp)
+target_link_libraries(kasvm_predict PRIVATE kasvm_library ${BAYESOPT} ${NLOPT} ${ARGTABLE2} thundersvm OpenMP::OpenMP_CXX)
 
 
 add_executable(single_level_svm app/single_level_svm.cpp)
-target_link_libraries(single_level_svm PRIVATE kasvm_library ${BAYESOPT} ${NLOPT} ${ARGTABLE2} thundersvm gomp)
+target_link_libraries(single_level_svm PRIVATE kasvm_library ${BAYESOPT} ${NLOPT} ${ARGTABLE2} thundersvm OpenMP::OpenMP_CXX)
 
 
 add_executable(prepare app/prepare.cpp lib/svm/svm_flann.cpp)
-target_link_libraries(prepare PRIVATE ${ARGTABLE2} gomp)
+target_link_libraries(prepare PRIVATE ${ARGTABLE2} OpenMP::OpenMP_CXX)
