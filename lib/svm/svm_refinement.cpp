@@ -31,11 +31,11 @@ svm_refinement<T>::svm_refinement(graph_hierarchy &min_hierarchy, graph_hierarch
     }
 }
 
-template <class T> bool svm_refinement<T>::is_done() {
+template <class T> bool svm_refinement<T>::is_done() const {
     return this->min_hierarchy->isEmpty() && this->maj_hierarchy->isEmpty();
 }
 
-template <class T> int svm_refinement<T>::get_level() {
+template <class T> int svm_refinement<T>::get_level() const {
     return std::max(this->min_hierarchy->size(), this->maj_hierarchy->size());
 }
 
@@ -58,7 +58,7 @@ void svm_refinement<T>::uncoarse(const std::vector<NodeID> &sv_min, const std::v
 }
 
 template <class T>
-svm_data svm_refinement<T>::uncoarse_SV(graph_access &G, const CoarseMapping &coarse_mapping,
+svm_data svm_refinement<T>::uncoarse_SV(const graph_access &G, const CoarseMapping &coarse_mapping,
                                         const std::vector<NodeID> &sv, std::vector<NodeID> &data_mapping) {
     svm_data new_data;
 

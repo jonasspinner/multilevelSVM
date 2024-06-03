@@ -47,8 +47,8 @@ struct data_ensemble_pair {
     NodeID mapping{0};
 };
 
-typedef std::unordered_map<const ensemble_pair, data_ensemble_pair, hash_ensemble_pair, compare_ensemble_pair>
-    hash_ensemble;
+using hash_ensemble =
+    std::unordered_map<const ensemble_pair, data_ensemble_pair, hash_ensemble_pair, compare_ensemble_pair>;
 
 class size_constraint_label_propagation : public matching {
   public:
@@ -59,10 +59,10 @@ class size_constraint_label_propagation : public matching {
     void match(const PartitionConfig &config, graph_access &G, Matching &_matching, CoarseMapping &coarse_mapping,
                NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
 
-    static void ensemble_clusterings(const PartitionConfig &config, graph_access &G, CoarseMapping &coarse_mapping,
-                                     NodeID &no_of_coarse_vertices);
+    static void ensemble_clusterings(const PartitionConfig &partition_config, graph_access &G,
+                                     CoarseMapping &coarse_mapping, NodeID &no_of_coarse_vertices);
 
-    static void ensemble_two_clusterings(graph_access &G, const std::vector<NodeID> &lhs,
+    static void ensemble_two_clusterings(const graph_access &G, const std::vector<NodeID> &lhs,
                                          const std::vector<NodeID> &rhs, std::vector<NodeID> &output,
                                          NodeID &no_of_coarse_vertices);
 
@@ -72,7 +72,8 @@ class size_constraint_label_propagation : public matching {
     static void remap_cluster_ids(graph_access &G, std::vector<NodeID> &cluster_id, NodeID &no_of_coarse_vertices,
                                   bool apply_to_graph = false);
 
-    static void create_coarsemapping(graph_access &G, std::vector<NodeID> &cluster_id, CoarseMapping &coarse_mapping);
+    static void create_coarsemapping(const graph_access &G, std::vector<NodeID> &cluster_id,
+                                     CoarseMapping &coarse_mapping);
 
     static void label_propagation(const PartitionConfig &partition_config, graph_access &G,
                                   const NodeWeight &block_upperbound,

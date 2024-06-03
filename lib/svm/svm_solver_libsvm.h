@@ -14,7 +14,7 @@ class svm_solver_libsvm : public svm_solver<svm_model> {
 
     void train() override;
 
-    int predict(const std::vector<svm_node> &node) override;
+    int predict(const std::vector<svm_node> &nodes) override;
 
     void export_to_file(const std::string &path) override;
 

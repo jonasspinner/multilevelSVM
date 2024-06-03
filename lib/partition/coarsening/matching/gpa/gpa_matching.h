@@ -33,24 +33,24 @@ class gpa_matching : public matching {
 
     ~gpa_matching() override = default;
 
-    void match(const PartitionConfig &config, graph_access &G, Matching &_matching, CoarseMapping &coarse_mapping,
+    void match(const PartitionConfig &config, graph_access &G, Matching &edge_matching, CoarseMapping &coarse_mapping,
                NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
 
   private:
     static void init(graph_access &G, const PartitionConfig &partition_config, NodePermutationMap &permutation,
                      Matching &edge_matching, std::vector<EdgeID> &edge_permutation, std::vector<NodeID> &sources);
 
-    static void extract_paths_apply_matching(graph_access &G, std::vector<NodeID> &sources, Matching &edge_matching,
-                                             path_set &pathset);
+    static void extract_paths_apply_matching(const graph_access &G, std::vector<NodeID> &sources,
+                                             Matching &edge_matching, const path_set &pathset);
 
     template <typename VectorOrDeque>
     static void unpack_path(const path &p, const path_set &pathset, VectorOrDeque &unpacked_path);
 
     template <typename VectorOrDeque>
-    static void maximum_weight_matching(graph_access &G, VectorOrDeque &unpacked_path,
+    static void maximum_weight_matching(const graph_access &G, VectorOrDeque &unpacked_path,
                                         std::vector<EdgeID> &matched_edges, EdgeRatingType &final_rating);
 
-    static void apply_matching(graph_access &G, std::vector<EdgeID> &matched_edges, std::vector<NodeID> &sources,
+    static void apply_matching(const graph_access &G, std::vector<EdgeID> &matched_edges, std::vector<NodeID> &sources,
                                Matching &edge_matching);
 };
 

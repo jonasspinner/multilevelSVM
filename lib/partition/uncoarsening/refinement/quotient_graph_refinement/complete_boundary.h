@@ -53,7 +53,7 @@ class complete_boundary {
 
     inline NodeID size(PartitionID partition, boundary_pair *pair);
 
-    inline void getQuotientGraphEdges(QuotientGraphEdges &qgraph_edges);
+    inline void getQuotientGraphEdges(QuotientGraphEdges &qgraph_edges) const;
 
     inline void getUnderlyingQuotientGraph(graph_access &Q_bar);
 
@@ -92,7 +92,7 @@ class complete_boundary {
 };
 
 inline void complete_boundary::build() {
-    graph_access &G = *m_graph_ref;
+    const graph_access &G = *m_graph_ref;
 
     for (PartitionID block = 0; block < G.get_partition_count(); block++) {
         m_block_infos[block].block_weight = 0;
@@ -164,7 +164,7 @@ inline NodeID complete_boundary::size(PartitionID partition, boundary_pair *pair
     }
 }
 
-inline void complete_boundary::getQuotientGraphEdges(QuotientGraphEdges &qgraph_edges) {
+inline void complete_boundary::getQuotientGraphEdges(QuotientGraphEdges &qgraph_edges) const {
     // the quotient graph is stored implicitly in the pairs hashtable
     for (const auto &[key, _] : m_pairs) {
         qgraph_edges.push_back(key);
@@ -174,7 +174,7 @@ inline void complete_boundary::getQuotientGraphEdges(QuotientGraphEdges &qgraph_
 inline void complete_boundary::update_lazy_values(boundary_pair *pair) {
     ASSERT_NEQ(pair->lhs, pair->rhs);
 
-    boundary_pair &bp = *pair;
+    const boundary_pair &bp = *pair;
     size_t key = m_hbp(bp);
     if (key != m_last_key) {
         data_boundary_pair &dbp = m_pairs[*pair];

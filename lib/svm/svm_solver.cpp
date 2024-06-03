@@ -112,7 +112,7 @@ template <class T> void svm_solver<T>::set_gamma(float gamma) { this->param.gamm
 
 template <class T> void svm_solver<T>::set_model(std::shared_ptr<T> new_model) { this->model = new_model; }
 
-template <class T> const svm_instance &svm_solver<T>::get_instance() { return this->instance; }
+template <class T> const svm_instance &svm_solver<T>::get_instance() const { return this->instance; }
 
 template class svm_solver<svm_model>;
 

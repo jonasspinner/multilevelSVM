@@ -28,7 +28,7 @@ template <class T> class svm_solver {
 
     virtual std::vector<int> predict_batch(const svm_data &data);
 
-    virtual int predict(const std::vector<svm_node> &node) = 0;
+    virtual int predict(const std::vector<svm_node> &nodes) = 0;
 
     virtual void export_to_file(const std::string &path) = 0;
 
@@ -42,7 +42,7 @@ template <class T> class svm_solver {
 
     virtual void set_model(std::shared_ptr<T> new_model);
 
-    const svm_instance &get_instance();
+    const svm_instance &get_instance() const;
 
   protected:
     svm_parameter param{};

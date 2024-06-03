@@ -13,7 +13,7 @@ svm_result<T>::svm_result(const std::vector<svm_summary<T>> &summaries, svm_inst
     this->sort_summaries();
 }
 
-template <class T> svm_summary<T> svm_result<T>::best() { return summaries[0]; }
+template <class T> svm_summary<T> svm_result<T>::best() const { return summaries[0]; }
 
 template <class T> void svm_result<T>::add(const svm_result<T> &result) { this->add(result.summaries); }
 

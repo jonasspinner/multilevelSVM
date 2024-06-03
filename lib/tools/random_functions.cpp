@@ -22,5 +22,5 @@
 
 #include "random_functions.h"
 
-MersenneTwister random_functions::m_mt;
+MersenneTwister random_functions::m_mt; // NOLINT(cert-msc51-cpp,cert-err58-cpp)
 int random_functions::m_seed = 0;

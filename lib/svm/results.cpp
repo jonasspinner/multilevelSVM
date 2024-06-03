@@ -1,6 +1,7 @@
 #include "results.h"
 #include <iomanip>
 #include <iostream>
+#include <numeric>
 
 void results::next() { this->cur_iteration += 1; }
 
@@ -27,11 +28,7 @@ void results::print() {
     for (const auto &tag : this->tag_order) {
         if (this->floats.find(tag) != this->floats.end()) {
             std::vector<float> &ress = this->floats[tag];
-            float average = 0;
-            for (const float res : ress) {
-                average += res;
-            }
-
+            double average = std::accumulate(ress.begin(), ress.end(), 0.0);
             average /= this->cur_iteration + 1;
 
             std::cout << tag << "\t" << average << std::endl;

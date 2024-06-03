@@ -13,7 +13,7 @@ template <class T> class svm_result {
 
     svm_result(const std::vector<svm_summary<T>> &summaries, svm_instance instance);
 
-    svm_summary<T> best();
+    svm_summary<T> best() const;
 
     void sort_summaries();
 
@@ -21,7 +21,7 @@ template <class T> class svm_result {
 
     void add(const svm_result<T> &result);
 
-    std::vector<svm_summary<T>> summaries;
+    std::vector<svm_summary<T>> summaries{};
     svm_instance instance;
 
     static size_t get_best_index(const std::vector<std::pair<svm_summary<T>, svm_instance>> &vec);

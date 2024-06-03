@@ -16,10 +16,12 @@ else()
         --error-exitcode=1
         --inconclusive                                                      # False positive can happen
         --language=c++
+        --std=c++17
         --platform=native
         --project=${CMAKE_BINARY_DIR}/compile_commands.json
         # --suppress=checkersReport                                         # Cppcheck >=2.13
         -i ${CMAKE_BINARY_DIR}
+        -i ${CMAKE_SOURCE_DIR}/extern
         -j ${N_PROC}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         USES_TERMINAL

@@ -13,7 +13,7 @@
 
 class k_fold {
   public:
-    explicit k_fold(const PartitionConfig &conf);
+    explicit k_fold(const PartitionConfig &config);
 
     virtual ~k_fold() = default;
 

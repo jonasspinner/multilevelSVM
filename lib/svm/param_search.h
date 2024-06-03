@@ -11,8 +11,8 @@ class param_search {
   public:
     static std::vector<svm_param> grid(float c_from, float c_to, float c_step, float g_from, float g_to, float g_step);
 
-    static std::vector<svm_param> around(float c_center, float c_range, float c_step, float g_center, float g_range,
-                                         float g_step);
+    [[maybe_unused]] static std::vector<svm_param> around(float c_center, float c_range, float c_step, float g_center,
+                                                          float g_range, float g_step);
 
     static std::vector<svm_param> ud(float c_from, float c_to, float g_from, float g_to, bool step1,
                                      bool inherit = false, float param_c = 0, float param_g = 0);

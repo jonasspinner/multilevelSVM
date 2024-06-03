@@ -6,7 +6,7 @@
 
 class svm_flann {
   public:
-    static void run_flann(const std::vector<FeatureVec> &data, std::vector<std::vector<Edge>> &edges, int num_nn = 10);
+    static void run_flann(const std::vector<FeatureVec> &data, std::vector<std::vector<Edge>> &graph, int num_nn = 10);
 };
 
 #endif /* SVM_FLANN_H */

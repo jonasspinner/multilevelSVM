@@ -30,7 +30,7 @@ void print_null(const char *s) {}
 // #define SVM_SOLVER svm_solver_libsvm
 // #define SVM_MODEL svm_model
 
-void kfold_instance(PartitionConfig &partition_config, std::unique_ptr<k_fold> &kfold, results &results) {
+void kfold_instance(const PartitionConfig &partition_config, std::unique_ptr<k_fold> &kfold, results &results) {
     timer t;
     graph_access *G_min = kfold->getMinGraph();
     graph_access *G_maj = kfold->getMajGraph();
@@ -143,7 +143,7 @@ int main(int argn, char *argv[]) {
     results results;
 
     for (int exp = 0; exp < partition_config.num_experiments; exp++) {
-        std::cout << " \\/\\/\\/\\/\\/\\/\\/\\/\\/ EXPERIMENT " << exp << " \\/\\/\\/\\/\\/\\/\\/" << std::endl;
+        std::cout << R"( \/\/\/\/\/\/\/\/\/ EXPERIMENT )" << exp << R"( \/\/\/\/\/\/\/)" << std::endl;
 
         std::unique_ptr<k_fold> kfold;
 

@@ -33,8 +33,8 @@ void contraction::contract(const PartitionConfig &partition_config, graph_access
 
     if (partition_config.matching_type == LP_CLUSTERING || partition_config.matching_type == SIMPLE_CLUSTERING ||
         partition_config.matching_type == LOW_DIAMETER) {
-        return contract_clustering(partition_config, finer, coarser, edge_matching, coarse_mapping, no_of_coarse_vertices,
-                                   permutation);
+        return contract_clustering(partition_config, finer, coarser, edge_matching, coarse_mapping,
+                                   no_of_coarse_vertices, permutation);
     }
 
     if (partition_config.combine) {
@@ -70,7 +70,9 @@ void contraction::contract(const PartitionConfig &partition_config, graph_access
         }
 
         // do something with all outgoing edges (in auxillary graph)
-        forall_out_edges(finer, e, node) { visit_edge(finer, coarser, edge_positions, coarseNode, e, new_edge_targets); }
+        forall_out_edges(finer, e, node) {
+            visit_edge(finer, coarser, edge_positions, coarseNode, e, new_edge_targets);
+        }
         endfor
 
             // this node was really matched
@@ -109,8 +111,8 @@ void contraction::contract(const PartitionConfig &partition_config, graph_access
     coarser.finish_construction();
 }
 
-void contraction::contract_clustering(const PartitionConfig &partition_config, graph_access &finer, graph_access &coarser,
-                                      const Matching &, const CoarseMapping &coarse_mapping,
+void contraction::contract_clustering(const PartitionConfig &partition_config, graph_access &finer,
+                                      graph_access &coarser, const Matching &, const CoarseMapping &coarse_mapping,
                                       const NodeID &no_of_coarse_vertices, const NodePermutationMap &) {
 
     if (partition_config.combine) {

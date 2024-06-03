@@ -54,7 +54,7 @@ void size_constraint_label_propagation::match_internal(const PartitionConfig &pa
     create_coarsemapping(G, cluster_id, coarse_mapping);
 }
 
-void size_constraint_label_propagation::ensemble_two_clusterings(graph_access &G, const std::vector<NodeID> &lhs,
+void size_constraint_label_propagation::ensemble_two_clusterings(const graph_access &G, const std::vector<NodeID> &lhs,
                                                                  const std::vector<NodeID> &rhs,
                                                                  std::vector<NodeID> &output,
                                                                  NodeID &no_of_coarse_vertices) {
@@ -181,7 +181,7 @@ void size_constraint_label_propagation::label_propagation(const PartitionConfig 
     remap_cluster_ids(G, cluster_id, number_of_blocks);
 }
 
-void size_constraint_label_propagation::create_coarsemapping(graph_access &G, std::vector<NodeWeight> &cluster_id,
+void size_constraint_label_propagation::create_coarsemapping(const graph_access &G, std::vector<NodeWeight> &cluster_id,
                                                              CoarseMapping &coarse_mapping) {
     for (auto node : G.nodes()) {
         coarse_mapping[node] = cluster_id[node];

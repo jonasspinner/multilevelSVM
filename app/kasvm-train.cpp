@@ -53,7 +53,7 @@ int main(int argn, char *argv[]) {
     results results;
 
     for (int exp = 0; exp < partition_config.num_experiments; exp++) {
-        std::cout << " \\/\\/\\/\\/\\/\\/\\/\\/\\/ EXPERIMENT " << exp << " \\/\\/\\/\\/\\/\\/\\/" << std::endl;
+        std::cout << R"( \/\/\/\/\/\/\/\/\/ EXPERIMENT )" << exp << R"( \/\/\/\/\/\/\/)" << std::endl;
 
         std::unique_ptr<k_fold> kfold;
 
@@ -113,8 +113,8 @@ int main(int argn, char *argv[]) {
             graph_hierarchy min_hierarchy;
             graph_hierarchy maj_hierarchy;
 
-            coarsen.perform_coarsening(partition_config, *G_min, min_hierarchy);
-            coarsen.perform_coarsening(partition_config, *G_maj, maj_hierarchy);
+            coarsening::perform_coarsening(partition_config, *G_min, min_hierarchy);
+            coarsening::perform_coarsening(partition_config, *G_maj, maj_hierarchy);
 
             auto coarsening_time = t.elapsed();
             std::cout << "coarsening time: " << coarsening_time << std::endl

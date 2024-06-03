@@ -59,14 +59,14 @@ template <class T> class SolverOptimization : public ContinuousModel {
         : ContinuousModel(2, param), solver(solver), min_sample(min_sample), maj_sample(maj_sample),
           summaries(summaries) {}
 
-    double evaluateSample(const boost::numeric::ublas::vector<double> &query) override {
+    [[maybe_unused]] double evaluateSample(const boost::numeric::ublas::vector<double> &query) override {
         svm_param p = std::make_pair(query[0], query[1]);
         auto summary = solver.train_single(p, min_sample, maj_sample);
         summaries.push_back(summary);
         return summary.eval(solver.get_instance());
     }
 
-    bool checkReachability(const boost::numeric::ublas::vector<double> &) override { return true; }
+    [[maybe_unused]] bool checkReachability(const boost::numeric::ublas::vector<double> &) override { return true; }
 
     svm_solver<T> &solver;
     const svm_data &min_sample;

@@ -24,8 +24,7 @@ void k_fold_build::readData(const std::string &filename) {
 
     std::cout << "io time: " << t.elapsed() << std::endl;
 
-    std::cout << "full graph -"
-              << " min: " << this->min_features.size() << " maj: " << this->maj_features.size()
+    std::cout << "full graph -" << " min: " << this->min_features.size() << " maj: " << this->maj_features.size()
               << " features: " << this->min_features[0].size() << std::endl;
 }
 

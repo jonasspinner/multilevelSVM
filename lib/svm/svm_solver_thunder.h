@@ -16,7 +16,7 @@ class svm_solver_thunder : public svm_solver<SVC> {
 
     void train() override;
 
-    int predict(const std::vector<svm_node> &node) override;
+    int predict(const std::vector<svm_node> &nodes) override;
 
     std::vector<int> predict_batch(const svm_data &data) override;
 

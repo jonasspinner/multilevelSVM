@@ -31,8 +31,8 @@ class random_matching : public matching {
 
     ~random_matching() override = default;
 
-    void match(const PartitionConfig &config, graph_access &G, Matching &_matching, CoarseMapping &coarse_mapping,
-               NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
+    void match(const PartitionConfig &partition_config, graph_access &G, Matching &_matching,
+               CoarseMapping &coarse_mapping, NodeID &no_of_coarse_vertices, NodePermutationMap &permutation) override;
 };
 
 #endif /* end of include guard: RANDOM_MATCHING_D5YDSMDW */

@@ -36,9 +36,10 @@ std::vector<int> svm_solver_thunder::predict_batch(const svm_data &data) {
     return iRes;
 }
 
-int svm_solver_thunder::predict(const std::vector<svm_node> &nodes) {
+int svm_solver_thunder::predict(const std::vector<svm_node> & /*nodes*/) {
     // TODO doesn't work but predict_batch is used anyway
     exit(1);
+    /*
     DataSet::node2d dataset(1);
     dataset[0].reserve(nodes.size());
     for (size_t i = 0; i < nodes.size() - 1; i++) {
@@ -47,6 +48,7 @@ int svm_solver_thunder::predict(const std::vector<svm_node> &nodes) {
     }
     double res = this->model->predict(dataset, 50).front();
     return static_cast<int>(res);
+     */
 }
 
 void svm_solver_thunder::export_to_file(const string &path) { this->model->save_to_file(path); }

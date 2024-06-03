@@ -1,4 +1,5 @@
 #include <cmath>
+#include <random>
 
 #include "param_search.h"
 
@@ -31,13 +32,18 @@ std::vector<std::pair<float, float>> param_search::ud(float c_from, float c_to, 
                                                       bool inherit, float param_c, float param_g) {
     std::vector<std::pair<float, float>> seq;
 
+    std::random_device random_device;
+    std::mt19937 gen(random_device());
+    std::uniform_int_distribution rand;
+
     // TODO make this configurable
     int pattern = step1 ? 9 : 5;
     int stage = step1 ? 1 : 2;
 
     double lg_base = 2;
 
-    double p_center_c, p_center_g;
+    double p_center_c = NAN;
+    double p_center_g = NAN;
 
     if (inherit) {
         p_center_c = param_c;
@@ -67,22 +73,22 @@ std::vector<std::pair<float, float>> param_search::ud(float c_from, float c_to, 
         g = pow(lg_base, g);
 
         if (c > c_max) {
-            c = c_max + (rand() % 500) * (rand() % 2 ? 1 : -1);
+            c = c_max + (rand(gen) % 500) * (rand(gen) % 2 ? 1 : -1);
         }
         if (c < c_min) {
-            c = c_min - (rand() % 100) * (rand() % 2 ? 1 : -1);
+            c = c_min - (rand(gen) % 100) * (rand(gen) % 2 ? 1 : -1);
             while (c < 0.001) {
-                c += (rand() % 500);
+                c += (rand(gen) % 500);
             }
         }
 
         if (g > g_max) {
-            g = g_max + (rand() % 100 * 0.001) * (rand() % 2 ? 1 : -1);
+            g = g_max + (rand(gen) % 100 * 0.001) * (rand(gen) % 2 ? 1 : -1);
         }
         if (g < g_min) {
-            g = g_min - (rand() % 100 * 0.00001) * (rand() % 2 ? 1 : -1);
+            g = g_min - (rand(gen) % 100 * 0.00001) * (rand(gen) % 2 ? 1 : -1);
             while (g < 0.00001) {
-                g += (rand() % 100 * 0.00001);
+                g += (rand(gen) % 100 * 0.00001);
             }
         }
 

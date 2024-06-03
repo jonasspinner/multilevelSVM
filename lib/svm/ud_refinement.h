@@ -14,7 +14,7 @@ template <class T> class ud_refinement : public svm_refinement<T> {
 
     virtual ~ud_refinement() = default;
 
-    virtual svm_result<T> step(const svm_data &min_sample, const svm_data &maj_sample);
+    svm_result<T> step(const svm_data &min_sample, const svm_data &maj_sample) override;
 
     static svm_result<T> train_ud(svm_solver<T> &solver, const svm_data &min_sample, const svm_data &maj_sample);
 

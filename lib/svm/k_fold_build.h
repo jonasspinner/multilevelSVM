@@ -6,7 +6,7 @@
 
 class k_fold_build : public k_fold {
   public:
-    k_fold_build(const PartitionConfig &config, const std::string &basename);
+    k_fold_build(const PartitionConfig &config, const std::string &filename);
 
     ~k_fold_build() override = default;
 

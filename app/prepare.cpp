@@ -11,7 +11,7 @@
 #include "definitions.h"
 #include "tools/timer.h"
 
-typedef std::vector<FeatureVec> MyMat;
+using MyMat = std::vector<FeatureVec>;
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -27,24 +27,6 @@ static inline void rtrim(std::string &s) {
 static inline void trim(std::string &s) {
     ltrim(s);
     rtrim(s);
-}
-
-// trim from start (copying)
-static inline std::string ltrim_copy(std::string s) {
-    ltrim(s);
-    return s;
-}
-
-// trim from end (copying)
-static inline std::string rtrim_copy(std::string s) {
-    rtrim(s);
-    return s;
-}
-
-// trim from both ends (copying)
-static inline std::string trim_copy(std::string s) {
-    trim(s);
-    return s;
 }
 
 enum NORMALIZE_METHOD { NONE, LINEAR, GAUSS_NORM };
@@ -65,7 +47,7 @@ struct config {
 
 int parse_args(int argc, char *argv[], config &conf);
 
-void read_csv(const std::string &filename, MyMat &min_data, std::vector<int> &maj_data, int label_col = 0,
+void read_csv(const std::string &filename, MyMat &data, std::vector<int> &labels, int label_col = 0,
               const std::string &label_min = "-1");
 
 void read_libsvm(const std::string &filename, MyMat &data, std::vector<int> &labels, const std::string &label_min);
@@ -78,7 +60,7 @@ void scale(MyMat &data);
 
 void split(const MyMat &data, const std::vector<int> &labels, MyMat &min, MyMat &maj);
 
-void write_metis(const std::vector<std::vector<Edge>> &edges, std::string output);
+void write_metis(const std::vector<std::vector<Edge>> &edges, const std::string &filename);
 
 void write_features(const MyMat &data, const std::string &filename);
 
@@ -505,11 +487,11 @@ void split(const MyMat &data, const std::vector<int> &labels, MyMat &min, MyMat 
         data_cpy.pop_back();
     }
 
-    reverse(min.begin(), min.end());
-    reverse(maj.begin(), maj.end());
+    std::reverse(min.begin(), min.end());
+    std::reverse(maj.begin(), maj.end());
 }
 
-void write_metis(const std::vector<std::vector<Edge>> &edges, const std::string filename) {
+void write_metis(const std::vector<std::vector<Edge>> &edges, const std::string &filename) {
     size_t rows = edges.size();
     size_t nodes = rows;
     size_t num_edges = 0; // unidirected edges

@@ -85,13 +85,13 @@ void gpa_matching::match(const PartitionConfig &partition_config, graph_access &
     no_of_coarse_vertices = 0;
     for (auto n : G.nodes()) {
         if (G.getPartitionIndex(n) != G.getPartitionIndex(edge_matching[n])) {
-            // v cycle... they shouldnt be contraced
+            // v cycle... they shouldn't be contracted
             edge_matching[n] = n;
         }
 
         if (partition_config.combine) {
             if (G.getSecondPartitionIndex(n) != G.getSecondPartitionIndex(edge_matching[n])) {
-                // v cycle... they shouldnt be contraced
+                // v cycle... they shouldn't be contracted
                 edge_matching[n] = n;
             }
         }
@@ -127,12 +127,13 @@ void gpa_matching::init(graph_access &G, const PartitionConfig &partition_config
     }
 }
 
-void gpa_matching::extract_paths_apply_matching(graph_access &G, std::vector<NodeID> &sources, Matching &edge_matching,
-                                                path_set &pathset) {
+void gpa_matching::extract_paths_apply_matching(const graph_access &G, std::vector<NodeID> &sources,
+                                                Matching &edge_matching, const path_set &pathset) {
     // extract the paths in the path set into lists of edges.
     // then, apply the dynamic programming max weight function to them. Apply
     // the matched edges.
-    EdgeRatingType matching_rating, second_matching_rating;
+    EdgeRatingType matching_rating = NAN;
+    EdgeRatingType second_matching_rating = NAN;
 
     for (auto n : G.nodes()) {
         const path &p = pathset.get_path(n);
@@ -212,8 +213,8 @@ void gpa_matching::extract_paths_apply_matching(graph_access &G, std::vector<Nod
     }
 }
 
-void gpa_matching::apply_matching(graph_access &G, std::vector<EdgeID> &matched_edges, std::vector<NodeID> &sources,
-                                  Matching &edge_matching) {
+void gpa_matching::apply_matching(const graph_access &G, std::vector<EdgeID> &matched_edges,
+                                  std::vector<NodeID> &sources, Matching &edge_matching) {
 
     // apply matched edges
     for (unsigned int e : matched_edges) {
@@ -253,7 +254,7 @@ void gpa_matching::unpack_path(const path &p, const path_set &pathset, VectorOrD
 }
 
 template <typename VectorOrDeque>
-void gpa_matching::maximum_weight_matching(graph_access &G, VectorOrDeque &unpacked_path,
+void gpa_matching::maximum_weight_matching(const graph_access &G, VectorOrDeque &unpacked_path,
                                            std::vector<EdgeID> &matched_edges, EdgeRatingType &final_rating) {
 
     unsigned k = unpacked_path.size();

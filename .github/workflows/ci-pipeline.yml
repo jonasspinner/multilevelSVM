@@ -9,7 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   BUILD_DIR_GCC: ${{github.workspace}}/build/gcc
-  BUILD_DIR_CLANG: ${{github.workspace}}/build/clang
+  BUILD_DIR_CLANG: ${{github.workspace}}/build/clangn
 
 jobs:
   ci:
