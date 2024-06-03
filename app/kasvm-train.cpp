@@ -73,7 +73,6 @@ int main(int argn, char *argv[]) {
             // 				 partition_config.testname));
         case TRAIN_TEST_SPLIT:
             abort();
-            break;
         }
 
         timer t_all;
@@ -109,7 +108,6 @@ int main(int argn, char *argv[]) {
 
             t.restart();
 
-            coarsening coarsen;
             graph_hierarchy min_hierarchy;
             graph_hierarchy maj_hierarchy;
 
@@ -206,7 +204,7 @@ int main(int argn, char *argv[]) {
             }
 
             std::vector<std::pair<svm_summary<SVM_MODEL>, svm_instance>> best_results;
-            best_results.push_back(std::make_pair(initial_summary, initial_instance));
+            best_results.emplace_back(initial_summary, initial_instance);
 
             while (!refinement->is_done()) {
                 timer t_ref;
@@ -216,7 +214,7 @@ int main(int argn, char *argv[]) {
                 std::cout << "refinement at level " << refinement->get_level() << " took " << t_ref.elapsed()
                           << std::endl;
 
-                best_results.push_back(std::make_pair(current_result.best(), current_result.instance));
+                best_results.emplace_back(current_result.best(), current_result.instance);
 
                 std::ostringstream fmt_ac, fmt_gm;
                 fmt_ac << "LEVEL" << refinement->get_level() << "_AC";

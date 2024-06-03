@@ -17,7 +17,7 @@ template <class T> class svm_refinement {
 
     [[nodiscard]] int get_level() const;
 
-    void uncoarse(const std::vector<NodeID> &sv_min, const std::vector<NodeID> &svm_maj);
+    void uncoarse(const std::vector<NodeID> &sv_min, const std::vector<NodeID> &sv_maj);
 
     static svm_data uncoarse_SV(const graph_access &G, const CoarseMapping &coarse_mapping,
                                 const std::vector<NodeID> &sv, std::vector<NodeID> &data_mapping);

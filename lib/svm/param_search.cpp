@@ -34,7 +34,7 @@ std::vector<std::pair<float, float>> param_search::ud(float c_from, float c_to, 
 
     std::random_device random_device;
     std::mt19937 gen(random_device());
-    std::uniform_int_distribution rand;
+    std::uniform_int_distribution<int> rand;
 
     // TODO make this configurable
     int pattern = step1 ? 9 : 5;

@@ -36,7 +36,7 @@ std::vector<int> svm_solver_thunder::predict_batch(const svm_data &data) {
     return iRes;
 }
 
-int svm_solver_thunder::predict(const std::vector<svm_node> & /*nodes*/) {
+static int svm_solver_thunder::predict(const std::vector<svm_node> & /*nodes*/) {
     // TODO doesn't work but predict_batch is used anyway
     exit(1);
     /*
