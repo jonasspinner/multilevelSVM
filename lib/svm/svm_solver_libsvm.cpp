@@ -1,7 +1,6 @@
 #include <functional>
 #include <utility>
 
-#include "svm/param_search.h"
 #include "svm/svm_convert.h"
 #include "svm/svm_solver_libsvm.h"
 

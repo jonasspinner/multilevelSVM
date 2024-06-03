@@ -6,7 +6,7 @@
 
 #include "svm/svm_convert.h"
 
-static void svm_io::readFeaturesLines(const std::string &filename, std::vector<FeatureVec> &data) {
+void svm_io::readFeaturesLines(const std::string &filename, std::vector<FeatureVec> &data) {
     std::string line;
 
     // open file for reading
@@ -37,8 +37,8 @@ static void svm_io::readFeaturesLines(const std::string &filename, std::vector<F
     }
 }
 
-static void svm_io::readTestSplit(const std::string &filename, std::vector<svm_feature> &min_test_data,
-                                  std::vector<svm_feature> &maj_test_data) {
+void svm_io::readTestSplit(const std::string &filename, std::vector<svm_feature> &min_test_data,
+                           std::vector<svm_feature> &maj_test_data) {
     std::string line;
 
     // open file for reading
